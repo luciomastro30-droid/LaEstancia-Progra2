@@ -1,5 +1,3 @@
-
-DROP DATABASE IF EXISTS La_Estancia;
 CREATE DATABASE La_Estancia;
 USE La_Estancia;
 
