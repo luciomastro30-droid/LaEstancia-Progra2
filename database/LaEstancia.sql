@@ -27,12 +27,24 @@ CREATE TABLE partida (
     nombre_granja VARCHAR(100) NOT NULL,
     nivel INT UNSIGNED NOT NULL DEFAULT 1,
     experiencia INT UNSIGNED NOT NULL DEFAULT 0,
-    monedas INT UNSIGNED NOT NULL DEFAULT 100,
+    monedas INT UNSIGNED NOT NULL DEFAULT 500,
     minuto_juego_total BIGINT UNSIGNED NOT NULL DEFAULT 480, -- dia 0, 08:00
+    -- Estado de la granja (un solo valor por partida, no necesita tabla propia)
+    parcelas_desbloqueadas TINYINT UNSIGNED NOT NULL DEFAULT 2,
+    nivel_terreno TINYINT UNSIGNED NOT NULL DEFAULT 1, -- aplica a todas las parcelas
+    tiene_gallinero BOOLEAN NOT NULL DEFAULT FALSE,
+    tiene_establo BOOLEAN NOT NULL DEFAULT FALSE,
+    -- Herramientas: una de cada tipo, solo cambia la rareza
+    rareza_hacha ENUM('COMUN', 'POCO_COMUN', 'RARA', 'EPICA') NOT NULL DEFAULT 'COMUN',
+    rareza_pico ENUM('COMUN', 'POCO_COMUN', 'RARA', 'EPICA') NOT NULL DEFAULT 'COMUN',
+    rareza_cania ENUM('COMUN', 'POCO_COMUN', 'RARA', 'EPICA') NOT NULL DEFAULT 'COMUN',
+    -- Dia del ultimo evento aleatorio (maximo 1 por dia). NULL = nunca hubo
+    dia_ultimo_evento INT UNSIGNED NULL,
     estado ENUM('ACTIVA', 'PAUSADA', 'FINALIZADA') NOT NULL DEFAULT 'ACTIVA',
     fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_guardado DATETIME,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
+
 
     PRIMARY KEY (id_partida),
 
@@ -44,7 +56,9 @@ CREATE TABLE item (
     id_item INT UNSIGNED AUTO_INCREMENT,
     nombre VARCHAR(80) NOT NULL,
     descripcion VARCHAR(255),
-    tipo ENUM('SEMILLA', 'COSECHA', 'PRODUCTO_ANIMAL', 'OTRO') NOT NULL DEFAULT 'OTRO',
+    tipo ENUM('SEMILLA', 'COSECHA', 'PRODUCTO_ANIMAL', 'MATERIAL', 'PESCADO', 'ALIMENTO', 'OTRO')
+        NOT NULL DEFAULT 'OTRO',
+    precio_compra INT UNSIGNED NOT NULL DEFAULT 0, -- 0 = no se vende en el pueblo
     precio_venta INT UNSIGNED NOT NULL DEFAULT 0,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
 
@@ -116,6 +130,7 @@ CREATE TABLE animal (
     id_tipo_animal INT UNSIGNED NOT NULL,
     nombre VARCHAR(50),
     hambre TINYINT UNSIGNED NOT NULL DEFAULT 100,
+    minuto_ultima_alimentacion BIGINT UNSIGNED NULL,
     minuto_ultima_produccion BIGINT UNSIGNED,
     fecha_adquisicion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -145,4 +160,24 @@ CREATE TABLE inventario (
 
     FOREIGN KEY (id_item)
         REFERENCES item(id_item)
+);
+
+/* Progreso de misiones por partida.
+ Las misiones y los NPC se definen en Java; aca solo se guarda
+ lo que hizo cada jugador, para que no pueda repetir ni reclamar dos veces.
+ codigo_mision coincide con el codigo de la mision en Java (ej: 'PRIMERA_COSECHA').
+*/
+CREATE TABLE progreso_mision (
+    id_progreso_mision INT UNSIGNED AUTO_INCREMENT,
+    id_partida INT UNSIGNED NOT NULL,
+    codigo_mision VARCHAR(50) NOT NULL,
+    progreso INT UNSIGNED NOT NULL DEFAULT 0,
+    estado ENUM('ACTIVA', 'COMPLETADA', 'RECLAMADA') NOT NULL DEFAULT 'ACTIVA',
+
+    PRIMARY KEY (id_progreso_mision),
+    UNIQUE (id_partida, codigo_mision),
+
+    FOREIGN KEY (id_partida)
+        REFERENCES partida(id_partida)
+        ON DELETE CASCADE
 );
