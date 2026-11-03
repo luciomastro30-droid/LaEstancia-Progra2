@@ -26,7 +26,7 @@ public class Cultivo extends ElementoGranja{
     }
 
     @Override
-    public int getPrecioCompra() {!return precioSemilla;}
+    public int getPrecioCompra() {return precioSemilla;}
 
     @Override
     public int getTiempoProduccionMin() {return tiempoCrecimientoMin;}
