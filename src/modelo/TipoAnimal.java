@@ -6,64 +6,52 @@ public class TipoAnimal extends ElementoGranja{
     private int precioCompra;
     private Integer idItemProducto; //puede ser null;
     private int cantidadProducto;
-    private int tiempoProduccion;
+    private int tiempoProduccionMin;
 
-    public TipoAnimal(int idTipoAnimal, String nombre, int precioVenta, boolean activo,
-                      String descripcion, int precioCompra, Integer idItemProducto,
-                      int cantidadProducto, int tiempoProduccion) {
+    public TipoAnimal(int idTipoAnimal, String nombre, String descripcion, int precioCompra,
+                      int precioVenta, Integer idItemProducto, int cantidadProducto,
+                      int tiempoProduccionMin, boolean activo) {
         super(idTipoAnimal, nombre, precioVenta, activo);
         this.descripcion = descripcion;
         this.precioCompra = precioCompra;
         this.idItemProducto = idItemProducto;
         this.cantidadProducto = cantidadProducto;
-        this.tiempoProduccion = tiempoProduccion;
+        this.tiempoProduccionMin = tiempoProduccionMin;
     }
 
     public TipoAnimal(String nombre, String descripcion, int precioCompra, int precioVenta,
                       Integer idItemProducto, int cantidadProducto, int tiempoProduccionMin) {
-        this(0, nombre, precioVenta, true, descripcion,
-                precioCompra, idItemProducto, cantidadProducto, tiempoProduccionMin);
+        this(0, nombre, descripcion, precioCompra, precioVenta,
+                idItemProducto, cantidadProducto, tiempoProduccionMin, true);
     }
 
     @Override
     public int getPrecioCompra() {return precioCompra;}
 
     @Override
-    public int getTiempoProduccionMin() {return tiempoProduccion;}
+    public int getTiempoProduccionMin() {return tiempoProduccionMin;}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    public String getDescripcion() {return descripcion;}
+    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    public void setPrecioCompra(int precioCompra) {this.precioCompra = precioCompra;}
 
-    public void setPrecioCompra(int precioCompra) {
-        this.precioCompra = precioCompra;
-    }
+    public Integer getIdItemProducto() {return idItemProducto;}
+    public void setIdItemProducto(Integer idItemProducto) {this.idItemProducto = idItemProducto;}
 
-    public Integer getIdItemProducto() {
-        return idItemProducto;
-    }
+    public int getCantidadProducto() {return cantidadProducto;}
+    public void setCantidadProducto(int cantidadProducto) {this.cantidadProducto = cantidadProducto;}
 
-    public void setIdItemProducto(Integer idItemProducto) {
-        this.idItemProducto = idItemProducto;
-    }
+    public void setTiempoProduccionMin(int tiempoProduccion) {this.tiempoProduccionMin = tiempoProduccion;}
 
-    public int getCantidadProducto() {
-        return cantidadProducto;
-    }
-
-    public void setCantidadProducto(int cantidadProducto) {
-        this.cantidadProducto = cantidadProducto;
-    }
-
-    public int getTiempoProduccion() {
-        return tiempoProduccion;
-    }
-
-    public void setTiempoProduccion(int tiempoProduccion) {
-        this.tiempoProduccion = tiempoProduccion;
+    @Override
+    public String toString() {
+        return "TipoAnimal{" + super.toString() +
+                ", descripcion='" + descripcion + '\'' +
+                ", precioCompra=" + precioCompra +
+                ", idItemProducto=" + idItemProducto +
+                ", cantidadProducto=" + cantidadProducto +
+                ", tiempoProduccionMin=" + tiempoProduccionMin +
+                '}';
     }
 }

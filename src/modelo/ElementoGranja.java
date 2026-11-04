@@ -29,4 +29,13 @@ public abstract class ElementoGranja {
 
     public boolean isActivo() {return activo;}
     public void setActivo(boolean activo) {this.activo = activo;}
+
+    //Solo los datos comunes: cada hija agrega su nombre de clase y sus atributos
+    @Override
+    public String toString() {
+        return "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", precioVenta=" + precioVenta +
+                ", activo=" + activo;
+    }
 }

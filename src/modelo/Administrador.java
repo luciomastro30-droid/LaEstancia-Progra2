@@ -17,4 +17,9 @@ public class Administrador extends Usuario {
 
     @Override
     public Rol getRol() {return Rol.ADMIN;}
+
+    @Override
+    public String toString() {
+        return "Administrador{" + super.toString() + '}';
+    }
 }

@@ -45,4 +45,15 @@ public class Cultivo extends ElementoGranja{
 
     public Integer getIdItemCosecha() {return idItemCosecha;}
     public void setIdItemCosecha(Integer idItemCosecha) {this.idItemCosecha = idItemCosecha;}
+
+    @Override
+    public String toString() {
+        return "Cultivo{" + super.toString() +
+                ", precioSemilla=" + precioSemilla +
+                ", tiempoCrecimientoMin=" + tiempoCrecimientoMin +
+                ", experienciaRecompensa=" + experienciaRecompensa +
+                ", idItemSemilla=" + idItemSemilla +
+                ", idItemCosecha=" + idItemCosecha +
+                '}';
+    }
 }
