@@ -51,8 +51,14 @@ public abstract class Usuario {
     //SIN SET PARA NO MODIFICAR
     public LocalDateTime getFechaCreacion() {return fechaCreacion;}
 
+    //Solo los datos comunes: cada hija agrega su nombre de clase. No se muestra el hash de la contrasenia
     @Override
     public String toString() {
-        return getRol() + " #" + idUsuario + " - " + nombreUsuario + " (" + email + ")";
+        return "idUsuario=" + idUsuario +
+                ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", email='" + email + '\'' +
+                ", rol=" + getRol() +
+                ", activo=" + activo +
+                ", fechaCreacion=" + fechaCreacion;
     }
 }

@@ -123,4 +123,28 @@ public class Partida {
 
     public boolean isActivo() {return activo;}
     public void setActivo(boolean activo) {this.activo = activo;}
+
+    @Override
+    public String toString() {
+        return "Partida{idPartida=" + idPartida +
+                ", idUsuario=" + idUsuario +
+                ", nombreGranja='" + nombreGranja + '\'' +
+                ", nivel=" + nivel +
+                ", experiencia=" + experiencia +
+                ", monedas=" + monedas +
+                ", minutoJuegoTotal=" + minutoJuegoTotal +
+                ", parcelasDesbloqueadas=" + parcelasDesbloqueadas +
+                ", nivelTerreno=" + nivelTerreno +
+                ", tieneGallinero=" + tieneGallinero +
+                ", tieneEstablo=" + tieneEstablo +
+                ", rarezaHacha=" + rarezaHacha +
+                ", rarezaPico=" + rarezaPico +
+                ", rarezaCania=" + rarezaCania +
+                ", diaUltimoEvento=" + diaUltimoEvento +
+                ", estado=" + estado +
+                ", fechaCreacion=" + fechaCreacion +
+                ", fechaGuardado=" + fechaGuardado +
+                ", activo=" + activo +
+                '}';
+    }
 }

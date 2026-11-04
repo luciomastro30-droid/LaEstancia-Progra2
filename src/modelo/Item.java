@@ -57,4 +57,16 @@ public class Item {
 
     @Override
     public int hashCode() {return Integer.hashCode(idItem);}
+
+    @Override
+    public String toString() {
+        return "Item{idItem=" + idItem +
+                ", nombre='" + nombre + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", tipo=" + tipo +
+                ", precioCompra=" + precioCompra +
+                ", precioVenta=" + precioVenta +
+                ", activo=" + activo +
+                '}';
+    }
 }

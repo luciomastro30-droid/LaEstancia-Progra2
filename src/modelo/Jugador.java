@@ -24,4 +24,11 @@ public class Jugador extends Usuario {
 
     public Partida getPartida() {return partida;}
     public void setPartida(Partida partida) {this.partida = partida;}
+
+    @Override
+    public String toString() {
+        return "Jugador{" + super.toString() +
+                ", tienePartida=" + tienePartida() +
+                '}';
+    }
 }
