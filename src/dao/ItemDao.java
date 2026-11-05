@@ -21,7 +21,7 @@ public class ItemDao implements Dao<Item>{
     @Override
     public boolean alta(Item elemento) throws SQLException {
         try(Connection con = ConexionBD.obtenerConexion();
-        PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)){
+            PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)){
 
             pd.setString(1,elemento.getNombre());
             pd.setString(2,elemento.getDescripcion());
