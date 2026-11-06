@@ -15,10 +15,7 @@ public class InventarioDao implements Dao<Inventario> {
 
     private static final String COLUMNAS = "id_inventario, id_partida, id_item, cantidad";
     private static final String SQL_INSERT = "INSERT INTO inventario (id_partida, id_item, cantidad) VALUES (?, ?, ?)";
-    // La tabla inventario no tiene un campo activo. Por eso interpretamos la baja logica
-    // como dejar la cantidad del item en 0 sin eliminar la fila de la base de datos.
-    private static final String SQL_BAJA = "UPDATE inventario SET cantidad = 0 " +
-                    "WHERE id_inventario = ? AND cantidad > 0";    // Una fila de inventario representa la relacion entre una partida y un item.
+     // Una fila de inventario representa la relacion entre una partida y un item.
     // Por eso no cambio id_partida ni id_item: solamente actualizo la cantidad.
     private static final String SQL_UPDATE = "UPDATE inventario SET cantidad = ? WHERE id_inventario = ?";
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM inventario WHERE id_inventario = ?";
@@ -59,18 +56,6 @@ public class InventarioDao implements Dao<Inventario> {
         }
     }
 
-
-    @Override
-    public boolean bajaLogica(int idBuscado) throws SQLException {
-
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_BAJA)) {
-
-            pd.setInt(1, idBuscado);
-
-            return pd.executeUpdate() > 0;
-        }
-    }
 
 
     /**

@@ -12,7 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlantacionDao implements Dao<Plantacion> {
+public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
 
     private static final String COLUMNAS = "id_plantacion, id_partida, id_cultivo, numero_parcela, " +
                     "minuto_siembra_juego, estado, activo";

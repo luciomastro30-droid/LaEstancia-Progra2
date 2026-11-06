@@ -64,21 +64,6 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
 
 
     /**
-     * Esta tabla no tiene un campo activo, por lo que no existe una baja logica
-     * equivalente a la que usamos en otras entidades.
-     * Tampoco quiero cambiar el estado de la mision para simular una baja,
-     * porque ACTIVA, COMPLETADA y RECLAMADA tienen significado dentro del juego.
-     */
-    @Override
-    public boolean bajaLogica(int idBuscado) {
-
-        throw new UnsupportedOperationException(
-                "ProgresoMision no admite baja logica porque la tabla no tiene campo activo."
-        );
-    }
-
-
-    /**
      * Modifico el progreso y el estado de una mision existente.
      * No cambio la partida ni el codigo de mision porque esos datos identifican
      * a que mision y a que partida pertenece este registro.

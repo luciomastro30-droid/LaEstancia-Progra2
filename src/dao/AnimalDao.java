@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimalDao implements Dao<Animal> {
+public class AnimalDao implements DaoConBajaLogica<Animal> {
 
     private static final String COLUMNAS = "id_animal, id_partida, id_tipo_animal, nombre, hambre, " +
                     "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo";

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioDao implements Dao<Usuario> {
+public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
     private static final String SQL_INSERT = "INSERT INTO usuario (nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";

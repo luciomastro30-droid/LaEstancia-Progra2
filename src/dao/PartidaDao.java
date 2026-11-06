@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartidaDao implements Dao<Partida> {
+public class PartidaDao implements DaoConBajaLogica<Partida> {
 
     private static final String COLUMNAS = "id_partida, id_usuario, nombre_granja, nivel, experiencia, monedas, " +
                     "minuto_juego_total, parcelas_desbloqueadas, nivel_terreno, " +

@@ -8,12 +8,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemDao implements Dao<Item>{
+public class ItemDao implements DaoConBajaLogica<Item>{
 
 
     private static final String SQL_INSERT = "INSERT INTO item(nombre,descripcion,tipo,precio_compra,precio_venta) VALUES (?,?,?,?,?)";
-    private static final String SQL_BAJA = "UPDATE item SET activo = FALSE WHERE id_item = ?";
-    private static final String SQL_UPDATE = "UPDATE item SET nombre = ?,descripcion = ? ,tipo = ?,precio_compra = ?,precio_venta = ? WHERE id_item = ?";
+    private static final String SQL_BAJA = "UPDATE item SET activo = FALSE " +
+                    "WHERE id_item = ? AND activo = TRUE";
+    private static final String SQL_UPDATE = "UPDATE item SET nombre = ?, descripcion = ?, tipo = ?, " +
+                    "precio_compra = ?, precio_venta = ? " +
+                    "WHERE id_item = ? AND activo = TRUE";
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_item,nombre,descripcion,tipo,precio_compra,precio_venta,activo FROM item WHERE activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT id_item,nombre,descripcion,tipo,precio_compra,precio_venta,activo FROM item WHERE id_item = ?";
 
@@ -105,18 +108,17 @@ public class ItemDao implements Dao<Item>{
         }
     }
 
-    private Item mapearItem(ResultSet rs)throws SQLException{
-        int id = rs.getInt(1);
-        String nombre = rs.getString(2);
-        String descripcion = rs.getString(3);
-        String tipo = rs.getString(4);
-        int precioCompra = rs.getInt(5);
-        int precioVenta = rs.getInt(6);
-        boolean activo = rs.getBoolean(7);
+    private Item mapearItem(ResultSet rs) throws SQLException {
 
-        //PASAMOS A ENUM EL TIPO
-        TipoItem tipoItem = TipoItem.valueOf(tipo);
-        return new Item(id, nombre, descripcion, tipoItem, precioCompra, precioVenta, activo);
+        return new Item(
+                rs.getInt("id_item"),
+                rs.getString("nombre"),
+                rs.getString("descripcion"),
+                TipoItem.valueOf(rs.getString("tipo")),
+                rs.getInt("precio_compra"),
+                rs.getInt("precio_venta"),
+                rs.getBoolean("activo")
+        );
     }
 
 }

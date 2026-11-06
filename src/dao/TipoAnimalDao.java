@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TipoAnimalDao implements Dao<TipoAnimal> {
+public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
 
     // Guardo las consultas en constantes para no repetir SQL en cada metodo.
     private static final String COLUMNAS = "id_tipo_animal, nombre, descripcion, precio_compra, precio_venta, " +
