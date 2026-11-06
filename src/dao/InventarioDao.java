@@ -57,7 +57,6 @@ public class InventarioDao implements Dao<Inventario> {
     }
 
 
-
     /**
      * Modifico solamente la cantidad de un registro del inventario.
      * No cambio la partida ni el item porque esos dos datos identifican que recurso
@@ -113,7 +112,6 @@ public class InventarioDao implements Dao<Inventario> {
             return inventario;
         }
     }
-
 
     /**
      * Recupero todos los items con cantidad mayor a 0 que pertenecen a una partida.

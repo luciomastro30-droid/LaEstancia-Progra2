@@ -61,10 +61,8 @@ public class Item {
     }
 
     @Override
-    public int hashCode() {
-        return Item.class.hashCode();
-    }
-    
+    public int hashCode() {return Integer.hashCode(idItem);}
+
     @Override
     public String toString() {
         return "Item{idItem=" + idItem +
