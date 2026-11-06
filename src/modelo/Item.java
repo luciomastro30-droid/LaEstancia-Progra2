@@ -52,12 +52,19 @@ public class Item {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Item item)) return false;
+
+        if (idItem == 0 || item.idItem == 0) {
+            return false;
+        }
+
         return idItem == item.idItem;
     }
 
     @Override
-    public int hashCode() {return Integer.hashCode(idItem);}
-
+    public int hashCode() {
+        return Item.class.hashCode();
+    }
+    
     @Override
     public String toString() {
         return "Item{idItem=" + idItem +

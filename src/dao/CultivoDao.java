@@ -7,14 +7,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CultivoDao implements Dao<Cultivo>{
+public class CultivoDao implements DaoConBajaLogica<Cultivo>{
 
 
     private static final String SQL_INSERT = "INSERT INTO cultivo (nombre,precio_semilla,precio_venta," +
             "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha) VALUES (?,?,?,?,?,?,?)";
-    private static final String SQL_BAJA = "UPDATE cultivo SET activo = FALSE WHERE id_cultivo = ?";
-    private static final String SQL_UPDATE = "UPDATE cultivo SET nombre = ?,precio_semilla = ?, precio_venta = ?, " +
-            "tiempo_crecimiento_min = ?,experiencia_recompensa = ?, id_item_semilla = ?, id_item_cosecha = ? WHERE id_cultivo = ? ";
+    private static final String SQL_BAJA = "UPDATE cultivo SET activo = FALSE " +
+                    "WHERE id_cultivo = ? AND activo = TRUE";
+    private static final String SQL_UPDATE = "UPDATE cultivo SET nombre = ?, precio_semilla = ?, precio_venta = ?, " +
+                    "tiempo_crecimiento_min = ?, experiencia_recompensa = ?, " +
+                    "id_item_semilla = ?, id_item_cosecha = ? " +
+                    "WHERE id_cultivo = ? AND activo = TRUE";
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
             "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo FROM cultivo WHERE activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
@@ -114,19 +117,18 @@ public class CultivoDao implements Dao<Cultivo>{
         }
     }
 
-    private Cultivo mapearCultivo(ResultSet rs)throws SQLException{
+    private Cultivo mapearCultivo(ResultSet rs) throws SQLException {
 
-        int id = rs.getInt(1);
-        String nombre = rs.getString(2);
-        int precioSemilla = rs.getInt(3);
-        int precioVenta = rs.getInt(4);
-        int tiempoCrecimientoMin = rs.getInt(5);
-        int experienciaRecompensa = rs.getInt(6);
-        Integer idItemSemilla = rs.getObject(7, Integer.class);
-        Integer idItemCosecha = rs.getObject(8, Integer.class);
-        boolean activo = rs.getBoolean(9);
-
-        return new Cultivo(id, nombre, precioSemilla, precioVenta,tiempoCrecimientoMin,experienciaRecompensa,
-                idItemSemilla,idItemCosecha,activo);
+        return new Cultivo(
+                rs.getInt("id_cultivo"),
+                rs.getString("nombre"),
+                rs.getInt("precio_semilla"),
+                rs.getInt("precio_venta"),
+                rs.getInt("tiempo_crecimiento_min"),
+                rs.getInt("experiencia_recompensa"),
+                rs.getObject("id_item_semilla", Integer.class),
+                rs.getObject("id_item_cosecha", Integer.class),
+                rs.getBoolean("activo")
+        );
     }
 }
