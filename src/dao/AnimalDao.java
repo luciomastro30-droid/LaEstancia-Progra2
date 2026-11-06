@@ -177,7 +177,7 @@ public class AnimalDao implements Dao<Animal> {
         }
     }
 
-    
+
     private Animal mapearAnimal(ResultSet rs) throws SQLException {
 
         return new Animal(
