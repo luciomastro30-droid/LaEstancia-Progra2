@@ -44,8 +44,14 @@ public class PartidaDao implements DaoConBajaLogica<Partida> {
     @Override
     public boolean alta(Partida elemento) throws SQLException {
         // Con try-with-resources cierro la conexión y el PreparedStatement automáticamente.
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = ConexionBD.obtenerConexion()){
+            return alta(con,elemento);
+        }
+    }
+
+    public boolean alta(Connection con,Partida elemento) throws SQLException {
+
+        try (PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setInt(1, elemento.getIdUsuario());
             pd.setString(2, elemento.getNombreGranja());
