@@ -60,7 +60,7 @@ public abstract class ElementoGranja {
             );
         }
 
-        this.nombre = nombre;
+        this.nombre = nombre.trim();
     }
 
 

@@ -1,3 +1,4 @@
+package modelo;
 import modelo.enums.EstadoPlantacion;
 
 public class Plantacion {

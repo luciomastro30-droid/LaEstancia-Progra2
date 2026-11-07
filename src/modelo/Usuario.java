@@ -87,7 +87,7 @@ public abstract class Usuario {
             );
         }
 
-        this.nombreUsuario = nombreUsuario;
+        this.nombreUsuario = nombreUsuario.trim();
     }
 
 
@@ -120,7 +120,7 @@ public abstract class Usuario {
             }
         }
 
-        this.email = email;
+        this.email = email.trim();
     }
 
 
