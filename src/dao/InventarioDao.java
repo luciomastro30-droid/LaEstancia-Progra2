@@ -26,13 +26,16 @@ public class InventarioDao implements Dao<Inventario> {
     private static final String SQL_SELECT_PARTIDA_ITEM = "SELECT " + COLUMNAS + " FROM inventario " +
                     "WHERE id_partida = ? AND id_item = ?";
 
-
-
     @Override
     public boolean alta(Inventario elemento) throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion()){
+            return alta(con,elemento);
+        }
+    }
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(
+    public boolean alta(Connection con,Inventario elemento) throws SQLException {
+
+        try (PreparedStatement pd = con.prepareStatement(
                      SQL_INSERT,
                      Statement.RETURN_GENERATED_KEYS)) {
 
@@ -55,7 +58,6 @@ public class InventarioDao implements Dao<Inventario> {
             return filasCambiadas > 0;
         }
     }
-
 
 
     /**
@@ -113,7 +115,6 @@ public class InventarioDao implements Dao<Inventario> {
             return inventario;
         }
     }
-
 
     /**
      * Recupero todos los items con cantidad mayor a 0 que pertenecen a una partida.

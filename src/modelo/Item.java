@@ -173,10 +173,7 @@ public class Item {
 
 
     @Override
-    public int hashCode() {
-        return Integer.hashCode(idItem);
-    }
-
+    public int hashCode() {return Integer.hashCode(idItem);}
 
     @Override
     public String toString() {
