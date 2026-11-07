@@ -23,15 +23,20 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
                     "FROM usuario WHERE id_usuario = ?";
     private static final String SQL_SELECT_NOMBRE = "SELECT id_usuario, nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion " +
                     "FROM usuario WHERE nombre_usuario = ? AND activo = TRUE";
-
+    private static final String SQL_NOMBRE_REPETIDO = "SELECT nombre_usuario FROM usuario WHERE nombre_usuario = ?";
+    private static final String SQL_EMAIL_REPETIDO = "SELECT email FROM usuario WHERE email = ?";
 
     @Override
     public boolean alta(Usuario elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(
-                     SQL_INSERT,
-                     Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = ConexionBD.obtenerConexion()){
+             return alta(con,elemento);
+        }
+    }
+
+    //Metodo dividido para lograr hacer rollback en caso de que falle alguna operacion
+    public boolean alta(Connection con, Usuario elemento) throws SQLException {
+        try (PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setString(1, elemento.getNombreUsuario());
             pd.setString(2, elemento.getEmail());
@@ -179,5 +184,30 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
         throw new SQLException("Rol de usuario no reconocido: " + rol);
     }
+
+    public boolean existeNombre(String nombre)throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement pd = con.prepareStatement(SQL_NOMBRE_REPETIDO)) {
+            pd.setString(1, nombre);
+
+            try (ResultSet rs = pd.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    public boolean existeEmail(String email)throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement pd = con.prepareStatement(SQL_EMAIL_REPETIDO)) {
+            pd.setString(1, email);
+
+            try (ResultSet rs = pd.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+
 }
+
 
