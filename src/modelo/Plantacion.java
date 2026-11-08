@@ -28,6 +28,11 @@ public class Plantacion {
         this.activo = activo;
     }
 
+    public Plantacion(int idPartida, int idCultivo, int numeroParcela, long minutoSiembraJuego) {
+        this(0, idPartida, idCultivo, numeroParcela, minutoSiembraJuego,
+                EstadoPlantacion.CRECIENDO, true);
+    }
+
 
     public int getIdPlantacion() {
         return idPlantacion;
@@ -133,5 +138,18 @@ public class Plantacion {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    @Override
+    public String toString() {
+        return "Plantacion{" +
+                "idPlantacion=" + idPlantacion +
+                ", idPartida=" + idPartida +
+                ", idCultivo=" + idCultivo +
+                ", numeroParcela=" + numeroParcela +
+                ", minutoSiembraJuego=" + minutoSiembraJuego +
+                ", estado=" + estado +
+                ", activo=" + activo +
+                '}';
     }
 }

@@ -118,9 +118,9 @@ public abstract class Usuario {
                         "El formato del email no es valido."
                 );
             }
+            email = email.trim();
         }
-
-        this.email = email.trim();
+        this.email = email;
     }
 
 
