@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public class Animal {
 
+    private static final int HAMBRE_INICIAL = 100;
+
     private int idAnimal;
     private int idPartida;
     private int idTipoAnimal;
@@ -38,6 +40,11 @@ public class Animal {
 
         this.fechaAdquisicion = fechaAdquisicion;
         this.activo = activo;
+    }
+
+    public Animal(int idPartida, int idTipoAnimal, String nombre) {
+        this(0, idPartida, idTipoAnimal, nombre, HAMBRE_INICIAL, null, null,
+                LocalDateTime.now().withNano(0), true);
     }
 
 
@@ -182,5 +189,20 @@ public class Animal {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "idAnimal=" + idAnimal +
+                ", idPartida=" + idPartida +
+                ", idTipoAnimal=" + idTipoAnimal +
+                ", nombre='" + nombre + '\'' +
+                ", hambre=" + hambre +
+                ", minutoUltimaAlimentacion=" + minutoUltimaAlimentacion +
+                ", minutoUltimaProduccion=" + minutoUltimaProduccion +
+                ", fechaAdquisicion=" + fechaAdquisicion +
+                ", activo=" + activo +
+                '}';
     }
 }
