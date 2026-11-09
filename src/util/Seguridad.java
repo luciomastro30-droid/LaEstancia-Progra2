@@ -8,6 +8,12 @@ import java.util.HexFormat;
 public class Seguridad {
 
     public static String hashear(String pass){
+        if (pass == null || pass.isBlank()) {
+            throw new IllegalArgumentException(
+                    "La contraseña no puede estar vacia."
+            );
+        }
+
         try {
 
             //se pide q calcule el algoritmo
