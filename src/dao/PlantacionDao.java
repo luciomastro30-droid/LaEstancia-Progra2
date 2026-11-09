@@ -28,7 +28,8 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM plantacion WHERE id_plantacion = ?";
     private static final String SQL_SELECT_ACTIVAS = "SELECT " + COLUMNAS + " FROM plantacion WHERE activo = TRUE ORDER BY id_partida, numero_parcela";
     private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS + " FROM plantacion " +
-                    "WHERE id_partida = ? AND activo = TRUE ORDER BY numero_parcela";
+                    "WHERE id_partida = ? AND activo = TRUE AND estado <> ? " +
+                    "ORDER BY numero_parcela";
     private static final String SQL_SELECT_PARCELA = "SELECT " + COLUMNAS + " FROM plantacion " +
                     "WHERE id_partida = ? AND numero_parcela = ? AND activo = TRUE " +
                     "ORDER BY id_plantacion DESC LIMIT 1";
@@ -141,6 +142,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
              PreparedStatement pd = con.prepareStatement(SQL_SELECT_PARTIDA)) {
 
             pd.setInt(1, idPartida);
+            pd.setString(2, EstadoPlantacion.COSECHADA.name());
 
             try (ResultSet rs = pd.executeQuery()) {
                 List<Plantacion> plantaciones = new ArrayList<>();
