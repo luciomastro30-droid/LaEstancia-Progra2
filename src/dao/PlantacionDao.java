@@ -28,10 +28,11 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM plantacion WHERE id_plantacion = ?";
     private static final String SQL_SELECT_ACTIVAS = "SELECT " + COLUMNAS + " FROM plantacion WHERE activo = TRUE ORDER BY id_partida, numero_parcela";
     private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS + " FROM plantacion " +
-                    "WHERE id_partida = ? AND activo = TRUE ORDER BY numero_parcela";
+                    "WHERE id_partida = ? AND activo = TRUE AND estado <> ? " +
+                    "ORDER BY numero_parcela";
     private static final String SQL_SELECT_PARCELA = "SELECT " + COLUMNAS + " FROM plantacion " +
-                    "WHERE id_partida = ? AND numero_parcela = ? AND activo = TRUE " +
-                    "ORDER BY id_plantacion DESC LIMIT 1";
+            "WHERE id_partida = ? AND numero_parcela = ? AND activo = TRUE AND estado <> ? " +
+            "ORDER BY id_plantacion DESC LIMIT 1";
 
     /**
      * Doy de alta una nueva plantacion en la base de datos.
@@ -141,6 +142,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
              PreparedStatement pd = con.prepareStatement(SQL_SELECT_PARTIDA)) {
 
             pd.setInt(1, idPartida);
+            pd.setString(2, EstadoPlantacion.COSECHADA.name());
 
             try (ResultSet rs = pd.executeQuery()) {
                 List<Plantacion> plantaciones = new ArrayList<>();
@@ -155,10 +157,12 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     }
 
     /**
-     * Busco la plantacion activa de una parcela determinada dentro de una partida.
-     * Este metodo me va a servir para saber que hay plantado en una parcela antes de
-     * sembrar, cosechar o mostrar el terreno.
-     * Si no encuentro ninguna plantacion activa en esa parcela, devuelvo null.
+     * Busco la plantacion activa y no cosechada de una parcela determinada
+     * dentro de una partida.
+     * Este metodo me va a servir para saber que hay plantado actualmente
+     * antes de sembrar, cosechar o mostrar el terreno.
+     * Si la parcela no tiene una plantacion activa pendiente,
+     * devuelvo null.
      */
     public Plantacion consultarPorParcela(int idPartida, int numeroParcela) throws SQLException {
         try (Connection con = ConexionBD.obtenerConexion();
@@ -166,6 +170,8 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
 
             pd.setInt(1, idPartida);
             pd.setInt(2, numeroParcela);
+            pd.setString(3, EstadoPlantacion.COSECHADA.name());
+
 
             try (ResultSet rs = pd.executeQuery()) {
                 if (rs.next()) {
