@@ -38,7 +38,7 @@ public class PartidaDao implements DaoConBajaLogica<Partida> {
                     "WHERE id_partida = ? AND activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM partida WHERE id_partida = ?";
     private static final String SQL_SELECT_ACTIVAS = "SELECT " + COLUMNAS + " FROM partida WHERE activo = TRUE";
-    private static final String SQL_SELECT_USUARIO = "SELECT " + COLUMNAS + " FROM partida WHERE id_usuario = ? AND activo = TRUE";
+    private static final String SQL_SELECT_USUARIO = "SELECT " + COLUMNAS + " FROM partida WHERE id_usuario = ? AND activo = TRUE ORDER BY id_partida";
 
 
     @Override
