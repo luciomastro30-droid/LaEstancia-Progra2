@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Jugador extends Usuario {
 
-    private Partida partida;
+    private Partida partidaActual;
 
     public Jugador(int idUsuario, String nombreUsuario, String email, String contraseniaHash, boolean activo,
                    LocalDateTime fechaCreacion) {
@@ -20,15 +20,15 @@ public class Jugador extends Usuario {
     @Override
     public Rol getRol() {return Rol.JUGADOR;}
 
-    public boolean tienePartida() {return partida != null;}
+    public boolean tienePartidaActual() {return partidaActual != null;}
 
-    public Partida getPartida() {return partida;}
-    public void setPartida(Partida partida) {this.partida = partida;}
+    public Partida getPartidaActual() {return partidaActual;}
+    public void setPartidaActual(Partida partidaActual) {this.partidaActual = partidaActual;}
 
     @Override
     public String toString() {
         return "Jugador{" + super.toString() +
-                ", tienePartida=" + tienePartida() +
+                ", tienePartida=" + tienePartidaActual() +
                 '}';
     }
 }
