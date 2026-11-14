@@ -90,15 +90,20 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
      * esos datos representan el origen de esa plantacion y no deberian modificarse despues.
      * Por ejemplo, el estado puede pasar de CRECIENDO a LISTA y despues a COSECHADA.
      */
-    @Override
-    public boolean modificar(Plantacion elemento) throws SQLException {
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
+
+    public boolean modificar(Connection con, Plantacion elemento) throws SQLException {
+        try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setString(1, elemento.getEstado().name());
             pd.setInt(2, elemento.getIdPlantacion());
 
             return pd.executeUpdate() > 0;
+        }
+    }
+    @Override
+    public boolean modificar(Plantacion elemento) throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return modificar(con, elemento);
         }
     }
 

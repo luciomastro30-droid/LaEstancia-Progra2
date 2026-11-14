@@ -389,10 +389,12 @@ public class Partida {
     public int experienciaParaSubir(){
         return 100* this.nivel;
     }
+
     // hace pasar el tiempo del juego (cada accion consume minutos)
     public void avanzarMinutos(long minutos) {
         setMinutoJuegoTotal(minutoJuegoTotal + minutos);
     }
+
     // duerme hasta las 06:00: si ya paso esa hora, hasta las 06:00 del dia siguiente
     public void dormir() {
         long minutosPorDia = 24 * 60;
@@ -406,6 +408,24 @@ public class Partida {
         } else {
             setMinutoJuegoTotal(inicioDelDia + minutosPorDia + despertar);
         }
+    }
+
+    // suma experiencia y sube de nivel cada vez que se llega a lo necesario.
+    // devuelve true si subio al menos un nivel
+    public boolean sumarExperiencia(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La experiencia a sumar no puede ser negativa.");
+        }
+
+        boolean subio = false;
+        experiencia += cantidad;
+
+        while (experiencia >= experienciaParaSubir()) {
+            experiencia -= experienciaParaSubir();
+            nivel++;
+            subio = true;
+        }
+        return subio;
     }
 
 

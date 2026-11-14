@@ -1,3 +1,4 @@
+
 package menu;
 
 import dao.PartidaDao;
@@ -9,6 +10,7 @@ import modelo.Partida;
 import modelo.Plantacion;
 import servicio.GranjaServicio;
 import servicio.RegistroServicio;
+import servicio.ResultadoCosecha;
 import util.Consola;
 import util.Reloj;
 import vista.DibujoGranja;
@@ -72,7 +74,7 @@ public class MenuJugador {
 
             switch (opcion) {
                 case 1 -> plantar(partida);
-                case 2 -> mensaje = "Cosechar: proximamente";
+                case 2 -> cosechar(partida);
                 case 3 -> mensaje = "Inventario: proximamente";
                 case 4 -> mensaje = "Animales: proximamente";
                 case 5 -> mensaje = "Pueblo: proximamente";
@@ -151,6 +153,57 @@ public class MenuJugador {
             mensaje = "Plantaste " + elegido.getNombre() + " en la parcela " + parcela + ".";
         } catch (AccionNoPermitidaException | StockInsuficienteException | SQLException e) {
             mensaje = "No se pudo plantar: " + e.getMessage();
+        }
+    }
+
+    private void cosechar(Partida partida) {
+
+        Map<Integer, Cultivo> listas;
+        try {
+            listas = granjaServicio.parcelasListas(partida);
+        } catch (SQLException e) {
+            mensaje = "Error al buscar las parcelas: " + e.getMessage();
+            return;
+        }
+
+        if (listas.isEmpty()) {
+            mensaje = "No hay cultivos listos para cosechar.";
+            return;
+        }
+
+        // paso los numeros de parcela a una lista para poder elegirlos por numero de opcion
+        List<Integer> parcelas = new ArrayList<>(listas.keySet());
+
+        List<String> opciones = new ArrayList<>();
+        opciones.add("  COSECHAR");
+        opciones.add("");
+        for (int i = 0; i < parcelas.size(); i++) {
+            int numeroParcela = parcelas.get(i);
+            opciones.add(String.format("  %d. Parcela %d: %s", i + 1, numeroParcela,
+                    listas.get(numeroParcela).getNombre()));
+        }
+        opciones.add("");
+        opciones.add("  0. Volver");
+
+        mensaje = "Elegi que parcela cosechar";
+        dibujarGranja(opciones, partida);
+        mensaje = null;
+
+        int eleccion = Consola.leerEntero("Opcion: ", 0, parcelas.size());
+        if (eleccion == 0) {
+            return;
+        }
+        int numeroParcela = parcelas.get(eleccion - 1);
+
+        try {
+            ResultadoCosecha resultado = granjaServicio.cosechar(partida, numeroParcela);
+            mensaje = "Cosechaste " + resultado.cantidad() + " " + resultado.nombreCultivo()
+                    + " (+" + resultado.experiencia() + " XP).";
+            if (resultado.subioNivel()) {
+                mensaje += " Subiste a nivel " + partida.getNivel() + "!";
+            }
+        } catch (AccionNoPermitidaException | SQLException e) {
+            mensaje = "No se pudo cosechar: " + e.getMessage();
         }
     }
 

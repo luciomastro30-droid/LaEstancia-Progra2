@@ -13,6 +13,8 @@ import java.util.Map;
 public class DibujoGranja {
 
     private static final int ALTO_ESCENA = 7;
+    private static final int ANCHO_MENSAJE = 46;
+
     private static final String TIERRA = "~~~~~~~~~~~";
     private static final String VACIO = "           ";
 
@@ -152,10 +154,36 @@ public class DibujoGranja {
         info.add("");
 
         if (mensaje != null) {
-            info.add("  > " + mensaje);
+            // si el mensaje no entra en un renglon, se parte en varios
+            List<String> renglones = partirEnRenglones(mensaje, ANCHO_MENSAJE);
+            for (int i = 0; i < renglones.size(); i++) {
+                String prefijo = (i == 0) ? "  > " : "    ";
+                info.add(prefijo + renglones.get(i));
+            }
         }
 
         return info;
+    }
+
+    // arma renglones de como mucho "ancho" caracteres sin cortar palabras
+    //va agregando palabra por palabra.
+    //si la próxima no entra, cierra el renglón y empieza otro
+    private static List<String> partirEnRenglones(String texto, int ancho) {
+        List<String> renglones = new ArrayList<>();
+        StringBuilder actual = new StringBuilder();
+
+        for (String palabra : texto.split(" ")) {
+            if (actual.length() > 0 && actual.length() + 1 + palabra.length() > ancho) {
+                renglones.add(actual.toString());
+                actual = new StringBuilder();
+            }
+            if (actual.length() > 0) {
+                actual.append(" ");
+            }
+            actual.append(palabra);
+        }
+        renglones.add(actual.toString());
+        return renglones;
     }
 
     private static String barraXp(int experiencia, int necesaria) {

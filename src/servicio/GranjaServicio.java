@@ -1,3 +1,4 @@
+
 package servicio;
 
 import conexion.ConexionBD;
@@ -11,16 +12,21 @@ import modelo.Cultivo;
 import modelo.Inventario;
 import modelo.Partida;
 import modelo.Plantacion;
+import modelo.enums.EstadoPlantacion;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class GranjaServicio {
 
     public static final int MINUTOS_PLANTAR = 15;
+    public static final int MINUTOS_COSECHAR = 15;
+    // unidades que da cada cosecha (se multiplica por el nivel del terreno)
+    public static final int CANTIDAD_COSECHA = 1;
 
     private final PlantacionDao plantacionDao;
     private final CultivoDao cultivoDao;
@@ -57,7 +63,7 @@ public class GranjaServicio {
         return cultivos;
     }
 
-    //Devuelve los cultivos que el juegdor puede plantar
+    //Devuelve los cultivos que el jugador puede plantar
     public Map<Cultivo, Integer> semillasDisponibles(Partida partida) throws SQLException {
         Map<Cultivo, Integer> semillas = new LinkedHashMap<>();
         for (Cultivo cultivo : cultivoDao.listar()) {
@@ -115,6 +121,92 @@ public class GranjaServicio {
             } catch (SQLException e) {
                 con.rollback();
                 // la base volvio atras, asi que el objeto en memoria tambien
+                partida.setMinutoJuegoTotal(minutoAnterior);
+                throw e;
+            }
+        }
+    }
+
+
+     // devuelve las parcelas que se pueden cosechar
+     //TreeMap ordena por la clave, asi el menu las muestra de la parcela 1 a la 6.
+
+    public Map<Integer, Cultivo> parcelasListas(Partida partida) throws SQLException {
+        Map<Integer, Plantacion> plantaciones = plantacionesPorParcela(partida);
+        Map<Integer, Cultivo> cultivos = cultivosDe(plantaciones);
+
+        Map<Integer, Cultivo> listas = new TreeMap<>();
+        for (Plantacion plantacion : plantaciones.values()) {
+            Cultivo cultivo = cultivos.get(plantacion.getIdCultivo());
+            if (plantacion.minutosRestantes(cultivo, partida.getMinutoJuegoTotal()) == 0) {
+                listas.put(plantacion.getNumeroParcela(), cultivo);
+            }
+        }
+        return listas;
+    }
+
+
+     //cosecha una parcela.
+     // en una sola transaccion: marca la plantacion como COSECHADA, suma la cosecha al inventario,
+     // suma la experiencia (con posible subida de nivel) y guarda el avance del tiempo.
+
+    public ResultadoCosecha cosechar(Partida partida, int numeroParcela)
+            throws SQLException, AccionNoPermitidaException {
+
+        Plantacion plantacion = plantacionDao.consultarPorParcela(partida.getIdPartida(), numeroParcela);
+        if (plantacion == null) {
+            throw new AccionNoPermitidaException("La parcela " + numeroParcela + " esta vacia.");
+        }
+
+        Cultivo cultivo = cultivoDao.consultarPorId(plantacion.getIdCultivo());
+        long restante = plantacion.minutosRestantes(cultivo, partida.getMinutoJuegoTotal());
+        if (restante > 0) {
+            throw new AccionNoPermitidaException(
+                    cultivo.getNombre() + " todavia no esta listo (faltan " + restante + " minutos).");
+        }
+
+        if (cultivo.getIdItemCosecha() == null) {
+            throw new AccionNoPermitidaException("Ese cultivo no tiene item de cosecha asociado.");
+        }
+
+        // el terreno de nivel 2 da el doble
+        int cantidad = CANTIDAD_COSECHA * partida.getNivelTerreno();
+        int experiencia = cultivo.getExperienciaRecompensa();
+
+        Inventario cosechaGuardada = inventarioDao.consultarPorPartidaEItem(
+                partida.getIdPartida(), cultivo.getIdItemCosecha());
+
+        // guardo como estaba la partida por si hay que volver atras
+        int nivelAnterior = partida.getNivel();
+        int experienciaAnterior = partida.getExperiencia();
+        long minutoAnterior = partida.getMinutoJuegoTotal();
+
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            con.setAutoCommit(false);
+            try {
+                plantacion.setEstado(EstadoPlantacion.COSECHADA);
+                plantacionDao.modificar(con, plantacion);
+
+                // si nunca tuvo ese item se crea la fila; si ya la tenia, se suma
+                if (cosechaGuardada == null) {
+                    inventarioDao.alta(con, new Inventario(partida.getIdPartida(), cultivo.getIdItemCosecha(), cantidad));
+                } else {
+                    cosechaGuardada.setCantidad(cosechaGuardada.getCantidad() + cantidad);
+                    inventarioDao.modificar(con, cosechaGuardada);
+                }
+
+                boolean subioNivel = partida.sumarExperiencia(experiencia);
+                partida.avanzarMinutos(MINUTOS_COSECHAR);
+                partidaDao.modificar(con, partida);
+
+                con.commit();
+                return new ResultadoCosecha(cultivo.getNombre(), cantidad, experiencia, subioNivel);
+
+            } catch (SQLException e) {
+                con.rollback();
+                // la base volvio atras, asi que el objeto en memoria tambien
+                partida.setNivel(nivelAnterior);
+                partida.setExperiencia(experienciaAnterior);
                 partida.setMinutoJuegoTotal(minutoAnterior);
                 throw e;
             }
