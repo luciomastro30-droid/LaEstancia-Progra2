@@ -1,5 +1,7 @@
 package modelo;
 
+import modelo.enums.Alojamiento;
+
 public class TipoAnimal extends ElementoGranja {
 
     private String descripcion;
@@ -7,12 +9,14 @@ public class TipoAnimal extends ElementoGranja {
     private Integer idItemProducto;
     private int cantidadProducto;
     private int tiempoProduccionMin;
+    private Alojamiento alojamiento;
 
 
     public TipoAnimal(int idTipoAnimal, String nombre, String descripcion,
                       int precioCompra, int precioVenta,
                       Integer idItemProducto, int cantidadProducto,
-                      int tiempoProduccionMin, boolean activo) {
+                      int tiempoProduccionMin, Alojamiento alojamiento,
+                      boolean activo) {
 
         super(idTipoAnimal, nombre, precioVenta, activo);
 
@@ -21,16 +25,18 @@ public class TipoAnimal extends ElementoGranja {
         setIdItemProducto(idItemProducto);
         setCantidadProducto(cantidadProducto);
         setTiempoProduccionMin(tiempoProduccionMin);
+        setAlojamiento(alojamiento);
     }
 
 
     public TipoAnimal(String nombre, String descripcion,
                       int precioCompra, int precioVenta,
                       Integer idItemProducto, int cantidadProducto,
-                      int tiempoProduccionMin) {
+                      int tiempoProduccionMin, Alojamiento alojamiento) {
 
         this(0, nombre, descripcion, precioCompra, precioVenta,
-                idItemProducto, cantidadProducto, tiempoProduccionMin, true);
+                idItemProducto, cantidadProducto,
+                tiempoProduccionMin, alojamiento, true);
     }
 
 
@@ -125,6 +131,22 @@ public class TipoAnimal extends ElementoGranja {
     }
 
 
+    public Alojamiento getAlojamiento() {
+        return alojamiento;
+    }
+
+    public void setAlojamiento(Alojamiento alojamiento) {
+
+        if (alojamiento == null) {
+            throw new IllegalArgumentException(
+                    "El alojamiento no puede ser nulo."
+            );
+        }
+
+        this.alojamiento = alojamiento;
+    }
+
+
     @Override
     public String toString() {
         return "TipoAnimal{" + super.toString() +
@@ -133,6 +155,7 @@ public class TipoAnimal extends ElementoGranja {
                 ", idItemProducto=" + idItemProducto +
                 ", cantidadProducto=" + cantidadProducto +
                 ", tiempoProduccionMin=" + tiempoProduccionMin +
+                ", alojamiento=" + alojamiento +
                 '}';
     }
 }
