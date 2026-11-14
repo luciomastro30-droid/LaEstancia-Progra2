@@ -4,6 +4,7 @@ import dao.ItemDao;
 import dao.TipoAnimalDao;
 import modelo.Item;
 import modelo.TipoAnimal;
+import modelo.enums.Alojamiento;
 import modelo.enums.TipoItem;
 import util.Consola;
 
@@ -132,6 +133,9 @@ public class MenuTiposAnimalAdmin {
                         Integer.MAX_VALUE
                 );
 
+        Alojamiento alojamiento =
+                leerAlojamiento();
+
 
         TipoAnimal nuevoTipoAnimal = new TipoAnimal(
                 nombre,
@@ -140,7 +144,8 @@ public class MenuTiposAnimalAdmin {
                 precioVenta,
                 idItemProducto,
                 cantidadProducto,
-                tiempoProduccion
+                tiempoProduccion,
+                alojamiento
         );
 
         if (tipoAnimalDao.alta(nuevoTipoAnimal)) {
@@ -256,6 +261,9 @@ public class MenuTiposAnimalAdmin {
                         Integer.MAX_VALUE
                 );
 
+        Alojamiento alojamiento =
+                leerAlojamiento();
+
 
         TipoAnimal tipoModificado = new TipoAnimal(
                 tipoActual.getId(),
@@ -266,6 +274,7 @@ public class MenuTiposAnimalAdmin {
                 idItemProducto,
                 cantidadProducto,
                 tiempoProduccion,
+                alojamiento,
                 tipoActual.isActivo()
         );
 
@@ -282,7 +291,6 @@ public class MenuTiposAnimalAdmin {
             );
         }
     }
-
 
 
     private void bajaTipoAnimal() throws SQLException {
@@ -322,7 +330,7 @@ public class MenuTiposAnimalAdmin {
         mostrarTipoAnimal(tipoAnimal);
 
         if (!Consola.confirmar(
-                "¿Confirma la baja del tipo de animal?"
+                "Confirma la baja del tipo de animal?"
         )) {
 
             System.out.println(
@@ -516,6 +524,36 @@ public class MenuTiposAnimalAdmin {
     }
 
 
+    private Alojamiento leerAlojamiento() {
+
+        Alojamiento[] alojamientos =
+                Alojamiento.values();
+
+        System.out.println(
+                "Alojamiento:"
+        );
+
+        for (int i = 0;
+             i < alojamientos.length;
+             i++) {
+
+            System.out.println(
+                    (i + 1)
+                            + ". "
+                            + alojamientos[i]
+            );
+        }
+
+        int opcion =
+                Consola.leerEntero(
+                        "Alojamiento: ",
+                        1,
+                        alojamientos.length
+                );
+
+        return alojamientos[opcion - 1];
+    }
+
 
     private void mostrarTipoAnimal(
             TipoAnimal tipoAnimal
@@ -568,6 +606,11 @@ public class MenuTiposAnimalAdmin {
                 "Tiempo de produccion: "
                         + tipoAnimal.getTiempoProduccionMin()
                         + " minutos"
+        );
+
+        System.out.println(
+                "Alojamiento: "
+                        + tipoAnimal.getAlojamiento()
         );
 
         System.out.println(
