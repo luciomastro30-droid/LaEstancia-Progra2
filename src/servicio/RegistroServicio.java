@@ -32,6 +32,25 @@ public class RegistroServicio {
         return nuevaPartida;
     }
 
+    public Partida crearPartidaNueva(int idUsuario, String nombreGranja) throws SQLException,AccionNoPermitidaException {
+
+        try (Connection con = ConexionBD.obtenerConexion()){
+            con.setAutoCommit(false);
+            try {
+                Partida nuevaPartida = crearPartidaNueva(con,idUsuario, nombreGranja);
+                con.commit();
+                return nuevaPartida;
+
+            } catch (IllegalArgumentException e) {
+                con.rollback();
+                throw new AccionNoPermitidaException(e.getMessage());
+            }catch (SQLException e){
+                con.rollback();
+                throw e;
+           }
+        }
+    }
+
     public Jugador registrar(String nombreUsuario, String email, String contrasenia, String nombreGranja) throws AccionNoPermitidaException, SQLException {
 
         UsuarioDao usuarioDao = new UsuarioDao();

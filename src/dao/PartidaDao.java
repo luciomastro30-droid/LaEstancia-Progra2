@@ -107,12 +107,10 @@ public class PartidaDao implements DaoConBajaLogica<Partida> {
      * experiencia, tiempo del juego, construcciones, herramientas y estado.
      * Si la actualización sale bien, también guardo la nueva fecha en el objeto Java.
      */
-    @Override
-    public boolean modificar(Partida elemento) throws SQLException {
+    public boolean modificar(Connection con, Partida elemento) throws SQLException {
         // Uso la misma fecha en MySQL y en el objeto para que no queden diferentes.
         LocalDateTime fechaGuardado = LocalDateTime.now();
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
+        try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setString(1, elemento.getNombreGranja());
             pd.setInt(2, elemento.getNivel());
@@ -136,6 +134,12 @@ public class PartidaDao implements DaoConBajaLogica<Partida> {
                 elemento.setFechaGuardado(fechaGuardado);
             }
             return actualizado;
+        }
+    }
+
+    public boolean modificar(Partida elemento) throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return modificar(con, elemento);
         }
     }
 

@@ -65,16 +65,19 @@ public class InventarioDao implements Dao<Inventario> {
      * No cambio la partida ni el item porque esos dos datos identifican que recurso
      * representa la fila y la base no permite repetir la misma combinacion.
      */
-    @Override
-    public boolean modificar(Inventario elemento) throws SQLException {
-
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
+    public boolean modificar(Connection con, Inventario elemento) throws SQLException {
+        try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setInt(1, elemento.getCantidad());
             pd.setInt(2, elemento.getIdInventario());
 
             return pd.executeUpdate() > 0;
+        }
+    }
+
+    public boolean modificar(Inventario elemento) throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return modificar(con, elemento);
         }
     }
 

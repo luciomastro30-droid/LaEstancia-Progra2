@@ -12,7 +12,7 @@ public class Partida {
     public static final int MINUTO_INICIAL = 480; // Dia 0, 08:00
     public static final int PARCELAS_INICIALES = 2;
     public static final int NIVEL_TERRENO_INICIAL = 1;
-
+    public static final int MAX_PARCELAS = 6;
 
     private int idPartida;
     private int idUsuario;
@@ -383,6 +383,49 @@ public class Partida {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    //como es una regla de juego va en modelo
+    public int experienciaParaSubir(){
+        return 100* this.nivel;
+    }
+
+    // hace pasar el tiempo del juego (cada accion consume minutos)
+    public void avanzarMinutos(long minutos) {
+        setMinutoJuegoTotal(minutoJuegoTotal + minutos);
+    }
+
+    // duerme hasta las 06:00: si ya paso esa hora, hasta las 06:00 del dia siguiente
+    public void dormir() {
+        long minutosPorDia = 24 * 60;
+        long despertar = 6 * 60;
+
+        long inicioDelDia = (minutoJuegoTotal / minutosPorDia) * minutosPorDia;
+        long minutoDelDia = minutoJuegoTotal % minutosPorDia;
+
+        if (minutoDelDia < despertar) {
+            setMinutoJuegoTotal(inicioDelDia + despertar);
+        } else {
+            setMinutoJuegoTotal(inicioDelDia + minutosPorDia + despertar);
+        }
+    }
+
+    // suma experiencia y sube de nivel cada vez que se llega a lo necesario.
+    // devuelve true si subio al menos un nivel
+    public boolean sumarExperiencia(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La experiencia a sumar no puede ser negativa.");
+        }
+
+        boolean subio = false;
+        experiencia += cantidad;
+
+        while (experiencia >= experienciaParaSubir()) {
+            experiencia -= experienciaParaSubir();
+            nivel++;
+            subio = true;
+        }
+        return subio;
     }
 
 

@@ -78,7 +78,7 @@ public class Reloj {
          * en vez de 8:5 se muestra 08:05.
          */
         return String.format(
-                "Día %d - %02d:%02d",
+                "Dia %d - %02d:%02d",
                 getDia(),
                 getHora(),
                 getMinuto()
