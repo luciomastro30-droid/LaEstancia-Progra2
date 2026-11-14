@@ -319,24 +319,23 @@ INSERT INTO tipo_animal
 (id_tipo_animal, nombre, descripcion,
  precio_compra, precio_venta,
  id_item_producto, cantidad_producto,
- tiempo_produccion_min, activo)
+ tiempo_produccion_min, alojamiento, activo)
 VALUES
-    (1, 'Gallina', 'Animal que produce huevos.', 300, 150, 31, 1, 720, TRUE),
-    (2, 'Vaca', 'Animal que produce leche.', 1200, 700, 32, 2, 1440, TRUE),
-    (3, 'Oveja', 'Animal que produce lana.', 800, 450, 33, 1, 1440, TRUE),
-    (4, 'Cabra', 'Animal que produce leche de cabra.', 900, 500, 34, 1, 1200, TRUE),
-    (5, 'Pato', 'Animal que produce huevos de pato.', 450, 250, 35, 1, 900, TRUE),
-    (6, 'Cerdo', 'Animal capaz de encontrar trufas.', 1000, 550, 36, 1, 1800, TRUE),
-    (7, 'Conejo', 'Animal que produce fibra.', 350, 180, 37, 1, 1200, TRUE),
-    (8, 'Alpaca', 'Animal que produce lana de alpaca.', 1300, 750, 38, 1, 1800, TRUE),
-    (9, 'Ganso', 'Animal que produce huevos de ganso.', 500, 280, 39, 1, 1080, TRUE),
-    (10, 'Codorniz', 'Animal que produce huevos pequeños.', 250, 120, 40, 2, 720, TRUE),
-    (11, 'Abeja', 'Produce miel para vender.', 600, 300, 41, 1, 1440, TRUE),
-    (12, 'Pavo', 'Animal que produce plumas.', 550, 300, 42, 1, 1200, TRUE),
-    (13, 'Oveja lechera', 'Oveja especializada en producir leche.', 950, 520, 43, 1, 1440, TRUE),
-    (14, 'Llama', 'Animal que produce fibra.', 1100, 600, 44, 1, 1800, TRUE),
-    (15, 'Buey', 'Animal de granja del que puede obtenerse cuero.', 1500, 850, 45, 1, 2160, TRUE);
-
+    (1, 'Gallina', 'Animal que produce huevos.', 300, 150, 31, 1, 720, 'GALLINERO', TRUE),
+    (2, 'Vaca', 'Animal que produce leche.', 1200, 700, 32, 2, 1440, 'ESTABLO', TRUE),
+    (3, 'Oveja', 'Animal que produce lana.', 800, 450, 33, 1, 1440, 'ESTABLO', TRUE),
+    (4, 'Cabra', 'Animal que produce leche de cabra.', 900, 500, 34, 1, 1200, 'ESTABLO', TRUE),
+    (5, 'Pato', 'Animal que produce huevos de pato.', 450, 250, 35, 1, 900, 'GALLINERO', TRUE),
+    (6, 'Cerdo', 'Animal capaz de encontrar trufas.', 1000, 550, 36, 1, 1800, 'ESTABLO', TRUE),
+    (7, 'Conejo', 'Animal que produce fibra.', 350, 180, 37, 1, 1200, 'ESTABLO', TRUE),
+    (8, 'Alpaca', 'Animal que produce lana de alpaca.', 1300, 750, 38, 1, 1800, 'ESTABLO', TRUE),
+    (9, 'Ganso', 'Animal que produce huevos de ganso.', 500, 280, 39, 1, 1080, 'GALLINERO', TRUE),
+    (10, 'Codorniz', 'Animal que produce huevos pequeños.', 250, 120, 40, 2, 720, 'GALLINERO', TRUE),
+    (11, 'Abeja', 'Produce miel para vender.', 600, 300, 41, 1, 1440, 'ESTABLO', TRUE),
+    (12, 'Pavo', 'Animal que produce plumas.', 550, 300, 42, 1, 1200, 'GALLINERO', TRUE),
+    (13, 'Oveja lechera', 'Oveja especializada en producir leche.', 950, 520, 43, 1, 1440, 'ESTABLO', TRUE),
+    (14, 'Llama', 'Animal que produce fibra.', 1100, 600, 44, 1, 1800, 'ESTABLO', TRUE),
+    (15, 'Buey', 'Animal de granja del que puede obtenerse cuero.', 1500, 850, 45, 1, 2160, 'ESTABLO', TRUE);
 
 -- ============================================================
 -- PLANTACIONES

@@ -107,21 +107,22 @@ CREATE TABLE plantacion (
 );
 
 CREATE TABLE tipo_animal (
-    id_tipo_animal INT UNSIGNED AUTO_INCREMENT,
-    nombre VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(255),
-    precio_compra INT UNSIGNED NOT NULL DEFAULT 0,
-    precio_venta INT UNSIGNED NOT NULL DEFAULT 0,
-    id_item_producto INT UNSIGNED,
-    cantidad_producto INT UNSIGNED NOT NULL DEFAULT 1,
-    tiempo_produccion_min INT UNSIGNED NOT NULL DEFAULT 1440,
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+     id_tipo_animal INT UNSIGNED AUTO_INCREMENT,
+     nombre VARCHAR(50) NOT NULL,
+     descripcion VARCHAR(255),
+     precio_compra INT UNSIGNED NOT NULL DEFAULT 0,
+     precio_venta INT UNSIGNED NOT NULL DEFAULT 0,
+     id_item_producto INT UNSIGNED,
+     cantidad_producto INT UNSIGNED NOT NULL DEFAULT 1,
+     tiempo_produccion_min INT UNSIGNED NOT NULL DEFAULT 1440,
+     alojamiento ENUM('GALLINERO','ESTABLO') NOT NULL DEFAULT 'ESTABLO',
+     activo BOOLEAN NOT NULL DEFAULT TRUE,
 
-    PRIMARY KEY (id_tipo_animal),
-    UNIQUE (nombre),
+     PRIMARY KEY (id_tipo_animal),
+     UNIQUE (nombre),
 
-    FOREIGN KEY (id_item_producto)
-        REFERENCES item(id_item)
+     FOREIGN KEY (id_item_producto)
+         REFERENCES item(id_item)
 );
 
 CREATE TABLE animal (
