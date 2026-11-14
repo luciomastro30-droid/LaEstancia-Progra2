@@ -3,6 +3,8 @@ import modelo.enums.EstadoPlantacion;
 
 public class Plantacion {
 
+    public static final int MAX_PARCELAS = 6;
+
     private int idPlantacion;
     private int idPartida;
     private int idCultivo;
@@ -131,9 +133,14 @@ public class Plantacion {
         this.estado = estado;
     }
 
-
     public boolean isActivo() {
         return activo;
+    }
+
+    public long minutosRestantes(Cultivo cultivo, long minutoActual){
+        long transcurrido = minutoActual - minutoSiembraJuego;
+        long restante = cultivo.getTiempoCrecimientoMin() - transcurrido;
+        return Math.max(0,restante);
     }
 
     public void setActivo(boolean activo) {
@@ -152,4 +159,6 @@ public class Plantacion {
                 ", activo=" + activo +
                 '}';
     }
+
+
 }

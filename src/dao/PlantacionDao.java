@@ -41,10 +41,8 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
      * Si MySQL genera el registro correctamente, recupero el ID y se lo asigno
      * al mismo objeto Plantacion que recibi como parametro.
      */
-    @Override
-    public boolean alta(Plantacion elemento) throws SQLException {
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+    public boolean alta(Connection con, Plantacion elemento) throws SQLException {
+        try (PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setInt(1, elemento.getIdPartida());
             pd.setInt(2, elemento.getIdCultivo());
@@ -65,6 +63,13 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
             }
 
             return filasCambiadas > 0;
+        }
+    }
+
+    @Override
+    public boolean alta(Plantacion elemento) throws SQLException {
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return alta(con, elemento);
         }
     }
 
