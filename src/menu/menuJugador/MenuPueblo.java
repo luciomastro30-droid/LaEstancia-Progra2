@@ -9,6 +9,8 @@ import java.util.List;
 public class MenuPueblo {
 
     private final PantallaJugador pantallaJugador;
+    private final MenuTienda menuTienda;
+    private final MenuMercado menuMercado;
 
     private String mensaje;
 
@@ -19,6 +21,16 @@ public class MenuPueblo {
 
         this.pantallaJugador =
                 pantallaJugador;
+
+        this.menuTienda =
+                new MenuTienda(
+                        pantallaJugador
+                );
+
+        this.menuMercado =
+                new MenuMercado(
+                        pantallaJugador
+                );
     }
 
 
@@ -61,16 +73,18 @@ public class MenuPueblo {
             switch (opcion) {
 
                 case 1 ->
-                        mensaje =
-                                "Tienda agricola: proximamente";
+                        menuTienda.mostrar(
+                                partida
+                        );
 
                 case 2 ->
                         mensaje =
                                 "Herrero: proximamente";
 
                 case 3 ->
-                        mensaje =
-                                "Mercado: proximamente";
+                        menuMercado.mostrar(
+                                partida
+                        );
             }
 
         } while (opcion != 0);
