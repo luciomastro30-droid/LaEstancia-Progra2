@@ -16,41 +16,71 @@ import java.util.List;
 public class AnimalDao implements DaoConBajaLogica<Animal> {
 
     private static final String COLUMNAS = "id_animal, id_partida, id_tipo_animal, nombre, hambre, " +
-                    "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo";
+                    "minuto_ultima_alimentacion, minuto_ultima_produccion, " + "fecha_adquisicion, activo";
     private static final String SQL_INSERT = "INSERT INTO animal (id_partida, id_tipo_animal, nombre, hambre, " +
-                    "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_BAJA = "UPDATE animal SET activo = FALSE WHERE id_animal = ? AND activo = TRUE";
-
-    // Una vez comprado el animal no cambio la partida a la que pertenece,
-    // su tipo ni su fecha de adquisicion. Esos datos representan su origen.
-    // Desde este metodo actualizo solamente los datos que pueden cambiar durante el juego.
-    private static final String SQL_UPDATE = "UPDATE animal SET nombre = ?, hambre = ?, minuto_ultima_alimentacion = ?, " +
-                    "minuto_ultima_produccion = ? WHERE id_animal = ? AND activo = TRUE";
+                    "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_BAJA = "UPDATE animal SET activo = FALSE " +
+                    "WHERE id_animal = ? AND activo = TRUE";
+    /*
+     * Una vez comprado el animal no cambio su partida,
+     * tipo ni fecha de adquisicion.
+     */
+    private static final String SQL_UPDATE = "UPDATE animal SET nombre = ?, hambre = ?, " +
+                    "minuto_ultima_alimentacion = ?, minuto_ultima_produccion = ? " + "WHERE id_animal = ? AND activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM animal WHERE id_animal = ?";
-    private static final String SQL_SELECT_ACTIVOS = "SELECT " + COLUMNAS + " FROM animal WHERE activo = TRUE ORDER BY id_partida, id_animal";
-    private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS + " FROM animal " +
-                    "WHERE id_partida = ? AND activo = TRUE ORDER BY id_animal";
+    private static final String SQL_SELECT_ACTIVOS = "SELECT " + COLUMNAS +
+                    " FROM animal WHERE activo = TRUE " + "ORDER BY id_partida, id_animal";
+    private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS +
+                    " FROM animal WHERE id_partida = ? AND activo = TRUE " + "ORDER BY id_animal";
 
 
     @Override
     public boolean alta(Animal elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(
-                     SQL_INSERT,
-                     Statement.RETURN_GENERATED_KEYS)) {
+        /*
+         * Esta version abre su propia conexion.
+         * El SQL real queda en la sobrecarga con Connection.
+         */
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return alta(con, elemento);
+        }
+    }
+
+
+    public boolean alta(Connection con, Animal elemento)
+            throws SQLException {
+
+        /*
+         * Esta version permite usar el alta dentro
+         * de una transaccion manejada por un servicio.
+         */
+        try (PreparedStatement pd = con.prepareStatement(
+                SQL_INSERT,
+                Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setInt(1, elemento.getIdPartida());
             pd.setInt(2, elemento.getIdTipoAnimal());
             pd.setString(3, elemento.getNombre());
             pd.setInt(4, elemento.getHambre());
 
-            // Uso setObject porque estos valores pueden ser null en Java y NULL en MySQL.
-            pd.setObject(5, elemento.getMinutoUltimaAlimentacion(), Types.BIGINT);
-            pd.setObject(6, elemento.getMinutoUltimaProduccion(), Types.BIGINT);
+            // Estos valores pueden ser null tanto en Java como en MySQL.
+            pd.setObject(
+                    5,
+                    elemento.getMinutoUltimaAlimentacion(),
+                    Types.BIGINT
+            );
 
-            pd.setTimestamp(7, Timestamp.valueOf(elemento.getFechaAdquisicion()));
+            pd.setObject(
+                    6,
+                    elemento.getMinutoUltimaProduccion(),
+                    Types.BIGINT
+            );
+
+            pd.setTimestamp(
+                    7,
+                    Timestamp.valueOf(elemento.getFechaAdquisicion())
+            );
+
             pd.setBoolean(8, elemento.isActivo());
 
             int filasCambiadas = pd.executeUpdate();
@@ -83,17 +113,27 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
-    /**
-     * Modifico los datos del animal que pueden cambiar mientras avanza la partida.
-     * Puedo cambiar su nombre, hambre y los minutos de ultima alimentacion y produccion.
-     * No cambio la partida, el tipo de animal ni la fecha de adquisicion,
-     * porque esos datos representan como se creo originalmente ese animal.
-     */
     @Override
     public boolean modificar(Animal elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
+        /*
+         * Esta version abre la conexion y delega
+         * en la sobrecarga transaccional.
+         */
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return modificar(con, elemento);
+        }
+    }
+
+
+    public boolean modificar(Connection con, Animal elemento)
+            throws SQLException {
+
+        /*
+         * Permite guardar cambios del animal usando
+         * la misma transaccion que otros DAOs.
+         */
+        try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setString(1, elemento.getNombre());
             pd.setInt(2, elemento.getHambre());
@@ -117,9 +157,9 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
-
     @Override
-    public Animal consultarPorId(int idBuscado) throws SQLException {
+    public Animal consultarPorId(int idBuscado)
+            throws SQLException {
 
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement pd = con.prepareStatement(SQL_SELECT_ID)) {
@@ -138,12 +178,12 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
-
     @Override
     public List<Animal> listar() throws SQLException {
 
         try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_SELECT_ACTIVOS);
+             PreparedStatement pd =
+                     con.prepareStatement(SQL_SELECT_ACTIVOS);
              ResultSet rs = pd.executeQuery()) {
 
             List<Animal> animales = new ArrayList<>();
@@ -157,10 +197,12 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
-    public List<Animal> listarPorPartida(int idPartida) throws SQLException {
+    public List<Animal> listarPorPartida(int idPartida)
+            throws SQLException {
 
         try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_SELECT_PARTIDA)) {
+             PreparedStatement pd =
+                     con.prepareStatement(SQL_SELECT_PARTIDA)) {
 
             pd.setInt(1, idPartida);
 
@@ -178,7 +220,8 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
-    private Animal mapearAnimal(ResultSet rs) throws SQLException {
+    private Animal mapearAnimal(ResultSet rs)
+            throws SQLException {
 
         return new Animal(
                 rs.getInt("id_animal"),
@@ -186,9 +229,17 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
                 rs.getInt("id_tipo_animal"),
                 rs.getString("nombre"),
                 rs.getInt("hambre"),
-                rs.getObject("minuto_ultima_alimentacion", Long.class),
-                rs.getObject("minuto_ultima_produccion", Long.class),
-                rs.getTimestamp("fecha_adquisicion").toLocalDateTime(),
+                rs.getObject(
+                        "minuto_ultima_alimentacion",
+                        Long.class
+                ),
+                rs.getObject(
+                        "minuto_ultima_produccion",
+                        Long.class
+                ),
+                rs.getTimestamp(
+                        "fecha_adquisicion"
+                ).toLocalDateTime(),
                 rs.getBoolean("activo")
         );
     }
