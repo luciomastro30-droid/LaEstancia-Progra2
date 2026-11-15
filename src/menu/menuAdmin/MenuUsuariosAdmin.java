@@ -31,6 +31,7 @@ public class MenuUsuariosAdmin {
         int opcion;
 
         do {
+            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE USUARIOS ===

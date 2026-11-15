@@ -11,11 +11,15 @@ import servicio.InventarioServicio;
 import vista.DibujoGranja;
 import vista.DibujoInventario;
 import vista.Pantalla;
+import util.Consola;
+
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 public class PantallaJugador {
 
@@ -151,6 +155,8 @@ public class PantallaJugador {
             escena =
                     escenaPersonalizada;
         }
+
+        Consola.limpiarPantalla();
 
         System.out.println(
                 Pantalla.armar(
