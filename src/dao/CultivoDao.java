@@ -11,13 +11,11 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
 
 
     private static final String SQL_INSERT = "INSERT INTO cultivo (nombre,precio_semilla,precio_venta," +
-            "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha) VALUES (?,?,?,?,?,?,?)";
+                    "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo) " + "VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_BAJA = "UPDATE cultivo SET activo = FALSE " +
                     "WHERE id_cultivo = ? AND activo = TRUE";
     private static final String SQL_UPDATE = "UPDATE cultivo SET nombre = ?, precio_semilla = ?, precio_venta = ?, " +
-                    "tiempo_crecimiento_min = ?, experiencia_recompensa = ?, " +
-                    "id_item_semilla = ?, id_item_cosecha = ? " +
-                    "WHERE id_cultivo = ? AND activo = TRUE";
+                    "tiempo_crecimiento_min = ?, experiencia_recompensa = ?, " + "id_item_semilla = ?, id_item_cosecha = ? " + "WHERE id_cultivo = ? AND activo = TRUE";
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
             "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo FROM cultivo WHERE activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
@@ -38,6 +36,8 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
             pd.setInt(5, elemento.getExperienciaRecompensa());
             pd.setObject(6, elemento.getIdItemSemilla(), Types.INTEGER);
             pd.setObject(7, elemento.getIdItemCosecha(), Types.INTEGER);
+            // La base debe guardar el mismo estado activo que tiene el cultivo.
+            pd.setBoolean(8, elemento.isActivo());
 
             int filasCambiadas = pd.executeUpdate();
 

@@ -99,27 +99,23 @@ public abstract class Usuario {
 
         // El email puede ser null porque la base tambien lo permite.
         if (email != null) {
+            email = email.trim();
 
             if (email.isBlank()) {
                 throw new IllegalArgumentException(
-                        "El email no puede estar vacio."
-                );
+                        "El email no puede estar vacio.");
             }
 
             if (email.length() > 100) {
                 throw new IllegalArgumentException(
-                        "El email no puede superar los 100 caracteres."
-                );
+                        "El email no puede superar los 100 caracteres.");
             }
-
-            // Validacion simple para evitar agregar logica innecesariamente compleja.
             if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) {
                 throw new IllegalArgumentException(
-                        "El formato del email no es valido."
-                );
+                        "El formato del email no es valido.");
             }
-            email = email.trim();
         }
+
         this.email = email;
     }
 

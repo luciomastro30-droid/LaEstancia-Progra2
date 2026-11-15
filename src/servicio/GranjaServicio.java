@@ -131,17 +131,43 @@ public class GranjaServicio {
      // devuelve las parcelas que se pueden cosechar
      //TreeMap ordena por la clave, asi el menu las muestra de la parcela 1 a la 6.
 
-    public Map<Integer, Cultivo> parcelasListas(Partida partida) throws SQLException {
-        Map<Integer, Plantacion> plantaciones = plantacionesPorParcela(partida);
-        Map<Integer, Cultivo> cultivos = cultivosDe(plantaciones);
+    public Map<Integer, Cultivo> parcelasListas(Partida partida)
+            throws SQLException {
 
+        Map<Integer, Plantacion> plantaciones =
+                plantacionesPorParcela(partida);
+        Map<Integer, Cultivo> cultivos =
+                cultivosDe(plantaciones);
+        /*
+         * TreeMap mantiene las parcelas ordenadas
+         * de menor a mayor para mostrarlas en el menu.
+         */
         Map<Integer, Cultivo> listas = new TreeMap<>();
+
         for (Plantacion plantacion : plantaciones.values()) {
+
             Cultivo cultivo = cultivos.get(plantacion.getIdCultivo());
-            if (plantacion.minutosRestantes(cultivo, partida.getMinutoJuegoTotal()) == 0) {
+
+            long minutosRestantes = plantacion.minutosRestantes(
+                            cultivo,
+                            partida.getMinutoJuegoTotal());
+
+            if (minutosRestantes == 0) {
+                /*
+                 * Si termino de crecer y todavia figura CRECIENDO,
+                 * sincronizamos su estado con la base de datos.
+                 */
+                if (plantacion.getEstado()
+                        == EstadoPlantacion.CRECIENDO) {
+                    plantacion.setEstado(
+                            EstadoPlantacion.LISTA);
+                    plantacionDao.modificar(plantacion);
+                }
+
                 listas.put(plantacion.getNumeroParcela(), cultivo);
             }
         }
+
         return listas;
     }
 

@@ -92,9 +92,11 @@ public class Plantacion {
 
     public void setNumeroParcela(int numeroParcela) {
 
-        if (numeroParcela <= 0) {
+        // Ninguna plantacion puede existir fuera de las parcelas de la granja.
+        if (numeroParcela < 1 || numeroParcela > MAX_PARCELAS) {
             throw new IllegalArgumentException(
-                    "El numero de parcela debe ser mayor a 0."
+                    "El numero de parcela debe estar entre 1 y "
+                            + MAX_PARCELAS + "."
             );
         }
 
