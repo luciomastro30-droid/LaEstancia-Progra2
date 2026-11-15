@@ -84,13 +84,10 @@ public class DibujoHerrero {
                 )
         );
 
-        lineas.add(
-                lineaTerreno(partida)
-        );
-
         lineas.add(borde());
 
-        return lineas;
+        return DibujoComerciante.alLado(
+                lineas, DibujoComerciante.herrero());
     }
 
 

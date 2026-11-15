@@ -45,7 +45,8 @@ public class DibujoTienda {
                     borde()
             );
 
-            return lineas;
+            return DibujoComerciante.alLado(
+                    lineas, DibujoComerciante.tienda());
         }
 
         int opcion = 1;
@@ -66,7 +67,8 @@ public class DibujoTienda {
                 borde()
         );
 
-        return lineas;
+        return DibujoComerciante.alLado(
+                lineas, DibujoComerciante.tienda());
     }
 
 
