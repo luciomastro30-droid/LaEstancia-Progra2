@@ -4,7 +4,10 @@ import excepciones.AccionNoPermitidaException;
 import excepciones.MonedasInsuficientesException;
 import modelo.Partida;
 import modelo.TipoAnimal;
+import modelo.enums.DefinicionMision;
+import modelo.enums.TipoObjetivo;
 import servicio.AnimalServicio;
+import servicio.MisionServicio;
 import util.Consola;
 
 import java.sql.SQLException;
@@ -15,18 +18,30 @@ import java.util.Map;
 public class MenuAnimales {
 
     private final AnimalServicio animalServicio;
+    private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
 
     private String mensaje;
 
 
-    public MenuAnimales(PantallaJugador pantallaJugador) {
-        this.animalServicio = new AnimalServicio();
-        this.pantallaJugador = pantallaJugador;
+    public MenuAnimales(
+            PantallaJugador pantallaJugador
+    ) {
+
+        this.animalServicio =
+                new AnimalServicio();
+
+        this.misionServicio =
+                new MisionServicio();
+
+        this.pantallaJugador =
+                pantallaJugador;
     }
 
 
-    public void mostrar(Partida partida) {
+    public void mostrar(
+            Partida partida
+    ) {
 
         int opcion;
 
@@ -63,13 +78,19 @@ public class MenuAnimales {
             switch (opcion) {
 
                 case 1 ->
-                        comprarAnimal(partida);
+                        comprarAnimal(
+                                partida
+                        );
 
                 case 2 ->
-                        alimentarAnimales(partida);
+                        alimentarAnimales(
+                                partida
+                        );
 
                 case 3 ->
-                        recolectarProductosAnimales(partida);
+                        recolectarProductosAnimales(
+                                partida
+                        );
             }
 
         } while (opcion != 0);
@@ -107,7 +128,10 @@ public class MenuAnimales {
         List<String> opciones =
                 new ArrayList<>();
 
-        opciones.add("  COMPRAR ANIMAL");
+        opciones.add(
+                "  COMPRAR ANIMAL"
+        );
+
         opciones.add("");
 
         for (int i = 0;
@@ -259,6 +283,11 @@ public class MenuAnimales {
             mensaje =
                     resultado.toString();
 
+            registrarProgresoProductos(
+                    partida,
+                    productos
+            );
+
         } catch (AccionNoPermitidaException
                  | SQLException e) {
 
@@ -266,5 +295,108 @@ public class MenuAnimales {
                     "No se pudieron recolectar los productos: "
                             + e.getMessage();
         }
+    }
+
+
+    private void registrarProgresoProductos(
+            Partida partida,
+            Map<String, Integer> productos
+    ) {
+
+        int huevos = 0;
+        int leche = 0;
+
+        for (Map.Entry<String, Integer> producto
+                : productos.entrySet()) {
+
+            String nombre =
+                    producto.getKey();
+
+            int cantidad =
+                    producto.getValue();
+
+            if (nombre.startsWith("Huevo")) {
+
+                huevos +=
+                        cantidad;
+            }
+
+            if (nombre.startsWith("Leche")) {
+
+                leche +=
+                        cantidad;
+            }
+        }
+
+        if (huevos > 0) {
+
+            registrarProgresoMision(
+                    partida,
+                    TipoObjetivo.RECOLECTAR_HUEVO,
+                    huevos
+            );
+        }
+
+        if (leche > 0) {
+
+            registrarProgresoMision(
+                    partida,
+                    TipoObjetivo.ORDENIAR,
+                    leche
+            );
+        }
+    }
+
+
+    private void registrarProgresoMision(
+            Partida partida,
+            TipoObjetivo tipoObjetivo,
+            int cantidad
+    ) {
+
+        try {
+
+            List<DefinicionMision> completadas =
+                    misionServicio.registrarProgreso(
+                            partida,
+                            tipoObjetivo,
+                            cantidad
+                    );
+
+            mensaje +=
+                    mensajeMisionesCompletadas(
+                            completadas
+                    );
+
+        } catch (SQLException e) {
+
+            mensaje +=
+                    " No se pudo actualizar el progreso de las misiones.";
+        }
+    }
+
+
+    private String mensajeMisionesCompletadas(
+            List<DefinicionMision> completadas
+    ) {
+
+        StringBuilder texto =
+                new StringBuilder();
+
+        for (DefinicionMision mision
+                : completadas) {
+
+            texto.append(
+                    " Completaste la mision de "
+            );
+
+            texto.append(
+                    mision.getNpc()
+            );
+
+            texto.append(".");
+        }
+
+        return texto.toString();
     }
 }

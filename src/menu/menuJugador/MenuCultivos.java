@@ -4,7 +4,10 @@ import excepciones.AccionNoPermitidaException;
 import excepciones.StockInsuficienteException;
 import modelo.Cultivo;
 import modelo.Partida;
+import modelo.enums.DefinicionMision;
+import modelo.enums.TipoObjetivo;
 import servicio.GranjaServicio;
+import servicio.MisionServicio;
 import servicio.ResultadoCosecha;
 import util.Consola;
 
@@ -16,11 +19,13 @@ import java.util.Map;
 public class MenuCultivos {
 
     private final GranjaServicio granjaServicio;
+    private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
 
 
     public MenuCultivos(PantallaJugador pantallaJugador) {
         this.granjaServicio = new GranjaServicio();
+        this.misionServicio = new MisionServicio();
         this.pantallaJugador = pantallaJugador;
     }
 
@@ -246,6 +251,26 @@ public class MenuCultivos {
                                 + "!";
             }
 
+            try {
+
+                List<DefinicionMision> completadas =
+                        misionServicio.registrarProgreso(
+                                partida,
+                                TipoObjetivo.COSECHAR,
+                                1
+                        );
+
+                mensaje +=
+                        mensajeMisionesCompletadas(
+                                completadas
+                        );
+
+            } catch (SQLException e) {
+
+                mensaje +=
+                        " No se pudo actualizar el progreso de las misiones.";
+            }
+
             return mensaje;
 
         } catch (AccionNoPermitidaException
@@ -254,5 +279,30 @@ public class MenuCultivos {
             return "No se pudo cosechar: "
                     + e.getMessage();
         }
+    }
+
+
+    private String mensajeMisionesCompletadas(
+            List<DefinicionMision> completadas
+    ) {
+
+        StringBuilder texto =
+                new StringBuilder();
+
+        for (DefinicionMision mision
+                : completadas) {
+
+            texto.append(
+                    " Completaste la mision de "
+            );
+
+            texto.append(
+                    mision.getNpc()
+            );
+
+            texto.append(".");
+        }
+
+        return texto.toString();
     }
 }

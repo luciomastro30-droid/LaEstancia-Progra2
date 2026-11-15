@@ -24,6 +24,7 @@ public class MenuJugador {
             "  5. Ir al pueblo",
             "  6. Recolectar",
             "  7. Dormir",
+            "  8. Misiones",
             "  0. Guardar y salir"
     );
 
@@ -36,6 +37,7 @@ public class MenuJugador {
     private final MenuAnimales menuAnimales;
     private final MenuPueblo menuPueblo;
     private final MenuRecoleccion menuRecoleccion;
+    private final MenuMisiones menuMisiones;
 
     // Resultado de la ultima accion; se muestra en la pantalla con "> ".
     private String mensaje;
@@ -69,6 +71,11 @@ public class MenuJugador {
 
         this.menuRecoleccion =
                 new MenuRecoleccion(
+                        pantallaJugador
+                );
+
+        this.menuMisiones =
+                new MenuMisiones(
                         pantallaJugador
                 );
     }
@@ -124,7 +131,7 @@ public class MenuJugador {
                     Consola.leerEntero(
                             "Opcion: ",
                             0,
-                            7
+                            8
                     );
 
             mensaje = null;
@@ -165,6 +172,11 @@ public class MenuJugador {
 
                 case 7 ->
                         dormir(
+                                partida
+                        );
+
+                case 8 ->
+                        menuMisiones.mostrar(
                                 partida
                         );
 

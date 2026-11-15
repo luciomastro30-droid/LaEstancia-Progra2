@@ -1,6 +1,9 @@
 package menu.menuJugador;
 
 import modelo.Partida;
+import modelo.enums.DefinicionMision;
+import modelo.enums.TipoObjetivo;
+import servicio.MisionServicio;
 import servicio.RecoleccionServicio;
 import servicio.ResultadoRecoleccion;
 import util.Consola;
@@ -12,20 +15,34 @@ import java.util.Random;
 public class MenuRecoleccion {
 
     private final RecoleccionServicio recoleccionServicio;
+    private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
     private final Random random;
 
     private String mensaje;
 
 
-    public MenuRecoleccion(PantallaJugador pantallaJugador) {
-        this.recoleccionServicio = new RecoleccionServicio();
-        this.pantallaJugador = pantallaJugador;
-        this.random = new Random();
+    public MenuRecoleccion(
+            PantallaJugador pantallaJugador
+    ) {
+
+        this.recoleccionServicio =
+                new RecoleccionServicio();
+
+        this.misionServicio =
+                new MisionServicio();
+
+        this.pantallaJugador =
+                pantallaJugador;
+
+        this.random =
+                new Random();
     }
 
 
-    public void mostrar(Partida partida) {
+    public void mostrar(
+            Partida partida
+    ) {
 
         int opcion;
 
@@ -70,26 +87,43 @@ public class MenuRecoleccion {
 
                 ResultadoRecoleccion resultado;
 
+                TipoObjetivo tipoObjetivo;
+
                 switch (opcion) {
 
-                    case 1 ->
-                            resultado =
-                                    recoleccionServicio.talar(
-                                            partida
-                                    );
+                    case 1 -> {
 
-                    case 2 ->
-                            resultado =
-                                    recoleccionServicio.picar(
-                                            partida
-                                    );
+                        resultado =
+                                recoleccionServicio.talar(
+                                        partida
+                                );
 
-                    case 3 ->
-                            resultado =
-                                    recoleccionServicio.pescar(
-                                            partida,
-                                            random
-                                    );
+                        tipoObjetivo =
+                                TipoObjetivo.TALAR;
+                    }
+
+                    case 2 -> {
+
+                        resultado =
+                                recoleccionServicio.picar(
+                                        partida
+                                );
+
+                        tipoObjetivo =
+                                TipoObjetivo.PICAR;
+                    }
+
+                    case 3 -> {
+
+                        resultado =
+                                recoleccionServicio.pescar(
+                                        partida,
+                                        random
+                                );
+
+                        tipoObjetivo =
+                                TipoObjetivo.PESCAR;
+                    }
 
                     default -> {
                         return;
@@ -115,6 +149,12 @@ public class MenuRecoleccion {
                                     + " "
                                     + resultado.nombreItem()
                                     + ".";
+
+                    registrarProgresoMision(
+                            partida,
+                            tipoObjetivo,
+                            resultado.cantidad()
+                    );
                 }
 
             } catch (SQLException e) {
@@ -125,5 +165,58 @@ public class MenuRecoleccion {
             }
 
         } while (opcion != 0);
+    }
+
+
+    private void registrarProgresoMision(
+            Partida partida,
+            TipoObjetivo tipoObjetivo,
+            int cantidad
+    ) {
+
+        try {
+
+            List<DefinicionMision> completadas =
+                    misionServicio.registrarProgreso(
+                            partida,
+                            tipoObjetivo,
+                            cantidad
+                    );
+
+            mensaje +=
+                    mensajeMisionesCompletadas(
+                            completadas
+                    );
+
+        } catch (SQLException e) {
+
+            mensaje +=
+                    " No se pudo actualizar el progreso de las misiones.";
+        }
+    }
+
+
+    private String mensajeMisionesCompletadas(
+            List<DefinicionMision> completadas
+    ) {
+
+        StringBuilder texto =
+                new StringBuilder();
+
+        for (DefinicionMision mision
+                : completadas) {
+
+            texto.append(
+                    " Completaste la mision de "
+            );
+
+            texto.append(
+                    mision.getNpc()
+            );
+
+            texto.append(".");
+        }
+
+        return texto.toString();
     }
 }
