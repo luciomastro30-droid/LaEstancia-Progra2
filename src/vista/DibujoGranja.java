@@ -34,6 +34,30 @@ public class DibujoGranja {
         return escena;
     }
 
+    public static List<String> dibujarEscena(Partida partida,
+                                             Map<Integer, Plantacion> plantaciones,
+                                             Map<Integer, Cultivo> cultivos,
+                                             Map<String, Integer> gallinero,
+                                             Map<String, Integer> establo) {
+
+        List<String> parcelas = dibujarParcelas(partida, plantaciones, cultivos);
+
+        List<String> corrales = DibujoCorrales.dibujar(
+                partida.isTieneGallinero(),
+                gallinero,
+                partida.isTieneEstablo(),
+                establo
+        );
+
+        List<String> escena = new ArrayList<>();
+
+        for (int r = 0; r < ALTO_ESCENA; r++) {
+            escena.add(parcelas.get(r) + "| " + corrales.get(r));
+        }
+
+        return escena;
+    }
+
     private static List<String> dibujarParcelas(Partida partida,
                                                 Map<Integer, Plantacion> plantaciones,
                                                 Map<Integer, Cultivo> cultivos) {

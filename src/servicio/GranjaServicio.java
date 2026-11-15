@@ -1,4 +1,3 @@
-
 package servicio;
 
 import conexion.ConexionBD;
@@ -110,12 +109,26 @@ public class GranjaServicio {
             con.setAutoCommit(false);
             try {
                 semillas.setCantidad(disponibles - 1);
-                inventarioDao.modificar(con, semillas);
 
-                plantacionDao.alta(con, nueva);
+                if (!inventarioDao.modificar(con, semillas)) {
+                    throw new SQLException(
+                            "No se pudo descontar la semilla."
+                    );
+                }
+
+                if (!plantacionDao.alta(con, nueva)) {
+                    throw new SQLException(
+                            "No se pudo guardar la plantacion."
+                    );
+                }
 
                 partida.avanzarMinutos(MINUTOS_PLANTAR);
-                partidaDao.modificar(con, partida);
+
+                if (!partidaDao.modificar(con, partida)) {
+                    throw new SQLException(
+                            "No se pudo guardar el avance del tiempo."
+                    );
+                }
 
                 con.commit();
             } catch (SQLException e) {
@@ -128,8 +141,8 @@ public class GranjaServicio {
     }
 
 
-     // devuelve las parcelas que se pueden cosechar
-     //TreeMap ordena por la clave, asi el menu las muestra de la parcela 1 a la 6.
+    // devuelve las parcelas que se pueden cosechar
+    //TreeMap ordena por la clave, asi el menu las muestra de la parcela 1 a la 6.
 
     public Map<Integer, Cultivo> parcelasListas(Partida partida)
             throws SQLException {
@@ -149,8 +162,8 @@ public class GranjaServicio {
             Cultivo cultivo = cultivos.get(plantacion.getIdCultivo());
 
             long minutosRestantes = plantacion.minutosRestantes(
-                            cultivo,
-                            partida.getMinutoJuegoTotal());
+                    cultivo,
+                    partida.getMinutoJuegoTotal());
 
             if (minutosRestantes == 0) {
                 /*
@@ -172,9 +185,9 @@ public class GranjaServicio {
     }
 
 
-     //cosecha una parcela.
-     // en una sola transaccion: marca la plantacion como COSECHADA, suma la cosecha al inventario,
-     // suma la experiencia (con posible subida de nivel) y guarda el avance del tiempo.
+    //cosecha una parcela.
+    // en una sola transaccion: marca la plantacion como COSECHADA, suma la cosecha al inventario,
+    // suma la experiencia (con posible subida de nivel) y guarda el avance del tiempo.
 
     public ResultadoCosecha cosechar(Partida partida, int numeroParcela)
             throws SQLException, AccionNoPermitidaException {
@@ -211,22 +224,66 @@ public class GranjaServicio {
             con.setAutoCommit(false);
             try {
                 plantacion.setEstado(EstadoPlantacion.COSECHADA);
-                plantacionDao.modificar(con, plantacion);
+
+                if (!plantacionDao.modificar(con, plantacion)) {
+                    throw new SQLException(
+                            "No se pudo actualizar la plantacion."
+                    );
+                }
 
                 // si nunca tuvo ese item se crea la fila; si ya la tenia, se suma
                 if (cosechaGuardada == null) {
-                    inventarioDao.alta(con, new Inventario(partida.getIdPartida(), cultivo.getIdItemCosecha(), cantidad));
+
+                    if (!inventarioDao.alta(
+                            con,
+                            new Inventario(
+                                    partida.getIdPartida(),
+                                    cultivo.getIdItemCosecha(),
+                                    cantidad
+                            )
+                    )) {
+                        throw new SQLException(
+                                "No se pudo guardar la cosecha."
+                        );
+                    }
+
                 } else {
-                    cosechaGuardada.setCantidad(cosechaGuardada.getCantidad() + cantidad);
-                    inventarioDao.modificar(con, cosechaGuardada);
+
+                    cosechaGuardada.setCantidad(
+                            cosechaGuardada.getCantidad() + cantidad
+                    );
+
+                    if (!inventarioDao.modificar(
+                            con,
+                            cosechaGuardada
+                    )) {
+                        throw new SQLException(
+                                "No se pudo actualizar la cosecha."
+                        );
+                    }
                 }
 
-                boolean subioNivel = partida.sumarExperiencia(experiencia);
-                partida.avanzarMinutos(MINUTOS_COSECHAR);
-                partidaDao.modificar(con, partida);
+                boolean subioNivel =
+                        partida.sumarExperiencia(experiencia);
+
+                partida.avanzarMinutos(
+                        MINUTOS_COSECHAR
+                );
+
+                if (!partidaDao.modificar(con, partida)) {
+                    throw new SQLException(
+                            "No se pudo guardar la partida."
+                    );
+                }
 
                 con.commit();
-                return new ResultadoCosecha(cultivo.getNombre(), cantidad, experiencia, subioNivel);
+
+                return new ResultadoCosecha(
+                        cultivo.getNombre(),
+                        cantidad,
+                        experiencia,
+                        subioNivel
+                );
 
             } catch (SQLException e) {
                 con.rollback();
@@ -244,7 +301,11 @@ public class GranjaServicio {
         long minutoAnterior = partida.getMinutoJuegoTotal();
         partida.dormir();
         try {
-            partidaDao.modificar(partida);
+            if (!partidaDao.modificar(partida)) {
+                throw new SQLException(
+                        "No se pudo guardar el avance del tiempo."
+                );
+            }
         } catch (SQLException e) {
             partida.setMinutoJuegoTotal(minutoAnterior);
             throw e;

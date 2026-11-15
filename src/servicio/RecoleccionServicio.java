@@ -110,10 +110,15 @@ public class RecoleccionServicio {
                         MINUTOS_RECOLECTAR
                 );
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar el avance del tiempo."
+                    );
+                }
 
                 con.commit();
 
@@ -187,7 +192,19 @@ public class RecoleccionServicio {
                 if (fila == null) {
 
                     // Si nunca tuvo el item, creo una nueva fila.
-                    inventarioDao.alta(con, new Inventario(partida.getIdPartida(), idItem, cantidad));
+                    if (!inventarioDao.alta(
+                            con,
+                            new Inventario(
+                                    partida.getIdPartida(),
+                                    idItem,
+                                    cantidad
+                            )
+                    )) {
+
+                        throw new SQLException(
+                                "No se pudo guardar el recurso recolectado."
+                        );
+                    }
 
                 } else {
 
@@ -197,10 +214,15 @@ public class RecoleccionServicio {
                                     + cantidad
                     );
 
-                    inventarioDao.modificar(
+                    if (!inventarioDao.modificar(
                             con,
                             fila
-                    );
+                    )) {
+
+                        throw new SQLException(
+                                "No se pudo actualizar el recurso recolectado."
+                        );
+                    }
                 }
 
                 /*
@@ -211,10 +233,15 @@ public class RecoleccionServicio {
                         MINUTOS_RECOLECTAR
                 );
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar el avance del tiempo."
+                    );
+                }
 
                 /*
                  * Solo confirmo la transaccion cuando inventario
