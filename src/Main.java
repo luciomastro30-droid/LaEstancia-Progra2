@@ -1,9 +1,11 @@
 import menu.MenuPrincipal;
 
+public class Main {
 
-void main() {
+    public static void main(String[] args) {
 
-    MenuPrincipal menuPrincipal = new MenuPrincipal();
-    menuPrincipal.mostrar();
+        // Inicia el menú principal del juego.
+        MenuPrincipal menuPrincipal = new MenuPrincipal();
+        menuPrincipal.mostrar();
+    }
 }
-
