@@ -1,12 +1,17 @@
 package modelo;
 
+/**
+ * Representa un tipo de cultivo disponible en el juego.
+ * Define su precio, tiempo de crecimiento, recompensa de experiencia
+ * y los items asociados a la semilla y a la cosecha.
+ */
 public class Cultivo extends ElementoGranja {
 
     private int precioSemilla;
     private int tiempoCrecimientoMin;
     private int experienciaRecompensa;
-    private Integer idItemSemilla; //puede ser null
-    private Integer idItemCosecha;//puede ser null
+    private Integer idItemSemilla; // Puede ser null.
+    private Integer idItemCosecha; // Puede ser null.
 
 
     public Cultivo(int id, String nombre, int precioSemilla, int precioVenta,
@@ -117,6 +122,8 @@ public class Cultivo extends ElementoGranja {
 
     public void setIdItemCosecha(Integer idItemCosecha) {
 
+        // También puede ser null si el cultivo no tiene un item
+        // de cosecha asociado.
         if (idItemCosecha != null && idItemCosecha <= 0) {
             throw new IllegalArgumentException(
                     "El ID del item cosecha debe ser mayor a 0."

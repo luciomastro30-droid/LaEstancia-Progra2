@@ -1,5 +1,11 @@
 package menu.menuJugador;
+
 import util.Radio;
+
+/**
+ * Proporciona las opciones del menu relacionadas con la radio.
+ * Permite mostrar su estado actual y alternar entre encendida y apagada.
+ */
 public class MenuRadio {
 
 

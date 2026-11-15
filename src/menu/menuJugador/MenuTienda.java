@@ -11,6 +11,10 @@ import vista.DibujoTienda;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Gestiona la interacción del jugador con la tienda agrícola.
+ * Permite visualizar los productos disponibles y realizar compras.
+ */
 public class MenuTienda {
 
     private final TiendaServicio tiendaServicio;
@@ -43,6 +47,8 @@ public class MenuTienda {
 
             try {
 
+                // Los productos que pueden comprarse se obtienen
+                // desde el servicio y no se definen directamente en el menú.
                 productos =
                         tiendaServicio.productosDisponibles();
 
@@ -126,6 +132,8 @@ public class MenuTienda {
                             cantidad
                     );
 
+            // La validación de monedas y la actualización de la compra
+            // quedan delegadas a TiendaServicio.
             tiendaServicio.comprar(
                     partida,
                     item,

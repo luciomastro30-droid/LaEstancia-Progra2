@@ -3,6 +3,10 @@ package util;
 import java.util.Scanner;
 import java.io.IOException;
 
+/**
+ * Centraliza la lectura de datos ingresados por consola.
+ * Permite reutilizar las mismas validaciones en los distintos menús del sistema.
+ */
 public class Consola {
 
     private static final Scanner SCAN = new Scanner(System.in);
@@ -20,6 +24,7 @@ public class Consola {
         System.out.flush();
     }
 
+    // Evita crear instancias de esta clase, ya que todos sus métodos son estáticos.
     private Consola() {
     }
 
@@ -27,9 +32,11 @@ public class Consola {
         while (true){
             System.out.print(mensaje);
             String linea = SCAN.nextLine().trim();
+
             if (!linea.isBlank()) {
                 return linea;
             }
+
             System.out.println("No puede estar vacio");
         }
     }
@@ -39,7 +46,8 @@ public class Consola {
 
         System.out.print(mensaje);
         String linea = SCAN.nextLine().trim();
-        if(linea.isBlank())return null;
+
+        if(linea.isBlank()) return null;
 
         return linea;
     }
@@ -51,28 +59,30 @@ public class Consola {
                 System.out.print(mensaje);
                 String linea = SCAN.nextLine().trim();
                 int num = Integer.parseInt(linea);
+
                 if(num >= min && num <= max){
                     return num;
-
                 }
+
                 System.out.println("Ingrese un numero entre " + min + " y " + max);
 
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e){
                 System.out.println("Ingrese un numero valido ");
             }
         }
-
     }
 
     public static boolean confirmar(String mensaje){
 
         while (true){
-           System.out.print(mensaje + " (s/n): ");
-           String linea = SCAN.nextLine().trim();
-           if(linea.equalsIgnoreCase("s")) return true;
-           if(linea.equalsIgnoreCase("n")) return false;
+            System.out.print(mensaje + " (s/n): ");
+            String linea = SCAN.nextLine().trim();
+
+            if(linea.equalsIgnoreCase("s")) return true;
+            if(linea.equalsIgnoreCase("n")) return false;
+
             System.out.println("Opcion invalida");
-       }
+        }
     }
 
     public static void pausar(){

@@ -13,6 +13,10 @@ import vista.DibujoHerrero;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Gestiona la interacción del jugador con el herrero.
+ * Permite realizar mejoras y construcciones delegando la lógica a HerreroServicio.
+ */
 public class MenuHerrero {
 
     private final HerreroServicio herreroServicio;
@@ -52,6 +56,7 @@ public class MenuHerrero {
                             partida.getMinutoJuegoTotal()
                     );
 
+            // El acceso al herrero depende del horario actual del juego.
             if (!reloj.comerciosAbiertos()) {
 
                 pantallaJugador.mostrar(
@@ -178,6 +183,7 @@ public class MenuHerrero {
                                 "Mejoraste la cania.";
                     };
 
+            // Después de una acción exitosa puede activarse un evento del juego.
             menuEvento.intentarMostrar(
                     partida
             );

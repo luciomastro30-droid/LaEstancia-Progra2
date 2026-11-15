@@ -9,10 +9,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
-  //Efecto de sonido
- //Mientras suena el efecto, la radio se pausa.
- //Cuando termina, la radio se reanuda.
-
+/**
+ * Reproduce efectos de sonido puntuales del juego.
+ * Mientras se reproduce un efecto, pausa temporalmente la radio
+ * y la reanuda cuando el sonido termina.
+ */
 public class Sonido {
 
     /*

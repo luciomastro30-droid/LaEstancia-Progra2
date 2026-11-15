@@ -1,4 +1,5 @@
 package dao;
+
 import conexion.ConexionBD;
 import modelo.Usuario;
 import modelo.Jugador;
@@ -10,47 +11,83 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los usuarios en la base de datos.
+ * Implementa las operaciones CRUD y la baja lógica definidas por DaoConBajaLogica.
+ */
 public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
     private static final String SQL_INSERT = "INSERT INTO usuario (nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, ?)";
+
     private static final String SQL_BAJA = "UPDATE usuario SET activo = FALSE WHERE id_usuario = ? AND activo = TRUE";
+
     private static final String SQL_UPDATE = "UPDATE usuario SET nombre_usuario = ?, email = ?, contrasenia_hash = ? " +
-                    "WHERE id_usuario = ? AND activo = TRUE";
+            "WHERE id_usuario = ? AND activo = TRUE";
+
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_usuario, nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion " +
-                    "FROM usuario WHERE activo = TRUE";
+            "FROM usuario WHERE activo = TRUE";
+
     private static final String SQL_SELECT_ID = "SELECT id_usuario, nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion " +
-                    "FROM usuario WHERE id_usuario = ?";
+            "FROM usuario WHERE id_usuario = ?";
+
     private static final String SQL_SELECT_NOMBRE = "SELECT id_usuario, nombre_usuario, email, contrasenia_hash, rol, activo, fecha_creacion " +
-                    "FROM usuario WHERE nombre_usuario = ? AND activo = TRUE";
+            "FROM usuario WHERE nombre_usuario = ? AND activo = TRUE";
+
     private static final String SQL_NOMBRE_REPETIDO = "SELECT nombre_usuario FROM usuario WHERE nombre_usuario = ?";
+
     private static final String SQL_EMAIL_REPETIDO = "SELECT email FROM usuario WHERE email = ?";
+
 
     @Override
     public boolean alta(Usuario elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion()){
-             return alta(con,elemento);
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return alta(con, elemento);
         }
     }
 
-    //Metodo dividido para lograr hacer rollback en caso de que falle alguna operacion
+
+    /*
+     * Esta versión recibe una conexión existente para poder participar
+     * de una transacción junto con otras operaciones.
+     */
     public boolean alta(Connection con, Usuario elemento) throws SQLException {
-        try (PreparedStatement pd = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+
+        try (PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_INSERT,
+                             Statement.RETURN_GENERATED_KEYS
+                     )) {
 
             pd.setString(1, elemento.getNombreUsuario());
             pd.setString(2, elemento.getEmail());
             pd.setString(3, elemento.getContraseniaHash());
             pd.setString(4, elemento.getRol().name());
             pd.setBoolean(5, elemento.isActivo());
-            pd.setTimestamp(6, Timestamp.valueOf(elemento.getFechaCreacion()));
+            pd.setTimestamp(
+                    6,
+                    Timestamp.valueOf(
+                            elemento.getFechaCreacion()
+                    )
+            );
 
-            int filasCambiadas = pd.executeUpdate();
+            int filasCambiadas =
+                    pd.executeUpdate();
 
+            /*
+             * Si el INSERT fue exitoso, se recupera el ID generado
+             * por MySQL y se asigna al mismo objeto Usuario.
+             */
             if (filasCambiadas > 0) {
-                try (ResultSet rs = pd.getGeneratedKeys()) {
+
+                try (ResultSet rs =
+                             pd.getGeneratedKeys()) {
+
                     if (rs.next()) {
-                        elemento.setIdUsuario(rs.getInt(1));
+                        elemento.setIdUsuario(
+                                rs.getInt(1)
+                        );
                     }
                 }
             }
@@ -61,28 +98,22 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
 
     @Override
-    public boolean bajaLogica(int idBuscado) throws SQLException {
+    public boolean bajaLogica(
+            int idBuscado
+    ) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_BAJA)) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
 
-            pd.setInt(1, idBuscado);
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_BAJA
+                     )) {
 
-            return pd.executeUpdate() > 0;
-        }
-    }
-
-
-    @Override
-    public boolean modificar(Usuario elemento) throws SQLException {
-
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
-
-            pd.setString(1, elemento.getNombreUsuario());
-            pd.setString(2, elemento.getEmail());
-            pd.setString(3, elemento.getContraseniaHash());
-            pd.setInt(4, elemento.getIdUsuario());
+            pd.setInt(
+                    1,
+                    idBuscado
+            );
 
             return pd.executeUpdate() > 0;
         }
@@ -90,14 +121,63 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
 
     @Override
-    public Usuario consultarPorId(int idBuscado) throws SQLException {
+    public boolean modificar(
+            Usuario elemento
+    ) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_SELECT_ID)) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
 
-            pd.setInt(1, idBuscado);
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_UPDATE
+                     )) {
 
-            try (ResultSet rs = pd.executeQuery()) {
+            pd.setString(
+                    1,
+                    elemento.getNombreUsuario()
+            );
+
+            pd.setString(
+                    2,
+                    elemento.getEmail()
+            );
+
+            pd.setString(
+                    3,
+                    elemento.getContraseniaHash()
+            );
+
+            pd.setInt(
+                    4,
+                    elemento.getIdUsuario()
+            );
+
+            return pd.executeUpdate() > 0;
+        }
+    }
+
+
+    @Override
+    public Usuario consultarPorId(
+            int idBuscado
+    ) throws SQLException {
+
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
+
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_SELECT_ID
+                     )) {
+
+            pd.setInt(
+                    1,
+                    idBuscado
+            );
+
+            try (ResultSet rs =
+                         pd.executeQuery()) {
 
                 if (rs.next()) {
                     return mapearUsuario(rs);
@@ -110,16 +190,28 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
 
 
     @Override
-    public List<Usuario> listar() throws SQLException {
+    public List<Usuario> listar()
+            throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_SELECT_ACTIVOS);
-             ResultSet rs = pd.executeQuery()) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
 
-            List<Usuario> lista = new ArrayList<>();
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_SELECT_ACTIVOS
+                     );
+
+             ResultSet rs =
+                     pd.executeQuery()) {
+
+            List<Usuario> lista =
+                    new ArrayList<>();
 
             while (rs.next()) {
-                lista.add(mapearUsuario(rs));
+
+                lista.add(
+                        mapearUsuario(rs)
+                );
             }
 
             return lista;
@@ -127,14 +219,25 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
     }
 
 
-    public Usuario consultarPorNombreUsuario(String nombre) throws SQLException {
+    public Usuario consultarPorNombreUsuario(
+            String nombre
+    ) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_SELECT_NOMBRE)) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
 
-            pd.setString(1, nombre);
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_SELECT_NOMBRE
+                     )) {
 
-            try (ResultSet rs = pd.executeQuery()) {
+            pd.setString(
+                    1,
+                    nombre
+            );
+
+            try (ResultSet rs =
+                         pd.executeQuery()) {
 
                 if (rs.next()) {
                     return mapearUsuario(rs);
@@ -146,17 +249,54 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
     }
 
 
-    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+    /*
+     * Convierte una fila del ResultSet en el tipo concreto de Usuario.
+     * Según el rol almacenado, se instancia un Jugador o un Administrador.
+     */
+    private Usuario mapearUsuario(
+            ResultSet rs
+    ) throws SQLException {
 
-        int idUsuario = rs.getInt("id_usuario");
-        String nombreUsuario = rs.getString("nombre_usuario");
-        String email = rs.getString("email");
-        String contraseniaHash = rs.getString("contrasenia_hash");
-        Rol rol = Rol.valueOf(rs.getString("rol"));
-        boolean activo = rs.getBoolean("activo");
+        int idUsuario =
+                rs.getInt(
+                        "id_usuario"
+                );
 
-        Timestamp fecha = rs.getTimestamp("fecha_creacion");
-        LocalDateTime fechaCreacion = fecha.toLocalDateTime();
+        String nombreUsuario =
+                rs.getString(
+                        "nombre_usuario"
+                );
+
+        String email =
+                rs.getString(
+                        "email"
+                );
+
+        String contraseniaHash =
+                rs.getString(
+                        "contrasenia_hash"
+                );
+
+        Rol rol =
+                Rol.valueOf(
+                        rs.getString(
+                                "rol"
+                        )
+                );
+
+        boolean activo =
+                rs.getBoolean(
+                        "activo"
+                );
+
+        Timestamp fecha =
+                rs.getTimestamp(
+                        "fecha_creacion"
+                );
+
+        LocalDateTime fechaCreacion =
+                fecha.toLocalDateTime();
+
 
         if (rol == Rol.JUGADOR) {
 
@@ -179,35 +319,63 @@ public class UsuarioDao implements DaoConBajaLogica<Usuario> {
                     activo,
                     fechaCreacion
             );
-
         }
 
-        throw new SQLException("Rol de usuario no reconocido: " + rol);
+        throw new SQLException(
+                "Rol de usuario no reconocido: "
+                        + rol
+        );
     }
 
-    public boolean existeNombre(String nombre)throws SQLException {
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_NOMBRE_REPETIDO)) {
-            pd.setString(1, nombre);
 
-            try (ResultSet rs = pd.executeQuery()) {
+    public boolean existeNombre(
+            String nombre
+    ) throws SQLException {
+
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
+
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_NOMBRE_REPETIDO
+                     )) {
+
+            pd.setString(
+                    1,
+                    nombre
+            );
+
+            try (ResultSet rs =
+                         pd.executeQuery()) {
+
                 return rs.next();
             }
         }
     }
 
-    public boolean existeEmail(String email)throws SQLException {
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_EMAIL_REPETIDO)) {
-            pd.setString(1, email);
 
-            try (ResultSet rs = pd.executeQuery()) {
+    public boolean existeEmail(
+            String email
+    ) throws SQLException {
+
+        try (Connection con =
+                     ConexionBD.obtenerConexion();
+
+             PreparedStatement pd =
+                     con.prepareStatement(
+                             SQL_EMAIL_REPETIDO
+                     )) {
+
+            pd.setString(
+                    1,
+                    email
+            );
+
+            try (ResultSet rs =
+                         pd.executeQuery()) {
+
                 return rs.next();
             }
         }
     }
-
-
 }
-
-

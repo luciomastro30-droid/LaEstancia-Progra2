@@ -12,6 +12,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la interacción del jugador con el sistema de misiones.
+ * Permite consultar misiones en curso, aceptar nuevas y reclamar recompensas.
+ */
 public class MenuMisiones {
 
     private final MisionServicio misionServicio;
@@ -160,6 +164,8 @@ public class MenuMisiones {
             ProgresoMision progreso =
                     enCurso.get(i);
 
+            // El progreso guarda el código de la misión y se utiliza
+            // para recuperar su definición completa desde el enum.
             DefinicionMision definicion =
                     DefinicionMision.valueOf(
                             progreso.getCodigoMision()
@@ -203,6 +209,8 @@ public class MenuMisiones {
 
         try {
 
+            // El servicio valida el estado de la misión y aplica
+            // las recompensas correspondientes al reclamarla.
             DefinicionMision reclamada =
                     misionServicio.reclamar(
                             partida,

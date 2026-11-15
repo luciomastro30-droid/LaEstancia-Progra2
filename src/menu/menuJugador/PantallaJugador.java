@@ -11,16 +11,17 @@ import servicio.InventarioServicio;
 import vista.DibujoGranja;
 import vista.DibujoInventario;
 import vista.Pantalla;
-import util.Consola;
-
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
+/**
+ * Prepara y muestra la pantalla principal utilizada por el jugador.
+ * Reúne la información de la granja, inventario y animales
+ * y la combina con las opciones, mensajes y dibujos correspondientes.
+ */
 public class PantallaJugador {
 
     private final GranjaServicio granjaServicio;
@@ -61,6 +62,8 @@ public class PantallaJugador {
             List<String> escenaPersonalizada
     ) {
 
+        // Se cargan los datos necesarios para construir
+        // las distintas secciones visuales de la pantalla.
         Map<Integer, Plantacion> plantaciones =
                 new HashMap<>();
 
@@ -155,8 +158,6 @@ public class PantallaJugador {
             escena =
                     escenaPersonalizada;
         }
-
-        Consola.limpiarPantalla();
 
         System.out.println(
                 Pantalla.armar(

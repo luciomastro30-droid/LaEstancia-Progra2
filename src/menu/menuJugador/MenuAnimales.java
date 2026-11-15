@@ -15,6 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controla las acciones relacionadas con los animales desde el menu del jugador.
+ * Permite comprar animales, alimentarlos y recolectar sus productos.
+ *
+ * La logica principal se delega a AnimalServicio y el progreso
+ * de las misiones se actualiza mediante MisionServicio.
+ */
 public class MenuAnimales {
 
     private final AnimalServicio animalServicio;
@@ -209,14 +216,14 @@ public class MenuAnimales {
                             + ".";
 
         }  catch (AccionNoPermitidaException
-         | MonedasInsuficientesException
-         | SQLException
-         | IllegalArgumentException e) {
+                  | MonedasInsuficientesException
+                  | SQLException
+                  | IllegalArgumentException e) {
 
-        mensaje =
-                "No se pudo comprar el animal: "
-                        + e.getMessage();
-    }
+            mensaje =
+                    "No se pudo comprar el animal: "
+                            + e.getMessage();
+        }
     }
 
 
@@ -321,6 +328,10 @@ public class MenuAnimales {
     }
 
 
+    /*
+     * Separa los productos recolectados entre huevos y leche
+     * para actualizar la mision correspondiente a cada tipo.
+     */
     private void registrarProgresoProductos(
             Partida partida,
             Map<String, Integer> productos
@@ -371,6 +382,10 @@ public class MenuAnimales {
     }
 
 
+    /*
+     * Delega en MisionServicio la actualizacion del progreso
+     * y agrega al mensaje las misiones que se hayan completado.
+     */
     private void registrarProgresoMision(
             Partida partida,
             TipoObjetivo tipoObjetivo,

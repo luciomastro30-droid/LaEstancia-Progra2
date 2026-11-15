@@ -5,9 +5,13 @@ import modelo.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Genera la representacion visual ASCII de la tienda agricola.
+ * Muestra los productos disponibles con su precio de compra
+ * y combina la lista con el dibujo del comerciante.
+ */
 public class DibujoTienda {
 
-    private static final int ANCHO = 42;
     private static final int ANCHO_INTERIOR = 40;
 
 

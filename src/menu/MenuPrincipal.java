@@ -13,6 +13,11 @@ import util.Consola;
 
 import java.sql.SQLException;
 
+/**
+ * Controla el menu inicial de La Estancia.
+ * Permite iniciar sesion, registrar nuevos jugadores
+ * y redirigir al usuario al menu correspondiente segun su tipo de acceso.
+ */
 public class MenuPrincipal {
 
     private final LoginServicio loginServicio = new LoginServicio();
@@ -45,7 +50,6 @@ public class MenuPrincipal {
     }
 
     private void iniciarSesion() {
-        Consola.limpiarPantalla();
 
         System.out.println("==========================================");
         System.out.println("              INICIAR SESION              ");
@@ -64,6 +68,10 @@ public class MenuPrincipal {
             System.out.println("------------------------------------------");
             System.out.println();
 
+            /*
+             * El login devuelve un Usuario, pero segun el tipo concreto
+             * se abre el menu de jugador o el menu de administrador.
+             */
             if (usuario instanceof Jugador jugador) {
 
                 MenuJugador menuJugador = new MenuJugador(jugador);
@@ -79,20 +87,17 @@ public class MenuPrincipal {
 
             System.out.println();
             System.out.println("[ERROR] No se pudo conectar con la base de datos.");
-            Consola.pausar();
             System.out.println();
 
         } catch (LoginInvalidoException e) {
 
             System.out.println();
             System.out.println("[ERROR] " + e.getMessage());
-            Consola.pausar();
             System.out.println();
         }
     }
 
     private void registrarse() {
-        Consola.limpiarPantalla();
 
         System.out.println("==========================================");
         System.out.println("                 REGISTRO                 ");
@@ -122,7 +127,6 @@ public class MenuPrincipal {
             System.out.println();
             System.out.println("  Bienvenido a La Estancia, " + nombre + "!");
             System.out.println("  Tu granja \"" + nombreGranja + "\" te espera.");
-            Consola.pausar();
             System.out.println();
 
             MenuJugador menuJugador = new MenuJugador(jugador);
@@ -132,21 +136,18 @@ public class MenuPrincipal {
 
             System.out.println();
             System.out.println("[ERROR] " + e.getMessage());
-            Consola.pausar();
             System.out.println();
 
         } catch (SQLException e) {
 
             System.out.println();
             System.out.println("[ERROR] No se pudo conectar con la base de datos.");
-            Consola.pausar();
             System.out.println();
         }
     }
 
     // Encabezado principal del juego.
     private void mostrarEncabezado() {
-        Consola.limpiarPantalla();
 
         System.out.println();
         System.out.println("==========================================");

@@ -10,6 +10,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controla la visualizacion del inventario del jugador.
+ * Obtiene el contenido mediante InventarioServicio y delega
+ * el dibujo detallado del inventario a DibujoInventario.
+ */
 public class MenuInventario {
 
     private final PantallaJugador pantallaJugador;

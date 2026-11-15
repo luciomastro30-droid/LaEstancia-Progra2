@@ -7,6 +7,11 @@ import modelo.enums.EstadoMision;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Genera la representacion visual ASCII de las misiones.
+ * Permite mostrar tanto las misiones en curso como las disponibles,
+ * organizandolas en carteles con su progreso, objetivo y recompensa.
+ */
 public class DibujoMisiones {
 
     private static final int ANCHO_CARTEL = 34;

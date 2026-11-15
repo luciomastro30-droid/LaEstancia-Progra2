@@ -3,6 +3,12 @@ package modelo;
 import modelo.enums.Rol;
 import java.time.LocalDateTime;
 
+/**
+ * Clase abstracta que representa los datos y comportamientos comunes
+ * de todos los usuarios del sistema.
+ *
+ * Sus clases hijas definen el rol concreto mediante getRol().
+ */
 public abstract class Usuario {
 
     private int idUsuario;
@@ -31,8 +37,8 @@ public abstract class Usuario {
         this.fechaCreacion = fechaCreacion;
     }
 
-    //Este constructor completa los parametros en vacio y llama al constructor principal
-    //Asigna valores por defecto para que luego sean autocompletados
+    // Constructor para usuarios nuevos que todavía no tienen ID generado por MySQL.
+    // Asigna los valores iniciales comunes y delega en el constructor principal.
     protected Usuario(String nombreUsuario, String email,
                       String contraseniaHash) {
 
@@ -110,6 +116,7 @@ public abstract class Usuario {
                 throw new IllegalArgumentException(
                         "El email no puede superar los 100 caracteres.");
             }
+
             if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) {
                 throw new IllegalArgumentException(
                         "El formato del email no es valido.");

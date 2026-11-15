@@ -15,6 +15,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+/**
+ * Gestiona las mejoras y construcciones disponibles en el herrero.
+ * Valida monedas y materiales, actualiza la partida y mantiene
+ * todas las modificaciones relacionadas dentro de una misma transacción.
+ */
 public class HerreroServicio {
 
     public static final int MINUTOS_HERRERO = 30;
@@ -353,6 +358,12 @@ public class HerreroServicio {
     }
 
 
+    /*
+     * Centraliza las operaciones del herrero que modifican monedas,
+     * materiales y algún aspecto de la partida.
+     * Runnable permite recibir la mejora concreta que debe aplicarse
+     * sin repetir toda la lógica transaccional en cada método.
+     */
     private void aplicarMejora(
             Partida partida,
             int costoMonedas,

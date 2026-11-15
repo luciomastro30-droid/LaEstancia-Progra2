@@ -1,5 +1,10 @@
 package modelo.enums;
 
+/**
+ * Enumera las misiones disponibles en el juego.
+ * Cada misión define qué acción la hace avanzar, su objetivo,
+ * el NPC relacionado y las recompensas que obtiene el jugador.
+ */
 public enum DefinicionMision {
 
     PRIMERA_COSECHA(

@@ -2,6 +2,11 @@ package modelo;
 
 import modelo.enums.EstadoMision;
 
+/**
+ * Representa el progreso de una misión dentro de una partida.
+ * Guarda la misión asociada, el avance realizado
+ * y el estado actual de esa misión.
+ */
 public class ProgresoMision {
 
     private int idProgresoMision;

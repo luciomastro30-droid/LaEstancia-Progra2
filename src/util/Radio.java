@@ -13,6 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Controla la radio del juego y reproduce en orden las canciones
+ * con formato .wav disponibles dentro de la carpeta "musica".
+ *
+ * Permite encender, apagar, pausar y reanudar la reproduccion,
+ * pasando automaticamente a la siguiente cancion cuando termina la actual.
+ */
 //Toca en bucle todas las canciones .wav de la carpeta "musica" (en orden alfabetico).
 //No se elige el tema: cuando una cancion termina pasa sola a la siguiente,
 //y si se apaga y se vuelve a prender, arranca la siguiente.

@@ -1,5 +1,10 @@
 package modelo.enums;
 
+/**
+ * Define las rarezas disponibles para las herramientas.
+ * Cada rareza determina cuántas unidades puede obtener
+ * la herramienta durante una acción de recolección.
+ */
 public enum Rareza {
 
     COMUN(2),

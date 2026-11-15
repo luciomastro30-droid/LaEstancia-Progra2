@@ -2,6 +2,11 @@ package modelo;
 
 import modelo.enums.Alojamiento;
 
+/**
+ * Representa un tipo de animal disponible en el juego.
+ * Define su precio, producto generado, tiempo de producción
+ * y el alojamiento necesario para poder tenerlo en la granja.
+ */
 public class TipoAnimal extends ElementoGranja {
 
     private String descripcion;

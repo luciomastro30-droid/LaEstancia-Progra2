@@ -13,8 +13,18 @@ import util.Reloj;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Controla el menu principal del jugador dentro de la granja.
+ * Se encarga de mostrar las opciones disponibles y delegar cada accion
+ * al menu o servicio correspondiente.
+ *
+ * Si el jugador todavía no tiene una partida activa, permite crearla
+ * antes de ingresar al menu principal.
+ */
 public class MenuJugador {
 
+    // Genera las opciones cada vez que se dibuja el menu para que
+    // el texto de la radio refleje su estado actual.
     private List<String> opcionesGranja() {
         return List.of(
                 "  MENU DE LA GRANJA",
@@ -207,8 +217,8 @@ public class MenuJugador {
             }
 
         } while (opcion != 0);
-            // Al salir de la granja se apaga la radio.
-            Radio.apagar();
+        // Al salir de la granja se apaga la radio.
+        Radio.apagar();
     }
 
 

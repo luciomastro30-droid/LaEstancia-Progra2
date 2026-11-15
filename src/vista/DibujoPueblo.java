@@ -2,6 +2,11 @@ package vista;
 
 import java.util.List;
 
+/**
+ * Genera la representacion visual ASCII del pueblo.
+ * Muestra los principales lugares que el jugador puede visitar,
+ * como la tienda agricola, el herrero y el mercado.
+ */
 public class DibujoPueblo {
 
     /*

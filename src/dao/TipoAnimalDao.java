@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los tipos de animales en la base de datos.
+ * Permite realizar altas, modificaciones, consultas, listados y bajas lógicas.
+ */
 public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
 
     // Guardo las consultas en constantes para no repetir SQL en cada metodo.
@@ -32,9 +36,6 @@ public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
     private static final String SQL_SELECT_ACTIVOS =
             "SELECT " + COLUMNAS +
                     " FROM tipo_animal WHERE activo = TRUE";
-    private static final String SQL_SELECT_NOMBRE =
-            "SELECT " + COLUMNAS +
-                    " FROM tipo_animal WHERE nombre = ? AND activo = TRUE";
 
     @Override
     public boolean alta(TipoAnimal elemento) throws SQLException {
@@ -240,41 +241,10 @@ public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
         }
     }
 
-
-    /**
-     * Busco un tipo de animal activo por su nombre. Me sirve para localizarlo
-     * desde el catalogo sin conocer su ID, por ejemplo buscando "Gallina".
+    /*
+     * Convierte una fila del ResultSet en un objeto TipoAnimal,
+     * incluyendo la conversión del alojamiento almacenado como texto.
      */
-    public TipoAnimal consultarPorNombre(
-            String nombre
-    ) throws SQLException {
-
-        try (Connection con =
-                     ConexionBD.obtenerConexion();
-
-             PreparedStatement pd =
-                     con.prepareStatement(
-                             SQL_SELECT_NOMBRE
-                     )) {
-
-            pd.setString(
-                    1,
-                    nombre
-            );
-
-            try (ResultSet rs =
-                         pd.executeQuery()) {
-
-                if (rs.next()) {
-                    return mapearTipoAnimal(rs);
-                }
-            }
-
-            return null;
-        }
-    }
-
-
     private TipoAnimal mapearTipoAnimal(
             ResultSet rs
     ) throws SQLException {

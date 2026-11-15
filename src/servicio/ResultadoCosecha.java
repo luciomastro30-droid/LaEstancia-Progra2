@@ -1,9 +1,14 @@
 package servicio;
 
-// clase cortita solo para llevar datos
-// Sirve para que el servicio le devuelva al menú varios datos juntos sin armar texto,
-// porque el texto lo arma el menú.
-public record ResultadoCosecha(String nombreCultivo, int cantidad, int experiencia, boolean subioNivel) {
+/**
+ * Agrupa los datos obtenidos al realizar una cosecha.
+ * Permite que el servicio devuelva varios valores juntos
+ * sin encargarse de construir el texto que luego mostrará el menú.
+ */
+public record ResultadoCosecha(
+        String nombreCultivo,
+        int cantidad,
+        int experiencia,
+        boolean subioNivel
+) {
 }
-
-

@@ -1,5 +1,10 @@
 package modelo;
 
+/**
+ * Representa un registro del inventario de una partida.
+ * Relaciona un item con una partida y almacena la cantidad
+ * disponible de ese item.
+ */
 public class Inventario {
 
     private int idInventario;

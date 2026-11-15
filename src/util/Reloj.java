@@ -1,5 +1,9 @@
 package util;
 
+/**
+ * Interpreta el tiempo interno del juego a partir de los minutos totales
+ * transcurridos y permite obtener el día, la hora y distintas condiciones horarias.
+ */
 public class Reloj {
 
     // Defino constantes para no repetir numeros sueltos en el codigo.

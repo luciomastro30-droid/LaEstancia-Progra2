@@ -7,6 +7,10 @@ import vista.DibujoPueblo;
 
 import java.util.List;
 
+/**
+ * Gestiona el acceso del jugador a los distintos comercios del pueblo.
+ * Desde este menú se puede ingresar a la tienda, herrero y mercado.
+ */
 public class MenuPueblo {
 
     private final PantallaJugador pantallaJugador;
@@ -77,6 +81,9 @@ public class MenuPueblo {
                     );
 
             mensaje = null;
+
+            // La radio puede activarse o desactivarse desde el pueblo
+            // sin depender del horario de los comercios.
             if (opcion == 4) {
                 mensaje = MenuRadio.alternar();
                 continue;
@@ -89,6 +96,8 @@ public class MenuPueblo {
                                 partida.getMinutoJuegoTotal()
                         );
 
+                // Antes de ingresar a un comercio se verifica
+                // que se encuentre dentro de su horario de atención.
                 if (!reloj.comerciosAbiertos()) {
 
                     mensaje =

@@ -13,25 +13,29 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los animales de cada partida.
+ * Permite registrar, modificar, consultar, listar y realizar bajas lógicas.
+ */
 public class AnimalDao implements DaoConBajaLogica<Animal> {
 
     private static final String COLUMNAS = "id_animal, id_partida, id_tipo_animal, nombre, hambre, " +
-                    "minuto_ultima_alimentacion, minuto_ultima_produccion, " + "fecha_adquisicion, activo";
+            "minuto_ultima_alimentacion, minuto_ultima_produccion, " + "fecha_adquisicion, activo";
     private static final String SQL_INSERT = "INSERT INTO animal (id_partida, id_tipo_animal, nombre, hambre, " +
-                    "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            "minuto_ultima_alimentacion, minuto_ultima_produccion, fecha_adquisicion, activo) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_BAJA = "UPDATE animal SET activo = FALSE " +
-                    "WHERE id_animal = ? AND activo = TRUE";
+            "WHERE id_animal = ? AND activo = TRUE";
     /*
      * Una vez comprado el animal no cambio su partida,
      * tipo ni fecha de adquisicion.
      */
     private static final String SQL_UPDATE = "UPDATE animal SET nombre = ?, hambre = ?, " +
-                    "minuto_ultima_alimentacion = ?, minuto_ultima_produccion = ? " + "WHERE id_animal = ? AND activo = TRUE";
+            "minuto_ultima_alimentacion = ?, minuto_ultima_produccion = ? " + "WHERE id_animal = ? AND activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM animal WHERE id_animal = ?";
     private static final String SQL_SELECT_ACTIVOS = "SELECT " + COLUMNAS +
-                    " FROM animal WHERE activo = TRUE " + "ORDER BY id_partida, id_animal";
+            " FROM animal WHERE activo = TRUE " + "ORDER BY id_partida, id_animal";
     private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS +
-                    " FROM animal WHERE id_partida = ? AND activo = TRUE " + "ORDER BY id_animal";
+            " FROM animal WHERE id_partida = ? AND activo = TRUE " + "ORDER BY id_animal";
 
 
     @Override
@@ -197,6 +201,9 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
+    /**
+     * Recupera todos los animales activos que pertenecen a una partida.
+     */
     public List<Animal> listarPorPartida(int idPartida)
             throws SQLException {
 
@@ -220,6 +227,7 @@ public class AnimalDao implements DaoConBajaLogica<Animal> {
     }
 
 
+    // Convierte una fila de la tabla animal en un objeto Animal.
     private Animal mapearAnimal(ResultSet rs)
             throws SQLException {
 

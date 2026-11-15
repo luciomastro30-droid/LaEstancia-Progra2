@@ -7,9 +7,13 @@ import servicio.HerreroServicio;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Genera la representacion visual ASCII del herrero.
+ * Muestra las mejoras disponibles para herramientas, parcelas
+ * y construcciones junto con sus costos actuales.
+ */
 public class DibujoHerrero {
 
-    private static final int ANCHO = 58;
     private static final int ANCHO_INTERIOR = 56;
 
 
@@ -82,6 +86,11 @@ public class DibujoHerrero {
                                 + HerreroServicio.COSTO_ESTABLO_PIEDRA
                                 + " Piedra"
                 )
+        );
+
+        // La opcion 7 tambien debe aparecer en el dibujo del herrero.
+        lineas.add(
+                lineaTerreno(partida)
         );
 
         lineas.add(borde());

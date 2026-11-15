@@ -21,7 +21,6 @@ public class MenuAdmin {
         int opcion;
 
         do {
-            Consola.limpiarPantalla();
             System.out.println("""
 
                     === MENU ADMINISTRADOR ===

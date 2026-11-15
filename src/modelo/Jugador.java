@@ -3,6 +3,10 @@ package modelo;
 import modelo.enums.Rol;
 import java.time.LocalDateTime;
 
+/**
+ * Representa a un usuario con rol de jugador.
+ * Además de los datos heredados de Usuario, mantiene la partida actual.
+ */
 public class Jugador extends Usuario {
 
     private Partida partidaActual;
@@ -20,6 +24,7 @@ public class Jugador extends Usuario {
     @Override
     public Rol getRol() {return Rol.JUGADOR;}
 
+    // Permite verificar si el jugador ya tiene una partida cargada.
     public boolean tienePartidaActual() {return partidaActual != null;}
 
     public Partida getPartidaActual() {return partidaActual;}

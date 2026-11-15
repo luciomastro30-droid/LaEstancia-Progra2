@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Gestiona la lógica de venta de productos en el mercado.
+ * Coordina el inventario del jugador, los items vendibles y las monedas de la partida.
+ */
 public class MercadoServicio {
 
     private final InventarioDao inventarioDao;
@@ -41,6 +45,10 @@ public class MercadoServicio {
             );
         }
 
+        /*
+         * Uso LinkedHashMap para relacionar cada item vendible con su cantidad
+         * disponible manteniendo el orden en que fueron cargados.
+         */
         Map<Item, Integer> productos =
                 new LinkedHashMap<>();
 

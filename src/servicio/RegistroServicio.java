@@ -14,11 +14,20 @@ import util.Seguridad;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Gestiona el registro de nuevos jugadores y la creación de sus partidas.
+ * También se encarga de asignar el inventario inicial al comenzar el juego.
+ */
 public class RegistroServicio {
 
     private static final int ID_ITEM_SEMILLA_INICIAL = 1; //semilla de trigo
     private static final int CANTIDAD_SEMILLA_INICIAL = 5;
 
+    /**
+     * Crea una nueva partida utilizando una conexión existente.
+     * Esto permite incluir la creación de la partida y su inventario
+     * dentro de una transacción mayor.
+     */
     public Partida crearPartidaNueva(Connection con, int idUsuario, String nombreGranja) throws SQLException {
 
         PartidaDao partidaDao = new PartidaDao();
@@ -47,7 +56,7 @@ public class RegistroServicio {
             }catch (SQLException e){
                 con.rollback();
                 throw e;
-           }
+            }
         }
     }
 
@@ -71,6 +80,7 @@ public class RegistroServicio {
             throw new AccionNoPermitidaException("Ese email ya existe");
         }
 
+        // La contraseña se guarda mediante su hash y no en texto plano.
         String passHash = Seguridad.hashear(contrasenia);
         Jugador jugador;
 
@@ -83,22 +93,22 @@ public class RegistroServicio {
         try (Connection con = ConexionBD.obtenerConexion()){
             con.setAutoCommit(false);
             try {
+                // Usuario, partida e inventario inicial se crean en una misma
+                // transacción para evitar registros incompletos si algo falla.
                 usuarioDao.alta(con,jugador);
                 Partida partida = crearPartidaNueva(con, jugador.getIdUsuario(), nombreGranja);
                 jugador.setPartidaActual(partida);
                 con.commit();
                 return jugador;
+
             }catch (SQLException e){
                 con.rollback();
                 throw e;
+
             } catch (IllegalArgumentException e) {
                 con.rollback();
                 throw new AccionNoPermitidaException(e.getMessage());
             }
-
-
         }
     }
 }
-
-

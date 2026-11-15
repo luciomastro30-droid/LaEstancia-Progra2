@@ -12,6 +12,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia del progreso de las misiones de cada partida.
+ * Guarda tanto el avance alcanzado como el estado actual de cada misión.
+ */
 public class ProgresoMisionDao implements Dao<ProgresoMision> {
 
     private static final String COLUMNAS =
@@ -161,6 +165,9 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
+    /**
+     * Recupera todos los progresos de misión asociados a una partida.
+     */
     public List<ProgresoMision> listarPorPartida(int idPartida)
             throws SQLException {
 
@@ -183,6 +190,10 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
+    /**
+     * Busca el progreso de una misión específica dentro de una partida.
+     * Si todavía no existe un registro para esa misión, devuelve null.
+     */
     public ProgresoMision consultarPorPartidaYCodigo(
             int idPartida,
             String codigoMision
@@ -207,6 +218,7 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
+    // Convierte una fila de progreso_mision en un objeto ProgresoMision.
     private ProgresoMision mapearProgresoMision(ResultSet rs)
             throws SQLException {
 

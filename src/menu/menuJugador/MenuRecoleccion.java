@@ -13,6 +13,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Controla las acciones de recoleccion disponibles para el jugador.
+ * Permite talar, picar y pescar, delegando la logica de cada accion
+ * a RecoleccionServicio y actualizando el progreso de las misiones.
+ */
 public class MenuRecoleccion {
 
     private final RecoleccionServicio recoleccionServicio;
@@ -139,7 +144,8 @@ public class MenuRecoleccion {
 
                 /*
                  * En la pesca puede no picar ningun pez.
-                 * Igual pasan los 60 minutos.
+                 * Aunque no se obtenga nada, igualmente transcurre
+                 * el tiempo correspondiente a la accion.
                  */
                 if (resultado.cantidad() == 0) {
 
@@ -183,6 +189,10 @@ public class MenuRecoleccion {
     }
 
 
+    /*
+     * Registra en las misiones la cantidad obtenida
+     * según el tipo de accion de recoleccion realizada.
+     */
     private void registrarProgresoMision(
             Partida partida,
             TipoObjetivo tipoObjetivo,
