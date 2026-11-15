@@ -7,6 +7,7 @@ import modelo.Partida;
 import servicio.GranjaServicio;
 import servicio.RegistroServicio;
 import util.Consola;
+import util.Radio;
 import util.Reloj;
 
 import java.sql.SQLException;
@@ -14,19 +15,22 @@ import java.util.List;
 
 public class MenuJugador {
 
-    private static final List<String> OPCIONES_GRANJA = List.of(
-            "  MENU DE LA GRANJA",
-            "",
-            "  1. Plantar",
-            "  2. Cosechar",
-            "  3. Inventario",
-            "  4. Animales",
-            "  5. Ir al pueblo",
-            "  6. Recolectar",
-            "  7. Dormir",
-            "  8. Misiones",
-            "  0. Guardar y salir"
-    );
+    private List<String> opcionesGranja() {
+        return List.of(
+                "  MENU DE LA GRANJA",
+                "",
+                "  1. Plantar",
+                "  2. Cosechar",
+                "  3. Inventario",
+                "  4. Animales",
+                "  5. Ir al pueblo",
+                "  6. Recolectar",
+                "  7. Dormir",
+                "  8. Misiones",
+                MenuRadio.opcion(9),
+                "  0. Guardar y salir"
+        );
+    }
 
     private final Jugador jugador;
     private final RegistroServicio registroServicio;
@@ -121,6 +125,8 @@ public class MenuJugador {
             }
         }
 
+        // La radio suena mientras se juega en la granja.
+        Radio.encender();
         int opcion;
 
         do {
@@ -129,7 +135,7 @@ public class MenuJugador {
                     jugador.getPartidaActual();
 
             dibujarGranja(
-                    OPCIONES_GRANJA,
+                    opcionesGranja(),
                     partida
             );
 
@@ -137,7 +143,7 @@ public class MenuJugador {
                     Consola.leerEntero(
                             "Opcion: ",
                             0,
-                            8
+                            9
                     );
 
             mensaje = null;
@@ -186,6 +192,9 @@ public class MenuJugador {
                                 partida
                         );
 
+                case 9 ->
+                        mensaje = MenuRadio.alternar();
+
                 case 0 -> {
 
                     if (!guardar(
@@ -198,6 +207,8 @@ public class MenuJugador {
             }
 
         } while (opcion != 0);
+            // Al salir de la granja se apaga la radio.
+            Radio.apagar();
     }
 
 

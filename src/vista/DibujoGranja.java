@@ -5,6 +5,7 @@ import modelo.Cultivo;
 import modelo.Partida;
 import modelo.Plantacion;
 import util.Reloj;
+import util.Radio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,8 @@ public class DibujoGranja {
 
         info.add(String.format("  %-24s%s %s",
                 partida.getNombreGranja().toUpperCase(), reloj.getTexto(), momento));
-        info.add("");
+        // si la radio esta prendida, debajo del nombre se ve el tema que suena
+        info.add(Radio.isEncendida() ? "  Radio: " + Radio.getTemaActual() : "");
         info.add(String.format("  Monedas: %-10d Nivel: %d",
                 partida.getMonedas(), partida.getNivel()));
         info.add(String.format("  XP %s %d/%d",
