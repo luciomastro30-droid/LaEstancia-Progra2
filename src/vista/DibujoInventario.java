@@ -12,7 +12,6 @@ import java.util.*;
  */
 public class DibujoInventario {
 
-    private static final int ANCHO = 32;
     private static final int ANCHO_INTERIOR = 30;
     private static final int MAX_RENGLONES = 9;
 

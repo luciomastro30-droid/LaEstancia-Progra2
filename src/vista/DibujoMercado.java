@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public class DibujoMercado {
 
-    private static final int ANCHO = 48;
     private static final int ANCHO_INTERIOR = 46;
 
 

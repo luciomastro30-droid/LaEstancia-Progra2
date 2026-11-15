@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class DibujoTienda {
 
-    private static final int ANCHO = 42;
     private static final int ANCHO_INTERIOR = 40;
 
 

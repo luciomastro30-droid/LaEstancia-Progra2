@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class DibujoHerrero {
 
-    private static final int ANCHO = 58;
     private static final int ANCHO_INTERIOR = 56;
 
 
@@ -87,6 +86,11 @@ public class DibujoHerrero {
                                 + HerreroServicio.COSTO_ESTABLO_PIEDRA
                                 + " Piedra"
                 )
+        );
+
+        // La opcion 7 tambien debe aparecer en el dibujo del herrero.
+        lineas.add(
+                lineaTerreno(partida)
         );
 
         lineas.add(borde());

@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public class DibujoCorrales {
 
-    private static final int ANCHO = 22;
     private static final int ANCHO_INTERIOR = 20;
 
 

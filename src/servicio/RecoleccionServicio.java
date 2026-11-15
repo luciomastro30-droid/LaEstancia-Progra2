@@ -14,6 +14,7 @@ import util.Reloj;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
+import java.time.LocalDateTime;
 
 /**
  * Gestiona las acciones de recoleccion del jugador.
@@ -137,6 +138,9 @@ public class RecoleccionServicio {
         long minutoAnterior =
                 partida.getMinutoJuegoTotal();
 
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
+
         try (Connection con =
                      ConexionBD.obtenerConexion()) {
 
@@ -181,6 +185,10 @@ public class RecoleccionServicio {
                         minutoAnterior
                 );
 
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
+                );
+
                 throw e;
             }
         }
@@ -223,6 +231,9 @@ public class RecoleccionServicio {
         // Guardo el tiempo actual por si la transaccion falla.
         long minutoAnterior =
                 partida.getMinutoJuegoTotal();
+
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
 
         /*
          * Inventario y tiempo se actualizan dentro de la misma
@@ -311,10 +322,15 @@ public class RecoleccionServicio {
                 /*
                  * El rollback afecta MySQL, pero no modifica
                  * automaticamente el objeto Java.
-                 * Por eso restauramos tambien el minuto.
+                 * Por eso restauramos tambien los valores
+                 * modificados de Partida.
                  */
                 partida.setMinutoJuegoTotal(
                         minutoAnterior
+                );
+
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
                 );
 
                 throw e;

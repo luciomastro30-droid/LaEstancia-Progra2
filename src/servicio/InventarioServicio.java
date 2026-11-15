@@ -70,23 +70,4 @@ public class InventarioServicio {
 
         return contenido;
     }
-
-
-    // Devuelve la cantidad disponible de un item en una partida.
-    // Si todavía no existe una fila de inventario para ese item, devuelve 0.
-    public int cantidadDe(
-            Partida partida,
-            int idItem
-    ) throws SQLException {
-
-        Inventario fila =
-                inventarioDao.consultarPorPartidaEItem(
-                        partida.getIdPartida(),
-                        idItem
-                );
-
-        return fila == null
-                ? 0
-                : fila.getCantidad();
-    }
 }

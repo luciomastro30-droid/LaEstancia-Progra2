@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.time.LocalDateTime;
 
 /**
  * Gestiona la lógica principal relacionada con los cultivos de la granja.
@@ -187,8 +188,8 @@ public class GranjaServicio {
             );
         }
 
-        long minutoAnterior =
-                partida.getMinutoJuegoTotal();
+        long minutoAnterior = partida.getMinutoJuegoTotal();
+        LocalDateTime fechaGuardadoAnterior = partida.getFechaGuardado();
 
         Plantacion nueva =
                 new Plantacion(
@@ -246,12 +247,13 @@ public class GranjaServicio {
                 con.commit();
 
             } catch (SQLException e) {
-
                 con.rollback();
 
-                // La base volvió atrás, por eso también restauramos el objeto en memoria.
-                partida.setMinutoJuegoTotal(
-                        minutoAnterior
+                // La base volvio atras, asi que el objeto en memoria tambien.
+                partida.setMinutoJuegoTotal(minutoAnterior);
+
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
                 );
 
                 throw e;
@@ -402,6 +404,9 @@ public class GranjaServicio {
         long minutoAnterior =
                 partida.getMinutoJuegoTotal();
 
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
+
         try (Connection con =
                      ConexionBD.obtenerConexion()) {
 
@@ -487,20 +492,15 @@ public class GranjaServicio {
                 );
 
             } catch (SQLException e) {
-
                 con.rollback();
 
-                // La base volvió atrás, por eso también restauramos la partida en memoria.
-                partida.setNivel(
-                        nivelAnterior
-                );
+                // La base volvio atras, asi que el objeto en memoria tambien.
+                partida.setNivel(nivelAnterior);
+                partida.setExperiencia(experienciaAnterior);
+                partida.setMinutoJuegoTotal(minutoAnterior);
 
-                partida.setExperiencia(
-                        experienciaAnterior
-                );
-
-                partida.setMinutoJuegoTotal(
-                        minutoAnterior
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
                 );
 
                 throw e;

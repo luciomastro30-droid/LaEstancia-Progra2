@@ -36,9 +36,6 @@ public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
     private static final String SQL_SELECT_ACTIVOS =
             "SELECT " + COLUMNAS +
                     " FROM tipo_animal WHERE activo = TRUE";
-    private static final String SQL_SELECT_NOMBRE =
-            "SELECT " + COLUMNAS +
-                    " FROM tipo_animal WHERE nombre = ? AND activo = TRUE";
 
     @Override
     public boolean alta(TipoAnimal elemento) throws SQLException {
@@ -243,41 +240,6 @@ public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
             return lista;
         }
     }
-
-
-    /**
-     * Busco un tipo de animal activo por su nombre. Me sirve para localizarlo
-     * desde el catalogo sin conocer su ID, por ejemplo buscando "Gallina".
-     */
-    public TipoAnimal consultarPorNombre(
-            String nombre
-    ) throws SQLException {
-
-        try (Connection con =
-                     ConexionBD.obtenerConexion();
-
-             PreparedStatement pd =
-                     con.prepareStatement(
-                             SQL_SELECT_NOMBRE
-                     )) {
-
-            pd.setString(
-                    1,
-                    nombre
-            );
-
-            try (ResultSet rs =
-                         pd.executeQuery()) {
-
-                if (rs.next()) {
-                    return mapearTipoAnimal(rs);
-                }
-            }
-
-            return null;
-        }
-    }
-
 
     /*
      * Convierte una fila del ResultSet en un objeto TipoAnimal,

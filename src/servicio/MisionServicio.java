@@ -12,6 +12,7 @@ import modelo.enums.TipoObjetivo;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -252,6 +253,8 @@ public class MisionServicio {
         int nivelAnterior = partida.getNivel();
         int experienciaAnterior = partida.getExperiencia();
 
+        LocalDateTime fechaGuardadoAnterior = partida.getFechaGuardado();
+
         try (Connection con = ConexionBD.obtenerConexion()) {
 
             con.setAutoCommit(false);
@@ -303,6 +306,7 @@ public class MisionServicio {
                 partida.setMonedas(monedasAnteriores);
                 partida.setNivel(nivelAnterior);
                 partida.setExperiencia(experienciaAnterior);
+                partida.setFechaGuardado(fechaGuardadoAnterior);
 
                 throw e;
             }

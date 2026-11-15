@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 /**
  * Gestiona la lógica relacionada con los animales de la granja.
@@ -164,6 +165,9 @@ public class AnimalServicio {
         int monedasAnteriores =
                 partida.getMonedas();
 
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
+
         long minutoActual =
                 partida.getMinutoJuegoTotal();
 
@@ -221,6 +225,10 @@ public class AnimalServicio {
                 // El rollback no modifica el objeto Java.
                 partida.setMonedas(
                         monedasAnteriores
+                );
+
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
                 );
 
                 throw e;
@@ -301,6 +309,9 @@ public class AnimalServicio {
 
         long minutoAnterior =
                 partida.getMinutoJuegoTotal();
+
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
 
         try (Connection con =
                      ConexionBD.obtenerConexion()) {
@@ -421,6 +432,10 @@ public class AnimalServicio {
                         minutoAnterior
                 );
 
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
+                );
+
                 throw e;
             }
         }
@@ -532,6 +547,9 @@ public class AnimalServicio {
 
         long minutoAnterior =
                 partida.getMinutoJuegoTotal();
+
+        LocalDateTime fechaGuardadoAnterior =
+                partida.getFechaGuardado();
 
         try (Connection con =
                      ConexionBD.obtenerConexion()) {
@@ -653,6 +671,10 @@ public class AnimalServicio {
 
                 partida.setMinutoJuegoTotal(
                         minutoAnterior
+                );
+
+                partida.setFechaGuardado(
+                        fechaGuardadoAnterior
                 );
 
                 throw e;
