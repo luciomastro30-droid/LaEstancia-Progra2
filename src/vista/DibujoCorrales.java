@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Genera la representacion visual ASCII de los corrales de la granja.
+ * Muestra el estado del gallinero y del establo, su capacidad
+ * y un resumen de los animales que contiene cada alojamiento.
+ */
 public class DibujoCorrales {
 
     private static final int ANCHO = 22;

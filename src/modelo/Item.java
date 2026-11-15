@@ -2,6 +2,11 @@ package modelo;
 
 import modelo.enums.TipoItem;
 
+/**
+ * Representa un item que puede existir dentro del juego.
+ * Define su nombre, tipo, precios y estado, y puede ser utilizado
+ * en el inventario, tiendas, cultivos, animales y otras mecánicas.
+ */
 public class Item {
 
     private int idItem;
@@ -173,7 +178,10 @@ public class Item {
 
 
     @Override
-    public int hashCode() {return Integer.hashCode(idItem);}
+    public int hashCode() {
+        return Integer.hashCode(idItem);
+    }
+
 
     @Override
     public String toString() {

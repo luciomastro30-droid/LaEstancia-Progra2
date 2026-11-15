@@ -14,6 +14,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+/**
+ * Submenu de administracion de usuarios.
+ *
+ * Permite realizar altas, modificaciones, bajas logicas,
+ * consultas y listados de jugadores y administradores.
+ *
+ * Delega la persistencia a UsuarioDao y utiliza RegistroServicio
+ * cuando se necesita crear un jugador junto con su partida inicial.
+ */
 public class MenuUsuariosAdmin {
 
     private final Administrador administrador;
@@ -31,7 +40,6 @@ public class MenuUsuariosAdmin {
         int opcion;
 
         do {
-            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE USUARIOS ===
@@ -133,7 +141,7 @@ public class MenuUsuariosAdmin {
             );
 
             System.out.println("Jugador creado correctamente. ID generado: "
-                            + jugador.getIdUsuario()
+                    + jugador.getIdUsuario()
             );
 
             return;
@@ -438,7 +446,6 @@ public class MenuUsuariosAdmin {
             );
         }
     }
-
 
 
     private Rol leerRol() {

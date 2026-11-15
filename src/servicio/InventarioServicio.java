@@ -10,6 +10,11 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Gestiona la consulta del inventario de una partida.
+ * Relaciona cada registro de inventario con su Item correspondiente
+ * para devolver la información lista para utilizar en el juego.
+ */
 public class InventarioServicio {
 
     private final InventarioDao inventarioDao;
@@ -67,6 +72,8 @@ public class InventarioServicio {
     }
 
 
+    // Devuelve la cantidad disponible de un item en una partida.
+    // Si todavía no existe una fila de inventario para ese item, devuelve 0.
     public int cantidadDe(
             Partida partida,
             int idItem

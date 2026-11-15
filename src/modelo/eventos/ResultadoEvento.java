@@ -1,6 +1,9 @@
 package modelo.eventos;
 
-
+/**
+ * Representa el resultado final de un evento después de que el jugador
+ * elige una opción, indicando si tuvo éxito y qué cambios produjo.
+ */
 public class ResultadoEvento {
 
     private final String nombreEvento;

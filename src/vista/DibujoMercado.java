@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Genera la representacion visual ASCII del mercado.
+ * Muestra los productos que el jugador puede vender,
+ * junto con la cantidad disponible y su precio de venta.
+ */
 public class DibujoMercado {
 
     private static final int ANCHO = 48;

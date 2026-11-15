@@ -1,5 +1,10 @@
 package modelo.enums;
 
+/**
+ * Define los tipos de alojamiento disponibles para los animales.
+ * Cada alojamiento establece la cantidad máxima de animales
+ * que puede contener.
+ */
 public enum Alojamiento {
 
     GALLINERO(6),

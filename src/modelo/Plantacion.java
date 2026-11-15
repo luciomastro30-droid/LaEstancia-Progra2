@@ -1,6 +1,12 @@
 package modelo;
+
 import modelo.enums.EstadoPlantacion;
 
+/**
+ * Representa un cultivo sembrado en una parcela concreta de una partida.
+ * Guarda el momento de la siembra y su estado para poder determinar
+ * cuándo está listo para cosechar.
+ */
 public class Plantacion {
 
     public static final int MAX_PARCELAS = 6;
@@ -139,6 +145,10 @@ public class Plantacion {
         return activo;
     }
 
+    /*
+     * Calcula cuánto tiempo falta para que el cultivo termine de crecer.
+     * Si ya alcanzó o superó su tiempo de crecimiento, devuelve 0.
+     */
     public long minutosRestantes(Cultivo cultivo, long minutoActual){
         long transcurrido = minutoActual - minutoSiembraJuego;
         long restante = cultivo.getTiempoCrecimientoMin() - transcurrido;
@@ -161,6 +171,4 @@ public class Plantacion {
                 ", activo=" + activo +
                 '}';
     }
-
-
 }

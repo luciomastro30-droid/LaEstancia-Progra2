@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Construye la representación visual del herrero en consola.
- * Muestra el estado y los costos de las mejoras disponibles para la partida.
+ * Genera la representacion visual ASCII del herrero.
+ * Muestra las mejoras disponibles para herramientas, parcelas
+ * y construcciones junto con sus costos actuales.
  */
 public class DibujoHerrero {
 

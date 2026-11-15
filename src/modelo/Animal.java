@@ -1,7 +1,12 @@
 package modelo;
+
 import java.time.LocalDateTime;
 
-
+/**
+ * Representa un animal concreto perteneciente a una partida.
+ * Guarda su tipo, nombre, hambre y los momentos de última alimentación
+ * y producción para controlar su comportamiento dentro del juego.
+ */
 public class Animal {
 
     private static final int HAMBRE_INICIAL = 100;

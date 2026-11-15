@@ -10,6 +10,15 @@ import util.Consola;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Submenu de administracion de cultivos.
+ *
+ * Permite realizar las operaciones de alta, modificacion,
+ * baja logica, consulta y listado de cultivos.
+ *
+ * Ademas, controla la asociacion de cada cultivo con los Items
+ * utilizados como semilla y como producto de cosecha.
+ */
 public class MenuCultivosAdmin {
 
     private final CultivoDao cultivoDao;
@@ -25,7 +34,6 @@ public class MenuCultivosAdmin {
         int opcion;
 
         do {
-            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE CULTIVOS ===

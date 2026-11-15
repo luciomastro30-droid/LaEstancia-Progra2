@@ -16,6 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controla las acciones relacionadas con los cultivos desde el menu del jugador.
+ * Permite plantar semillas, cosechar parcelas y registrar el progreso
+ * correspondiente en las misiones.
+ *
+ * La logica principal de la granja se delega a GranjaServicio.
+ */
 public class MenuCultivos {
 
     private final GranjaServicio granjaServicio;
@@ -283,6 +290,7 @@ public class MenuCultivos {
     }
 
 
+    // Construye el texto que se muestra cuando una o mas misiones fueron completadas.
     private String mensajeMisionesCompletadas(
             List<DefinicionMision> completadas
     ) {

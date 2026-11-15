@@ -15,9 +15,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
 
+/**
+ * Gestiona las acciones de recoleccion del jugador.
+ * Controla el horario, las herramientas utilizadas, los recursos obtenidos,
+ * la actualizacion del inventario y el avance del tiempo.
+ */
 public class RecoleccionServicio {
 
-    // Cada accion de recoleccion hace avanzar una hora el reloj del juego.
+    // Cada accion de recoleccion hace avanzar dos horas el reloj del juego.
     public static final int MINUTOS_RECOLECTAR = 120;
 
     // IDs fijos de los recursos cargados en la tabla item.
@@ -36,11 +41,14 @@ public class RecoleccionServicio {
         this.partidaDao = new PartidaDao();
     }
 
-    //No se puede talar,picar ni pescar de 20:00 a 5:59.
-    private void validarHorario(Partida partida) throws AccionNoPermitidaException{
+    // No se puede talar, picar ni pescar de 20:00 a 5:59.
+    private void validarHorario(Partida partida) throws AccionNoPermitidaException {
         Reloj reloj = new Reloj(partida.getMinutoJuegoTotal());
-        if(reloj.esDeNoche()){
-            throw new AccionNoPermitidaException("Es de noche. Se puede recolectar de 06:00 a 20:00 (dormi para que sea de dia).");
+
+        if (reloj.esDeNoche()) {
+            throw new AccionNoPermitidaException(
+                    "Es de noche. Se puede recolectar de 06:00 a 20:00 (dormi para que sea de dia)."
+            );
         }
     }
 
@@ -49,10 +57,16 @@ public class RecoleccionServicio {
             throws SQLException, AccionNoPermitidaException {
 
         validarHorario(partida);
-        // La rareza del hacha define cuantas unidades de madera obtiene.
-        int cantidad = partida.getRarezaHacha().getUnidadesRecoleccion();
 
-        return recolectar(partida, ID_MADERA, cantidad);
+        // La rareza del hacha define cuantas unidades de madera obtiene.
+        int cantidad =
+                partida.getRarezaHacha().getUnidadesRecoleccion();
+
+        return recolectar(
+                partida,
+                ID_MADERA,
+                cantidad
+        );
     }
 
 
@@ -60,17 +74,26 @@ public class RecoleccionServicio {
             throws SQLException, AccionNoPermitidaException {
 
         validarHorario(partida);
-        // La rareza del pico define cuantas unidades de piedra obtiene.
-        int cantidad = partida.getRarezaPico().getUnidadesRecoleccion();
 
-        return recolectar(partida, ID_PIEDRA, cantidad);
+        // La rareza del pico define cuantas unidades de piedra obtiene.
+        int cantidad =
+                partida.getRarezaPico().getUnidadesRecoleccion();
+
+        return recolectar(
+                partida,
+                ID_PIEDRA,
+                cantidad
+        );
     }
 
 
-    public ResultadoRecoleccion pescar(Partida partida, Random random)
-            throws SQLException, AccionNoPermitidaException {
+    public ResultadoRecoleccion pescar(
+            Partida partida,
+            Random random
+    ) throws SQLException, AccionNoPermitidaException {
 
         validarHorario(partida);
+
         /*
          * Random se recibe por parametro para poder controlar
          * los resultados durante las pruebas.
@@ -82,7 +105,9 @@ public class RecoleccionServicio {
         }
 
         int probabilidad =
-                probabilidadPesca(partida.getRarezaCania());
+                probabilidadPesca(
+                        partida.getRarezaCania()
+                );
 
         // nextInt(100) devuelve un valor entre 0 y 99.
         if (random.nextInt(100) < probabilidad) {
@@ -93,7 +118,9 @@ public class RecoleccionServicio {
              */
             int idPez =
                     IDS_PECES[
-                            random.nextInt(IDS_PECES.length)
+                            random.nextInt(
+                                    IDS_PECES.length
+                            )
                             ];
 
             return recolectar(
@@ -171,7 +198,9 @@ public class RecoleccionServicio {
          * Ese nombre se devuelve luego al menu.
          */
         Item item =
-                itemDao.consultarPorId(idItem);
+                itemDao.consultarPorId(
+                        idItem
+                );
 
         if (item == null) {
             throw new SQLException(
@@ -199,7 +228,9 @@ public class RecoleccionServicio {
          * Inventario y tiempo se actualizan dentro de la misma
          * transaccion para que no pueda guardarse uno sin el otro.
          */
-        try (Connection con = ConexionBD.obtenerConexion()) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion()) {
+
             con.setAutoCommit(false);
 
             try {
@@ -292,7 +323,9 @@ public class RecoleccionServicio {
     }
 
 
-    private int probabilidadPesca(Rareza rareza) {
+    private int probabilidadPesca(
+            Rareza rareza
+    ) {
 
         // Una mejor rareza de cania aumenta la posibilidad de pescar.
         return switch (rareza) {

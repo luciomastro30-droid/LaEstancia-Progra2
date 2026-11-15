@@ -11,33 +11,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia del inventario de las partidas.
+ * Cada registro relaciona una partida con un item y la cantidad disponible.
+ */
 public class InventarioDao implements Dao<Inventario> {
 
     private static final String COLUMNAS = "id_inventario, id_partida, id_item, cantidad";
     private static final String SQL_INSERT = "INSERT INTO inventario (id_partida, id_item, cantidad) VALUES (?, ?, ?)";
-     // Una fila de inventario representa la relacion entre una partida y un item.
+
+    // Una fila de inventario representa la relacion entre una partida y un item.
     // Por eso no cambio id_partida ni id_item: solamente actualizo la cantidad.
     private static final String SQL_UPDATE = "UPDATE inventario SET cantidad = ? WHERE id_inventario = ?";
+
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM inventario WHERE id_inventario = ?";
+
     private static final String SQL_SELECT = "SELECT " + COLUMNAS +
-                    " FROM inventario WHERE cantidad > 0 ORDER BY id_partida, id_item";
+            " FROM inventario WHERE cantidad > 0 ORDER BY id_partida, id_item";
+
     private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS + " FROM inventario " +
-                    "WHERE id_partida = ? AND cantidad > 0 ORDER BY id_item";
+            "WHERE id_partida = ? AND cantidad > 0 ORDER BY id_item";
+
     private static final String SQL_SELECT_PARTIDA_ITEM = "SELECT " + COLUMNAS + " FROM inventario " +
-                    "WHERE id_partida = ? AND id_item = ?";
+            "WHERE id_partida = ? AND id_item = ?";
+
 
     @Override
     public boolean alta(Inventario elemento) throws SQLException {
-        try (Connection con = ConexionBD.obtenerConexion()){
-            return alta(con,elemento);
+
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return alta(con, elemento);
         }
     }
 
-    public boolean alta(Connection con,Inventario elemento) throws SQLException {
+
+    /*
+     * Esta versión recibe una conexión existente para poder incluir
+     * el alta del inventario dentro de una transacción mayor.
+     */
+    public boolean alta(Connection con, Inventario elemento) throws SQLException {
 
         try (PreparedStatement pd = con.prepareStatement(
-                     SQL_INSERT,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                SQL_INSERT,
+                Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setInt(1, elemento.getIdPartida());
             pd.setInt(2, elemento.getIdItem());
@@ -66,6 +82,7 @@ public class InventarioDao implements Dao<Inventario> {
      * representa la fila y la base no permite repetir la misma combinacion.
      */
     public boolean modificar(Connection con, Inventario elemento) throws SQLException {
+
         try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setInt(1, elemento.getCantidad());
@@ -75,7 +92,9 @@ public class InventarioDao implements Dao<Inventario> {
         }
     }
 
+
     public boolean modificar(Inventario elemento) throws SQLException {
+
         try (Connection con = ConexionBD.obtenerConexion()) {
             return modificar(con, elemento);
         }
@@ -118,6 +137,7 @@ public class InventarioDao implements Dao<Inventario> {
             return inventario;
         }
     }
+
 
     /**
      * Recupero todos los items con cantidad mayor a 0 que pertenecen a una partida.
@@ -172,6 +192,7 @@ public class InventarioDao implements Dao<Inventario> {
     }
 
 
+    // Convierte una fila de la tabla inventario en un objeto Inventario.
     private Inventario mapearInventario(ResultSet rs) throws SQLException {
 
         return new Inventario(

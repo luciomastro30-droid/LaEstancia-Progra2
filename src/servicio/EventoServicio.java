@@ -10,13 +10,22 @@ import util.Reloj;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Gestiona la aparición aleatoria de eventos durante una partida.
+ * Controla la probabilidad según el horario y evita que ocurra
+ * más de un evento durante el mismo día del juego.
+ */
 public class EventoServicio {
 
     private static final int PROBABILIDAD_DIA = 8;
     private static final int PROBABILIDAD_NOCHE = 20;
 
+    /*
+     * La lista trabaja con el tipo general Evento, aunque contiene
+     * distintas implementaciones concretas. Esto permite tratarlas
+     * de forma polimórfica.
+     */
     private final List<Evento> eventos;
-
 
 
     public EventoServicio() {
@@ -60,7 +69,6 @@ public class EventoServicio {
 
         Reloj reloj =
                 new Reloj(partida.getMinutoJuegoTotal());
-
 
 
         long diaReloj = reloj.getDia();
@@ -124,7 +132,6 @@ public class EventoServicio {
         if (!ocurreEvento) {
             return null;
         }
-
 
 
         Evento evento =

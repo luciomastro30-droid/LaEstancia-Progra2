@@ -1,5 +1,11 @@
 package servicio;
 
-// Clase corta para devolver al menu el resultado de una recoleccion.
-public record ResultadoRecoleccion(String nombreItem, int cantidad) {
+/**
+ * Agrupa los datos obtenidos después de una acción de recolección.
+ * Permite devolver al menú el recurso obtenido y su cantidad.
+ */
+public record ResultadoRecoleccion(
+        String nombreItem,
+        int cantidad
+) {
 }

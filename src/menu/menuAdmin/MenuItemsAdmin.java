@@ -31,7 +31,6 @@ public class MenuItemsAdmin {
         int opcion;
 
         do {
-            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE ITEMS ===
@@ -398,7 +397,7 @@ public class MenuItemsAdmin {
         return tipos[opcion - 1];
     }
 
-    
+
     private void mostrarItem(Item item) {
 
         System.out.println(

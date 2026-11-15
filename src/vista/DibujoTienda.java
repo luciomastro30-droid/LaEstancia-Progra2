@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Construye la representación visual de la tienda agrícola en consola,
- * mostrando los productos disponibles junto con sus precios de compra.
+ * Genera la representacion visual ASCII de la tienda agricola.
+ * Muestra los productos disponibles con su precio de compra
+ * y combina la lista con el dibujo del comerciante.
  */
 public class DibujoTienda {
 

@@ -1,4 +1,3 @@
-
 package vista;
 
 import modelo.Cultivo;
@@ -11,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Genera la representacion visual ASCII de la granja.
+ * Se encarga de dibujar las parcelas, corrales y la informacion
+ * general de la partida que se muestra durante el juego.
+ */
 public class DibujoGranja {
 
     private static final int ALTO_ESCENA = 7;

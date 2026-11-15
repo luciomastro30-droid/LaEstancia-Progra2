@@ -12,6 +12,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+/**
+ * Submenu de administracion de tipos de animales.
+ *
+ * Permite realizar las operaciones de alta, modificacion,
+ * baja logica, consulta y listado de tipos de animales.
+ *
+ * Tambien controla la asociacion con el Item producido
+ * y el alojamiento requerido por cada tipo de animal.
+ */
 public class MenuTiposAnimalAdmin {
 
     private final TipoAnimalDao tipoAnimalDao;
@@ -28,7 +37,6 @@ public class MenuTiposAnimalAdmin {
         int opcion;
 
         do {
-            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE TIPOS DE ANIMALES ===

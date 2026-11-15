@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Controla la aparicion y resolucion de los eventos aleatorios del juego.
+ * Muestra las opciones del evento, permite al jugador elegir una respuesta
+ * y guarda en la base de datos las consecuencias aplicadas a la partida.
+ */
 public class MenuEvento {
 
     // audio que suena al pelear con un bicho
@@ -41,6 +46,10 @@ public class MenuEvento {
      */
     public String intentarMostrar(Partida partida) {
 
+        /*
+         * Guardo el estado anterior de la partida para poder restaurarlo
+         * si el resultado del evento no logra persistirse en la base.
+         */
         int monedasAntes = partida.getMonedas();
         int experienciaAntes = partida.getExperiencia();
         int nivelAntes = partida.getNivel();
@@ -144,35 +153,35 @@ public class MenuEvento {
 
         } catch (SQLException e) {
 
-        restaurarPartida(
-                partida,
-                monedasAntes,
-                experienciaAntes,
-                nivelAntes,
-                diaUltimoEventoAntes
-        );
+            restaurarPartida(
+                    partida,
+                    monedasAntes,
+                    experienciaAntes,
+                    nivelAntes,
+                    diaUltimoEventoAntes
+            );
 
-        String error =
-                "No se pudo guardar el evento: "
-                        + e.getMessage();
+            String error =
+                    "No se pudo guardar el evento: "
+                            + e.getMessage();
 
-        pantallaJugador.mostrar(
-                List.of(
-                        "  ERROR",
-                        "",
-                        "  Enter para continuar"
-                ),
-                partida,
-                error,
-                DibujoEvento.dibujar(
-                        evento
-                )
-        );
+            pantallaJugador.mostrar(
+                    List.of(
+                            "  ERROR",
+                            "",
+                            "  Enter para continuar"
+                    ),
+                    partida,
+                    error,
+                    DibujoEvento.dibujar(
+                            evento
+                    )
+            );
 
-        Consola.pausar();
+            Consola.pausar();
 
-        return error;
-    }
+            return error;
+        }
 
         String mensaje =
                 resultado.getMensaje();
@@ -251,6 +260,11 @@ public class MenuEvento {
         Sonido.reproducirYEsperar(AUDIO_PELEA);
     }
 
+
+    /*
+     * Divide el texto de una opcion en varios renglones
+     * para que entre correctamente dentro del dibujo del menu.
+     */
     private void agregarOpcion(
             List<String> opciones,
             int numero,
@@ -317,6 +331,10 @@ public class MenuEvento {
     }
 
 
+    /*
+     * Restaura los valores modificados por el evento
+     * si el resultado no pudo guardarse correctamente.
+     */
     private void restaurarPartida(
             Partida partida,
             int monedas,

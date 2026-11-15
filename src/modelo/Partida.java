@@ -5,6 +5,14 @@ import modelo.enums.Rareza;
 
 import java.time.LocalDateTime;
 
+/**
+ * Representa el estado general de una partida y el progreso de la granja.
+ * Contiene monedas, nivel, experiencia, tiempo del juego, parcelas,
+ * construcciones, herramientas y demás datos que deben mantenerse entre sesiones.
+ *
+ * También contiene reglas propias de la partida, como avanzar el tiempo,
+ * dormir y subir de nivel mediante experiencia.
+ */
 public class Partida {
 
     public static final int MONEDAS_INICIALES = 500;
@@ -249,6 +257,7 @@ public class Partida {
     }
 
     public void setNivelTerreno(int nivelTerreno) {
+
         // El terreno solo puede estar en nivel 1 o nivel 2.
         if (nivelTerreno < 1 || nivelTerreno > 2) {
             throw new IllegalArgumentException(
@@ -387,46 +396,71 @@ public class Partida {
         this.activo = activo;
     }
 
-    //como es una regla de juego va en modelo
-    public int experienciaParaSubir(){
-        return 100* this.nivel;
+
+    // Esta regla pertenece al modelo porque depende directamente
+    // del nivel actual de la partida.
+    public int experienciaParaSubir() {
+        return 100 * this.nivel;
     }
 
-    // hace pasar el tiempo del juego (cada accion consume minutos)
+
+    // Hace pasar el tiempo interno del juego.
     public void avanzarMinutos(long minutos) {
         setMinutoJuegoTotal(minutoJuegoTotal + minutos);
     }
 
-    // duerme hasta las 06:00: si ya paso esa hora, hasta las 06:00 del dia siguiente
+
+    // Avanza el reloj hasta las 06:00 del mismo día o del día siguiente.
     public void dormir() {
+
         long minutosPorDia = 24 * 60;
         long despertar = 6 * 60;
 
-        long inicioDelDia = (minutoJuegoTotal / minutosPorDia) * minutosPorDia;
-        long minutoDelDia = minutoJuegoTotal % minutosPorDia;
+        long inicioDelDia =
+                (minutoJuegoTotal / minutosPorDia)
+                        * minutosPorDia;
+
+        long minutoDelDia =
+                minutoJuegoTotal % minutosPorDia;
 
         if (minutoDelDia < despertar) {
-            setMinutoJuegoTotal(inicioDelDia + despertar);
+
+            setMinutoJuegoTotal(
+                    inicioDelDia + despertar
+            );
+
         } else {
-            setMinutoJuegoTotal(inicioDelDia + minutosPorDia + despertar);
+
+            setMinutoJuegoTotal(
+                    inicioDelDia
+                            + minutosPorDia
+                            + despertar
+            );
         }
     }
 
-    // suma experiencia y sube de nivel cada vez que se llega a lo necesario.
-    // devuelve true si subio al menos un nivel
+
+    // Suma experiencia y permite subir más de un nivel
+    // si la cantidad recibida alcanza para hacerlo.
     public boolean sumarExperiencia(int cantidad) {
+
         if (cantidad < 0) {
-            throw new IllegalArgumentException("La experiencia a sumar no puede ser negativa.");
+            throw new IllegalArgumentException(
+                    "La experiencia a sumar no puede ser negativa."
+            );
         }
 
         boolean subio = false;
+
         experiencia += cantidad;
 
         while (experiencia >= experienciaParaSubir()) {
+
             experiencia -= experienciaParaSubir();
             nivel++;
             subio = true;
         }
+
         return subio;
     }
 

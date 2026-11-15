@@ -12,13 +12,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de las plantaciones de cada partida.
+ * Permite registrar cultivos sembrados, actualizar su estado y consultar parcelas activas.
+ */
 public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
 
     private static final String COLUMNAS = "id_plantacion, id_partida, id_cultivo, numero_parcela, " +
-                    "minuto_siembra_juego, estado, activo";
+            "minuto_siembra_juego, estado, activo";
 
     private static final String SQL_INSERT = "INSERT INTO plantacion (id_partida, id_cultivo, numero_parcela, " +
-                    "minuto_siembra_juego, estado, activo) VALUES (?, ?, ?, ?, ?, ?)";
+            "minuto_siembra_juego, estado, activo) VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_BAJA = "UPDATE plantacion SET activo = FALSE WHERE id_plantacion = ? AND activo = TRUE";
 
@@ -28,8 +32,8 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS + " FROM plantacion WHERE id_plantacion = ?";
     private static final String SQL_SELECT_ACTIVAS = "SELECT " + COLUMNAS + " FROM plantacion WHERE activo = TRUE ORDER BY id_partida, numero_parcela";
     private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS + " FROM plantacion " +
-                    "WHERE id_partida = ? AND activo = TRUE AND estado <> ? " +
-                    "ORDER BY numero_parcela";
+            "WHERE id_partida = ? AND activo = TRUE AND estado <> ? " +
+            "ORDER BY numero_parcela";
     private static final String SQL_SELECT_PARCELA = "SELECT " + COLUMNAS + " FROM plantacion " +
             "WHERE id_partida = ? AND numero_parcela = ? AND activo = TRUE AND estado <> ? " +
             "ORDER BY id_plantacion DESC LIMIT 1";
@@ -48,6 +52,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
             pd.setInt(2, elemento.getIdCultivo());
             pd.setInt(3, elemento.getNumeroParcela());
             pd.setLong(4, elemento.getMinutoSiembraJuego());
+
             // Guardo el enum como texto para que coincida con el ENUM definido en MySQL.
             pd.setString(5, elemento.getEstado().name());
             pd.setBoolean(6, elemento.isActivo());
@@ -80,6 +85,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
              PreparedStatement pd = con.prepareStatement(SQL_BAJA)) {
 
             pd.setInt(1, idBuscado);
+
             return pd.executeUpdate() > 0;
         }
     }
@@ -90,7 +96,6 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
      * esos datos representan el origen de esa plantacion y no deberian modificarse despues.
      * Por ejemplo, el estado puede pasar de CRECIENDO a LISTA y despues a COSECHADA.
      */
-
     public boolean modificar(Connection con, Plantacion elemento) throws SQLException {
         try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
@@ -100,6 +105,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
             return pd.executeUpdate() > 0;
         }
     }
+
     @Override
     public boolean modificar(Plantacion elemento) throws SQLException {
         try (Connection con = ConexionBD.obtenerConexion()) {
@@ -147,6 +153,10 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     }
 
 
+    /**
+     * Recupera las plantaciones activas y todavía no cosechadas
+     * que pertenecen a una partida.
+     */
     public List<Plantacion> listarPorPartida(int idPartida) throws SQLException {
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement pd = con.prepareStatement(SQL_SELECT_PARTIDA)) {
@@ -182,7 +192,6 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
             pd.setInt(2, numeroParcela);
             pd.setString(3, EstadoPlantacion.COSECHADA.name());
 
-
             try (ResultSet rs = pd.executeQuery()) {
                 if (rs.next()) {
                     return mapearPlantacion(rs);
@@ -194,6 +203,7 @@ public class PlantacionDao implements DaoConBajaLogica<Plantacion> {
     }
 
 
+    // Convierte una fila de la tabla plantacion en un objeto Plantacion.
     private Plantacion mapearPlantacion(ResultSet rs) throws SQLException {
         return new Plantacion(
                 rs.getInt("id_plantacion"),

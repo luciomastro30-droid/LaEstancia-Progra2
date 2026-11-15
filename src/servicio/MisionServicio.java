@@ -17,6 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Gestiona la lógica del sistema de misiones.
+ * Permite aceptar misiones, registrar su progreso, detectar cuándo se completan
+ * y entregar sus recompensas al jugador.
+ */
 public class MisionServicio {
 
     // El jugador puede tener como maximo 3 misiones sin reclamar.

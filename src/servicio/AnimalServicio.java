@@ -23,6 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Gestiona la lógica relacionada con los animales de la granja.
+ * Coordina compras, alimentación, producción, inventario y avance del tiempo.
+ */
 public class AnimalServicio {
 
     public static final int MINUTOS_ALIMENTAR = 15;
@@ -53,6 +57,7 @@ public class AnimalServicio {
     }
 
 
+    // Cuenta cuántos animales ocupan actualmente un tipo de alojamiento.
     public int ocupados(Partida partida, Alojamiento alojamiento)
             throws SQLException {
 
@@ -78,6 +83,7 @@ public class AnimalServicio {
     }
 
 
+    // Agrupa los animales por tipo para mostrar cuántos hay de cada uno.
     public Map<String, Integer> cantidadPorTipo(
             Partida partida,
             Alojamiento alojamiento
@@ -111,6 +117,10 @@ public class AnimalServicio {
     }
 
 
+    /*
+     * Compra un animal validando alojamiento, capacidad y monedas.
+     * El alta del animal y el descuento de monedas se guardan en una misma transacción.
+     */
     public void comprar(
             Partida partida,
             TipoAnimal tipoAnimal,
@@ -219,6 +229,10 @@ public class AnimalServicio {
     }
 
 
+    /*
+     * Alimenta a los animales que lo necesitan usando el alimento disponible
+     * según el orden de prioridad definido en IDS_ALIMENTO.
+     */
     public int alimentar(Partida partida)
             throws SQLException,
             AccionNoPermitidaException {
@@ -413,6 +427,10 @@ public class AnimalServicio {
     }
 
 
+    /*
+     * Recolecta los productos de los animales que están alimentados y completaron
+     * su tiempo de producción, actualizando inventario y ciclo productivo.
+     */
     public Map<String, Integer> recolectarProductos(
             Partida partida
     ) throws SQLException,

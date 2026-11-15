@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la lógica de compra de productos en la tienda agrícola.
+ * Coordina los items disponibles, las monedas de la partida y el inventario.
+ */
 public class TiendaServicio {
 
     private final ItemDao itemDao;
@@ -31,6 +35,7 @@ public class TiendaServicio {
     }
 
 
+    // Devuelve únicamente los items que actualmente pueden comprarse en la tienda.
     public List<Item> productosDisponibles()
             throws SQLException {
 

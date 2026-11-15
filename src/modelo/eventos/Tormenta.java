@@ -4,6 +4,11 @@ import modelo.Partida;
 
 import java.util.Random;
 
+/**
+ * Evento concreto de una tormenta.
+ * Define las consecuencias específicas de las opciones disponibles
+ * cuando este evento aparece durante la partida.
+ */
 public class Tormenta extends Evento {
 
     private static final int PROBABILIDAD_PROTEGER = 45;

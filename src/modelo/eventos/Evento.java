@@ -190,6 +190,7 @@ public abstract class Evento {
 
         int monedasAntes = partida.getMonedas();
         int experienciaAntes = partida.getExperiencia();
+
         /*
          * Calculo cuanto cambio puede aplicarse realmente
          * sin permitir valores negativos.
@@ -202,7 +203,8 @@ public abstract class Evento {
                 experienciaAntes,
                 cambioExperienciaDeseado);
 
-        int cambioExperienciaReal = experienciaCalculada - experienciaAntes;
+        int cambioExperienciaReal =
+                experienciaCalculada - experienciaAntes;
 
         // Las monedas no tienen una logica extra asociada.
         partida.setMonedas(monedasDespues);
@@ -217,6 +219,7 @@ public abstract class Evento {
         if (cambioExperienciaReal > 0) {
 
             partida.sumarExperiencia(cambioExperienciaReal);
+
         } else {
 
             partida.setExperiencia(experienciaCalculada);

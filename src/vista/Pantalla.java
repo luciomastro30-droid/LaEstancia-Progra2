@@ -2,6 +2,11 @@ package vista;
 
 import java.util.List;
 
+/**
+ * Construye la pantalla ASCII completa del juego.
+ * Une las opciones, la informacion de la partida, el inventario
+ * y la escena principal dentro de una misma estructura visual.
+ */
 public class Pantalla {
 
     private static final int ANCHO_OPCIONES = 26;

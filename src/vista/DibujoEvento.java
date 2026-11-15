@@ -7,6 +7,10 @@ import modelo.eventos.Tormenta;
 
 import java.util.List;
 
+/**
+ * Genera los dibujos ASCII utilizados para representar
+ * visualmente los distintos eventos del juego.
+ */
 public class DibujoEvento {
 
     /*

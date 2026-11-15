@@ -4,6 +4,11 @@ import modelo.Partida;
 
 import java.util.Random;
 
+/**
+ * Evento concreto del Chupacabras.
+ * Define las consecuencias específicas de las opciones disponibles
+ * cuando este evento aparece durante la partida.
+ */
 public class Chupacabras extends Evento {
 
     private static final int PROBABILIDAD_ENFRENTAR = 35;

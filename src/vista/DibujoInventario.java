@@ -5,6 +5,11 @@ import modelo.enums.TipoItem;
 
 import java.util.*;
 
+/**
+ * Genera las distintas representaciones visuales del inventario.
+ * Puede mostrar un resumen compacto o una vista detallada
+ * agrupada por tipo de item.
+ */
 public class DibujoInventario {
 
     private static final int ANCHO = 32;

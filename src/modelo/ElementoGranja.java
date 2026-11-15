@@ -1,5 +1,12 @@
 package modelo;
 
+/**
+ * Clase abstracta que reúne los datos y comportamientos comunes
+ * de los elementos principales de la granja, como cultivos y tipos de animales.
+ *
+ * Las clases hijas deben definir su precio de compra
+ * y su tiempo de producción.
+ */
 public abstract class ElementoGranja {
 
     private int id;
