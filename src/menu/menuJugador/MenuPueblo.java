@@ -10,6 +10,7 @@ public class MenuPueblo {
 
     private final PantallaJugador pantallaJugador;
     private final MenuTienda menuTienda;
+    private final MenuHerrero menuHerrero;
     private final MenuMercado menuMercado;
 
     private String mensaje;
@@ -24,6 +25,11 @@ public class MenuPueblo {
 
         this.menuTienda =
                 new MenuTienda(
+                        pantallaJugador
+                );
+
+        this.menuHerrero =
+                new MenuHerrero(
                         pantallaJugador
                 );
 
@@ -78,8 +84,9 @@ public class MenuPueblo {
                         );
 
                 case 2 ->
-                        mensaje =
-                                "Herrero: proximamente";
+                        menuHerrero.mostrar(
+                                partida
+                        );
 
                 case 3 ->
                         menuMercado.mostrar(
