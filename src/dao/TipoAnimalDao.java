@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los tipos de animales en la base de datos.
+ * Permite realizar altas, modificaciones, consultas, listados y bajas lógicas.
+ */
 public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
 
     // Guardo las consultas en constantes para no repetir SQL en cada metodo.
@@ -275,6 +279,10 @@ public class TipoAnimalDao implements DaoConBajaLogica<TipoAnimal> {
     }
 
 
+    /*
+     * Convierte una fila del ResultSet en un objeto TipoAnimal,
+     * incluyendo la conversión del alojamiento almacenado como texto.
+     */
     private TipoAnimal mapearTipoAnimal(
             ResultSet rs
     ) throws SQLException {

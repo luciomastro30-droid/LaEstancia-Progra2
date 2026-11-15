@@ -7,15 +7,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los cultivos en la base de datos.
+ * Permite realizar altas, modificaciones, consultas, listados y bajas lógicas.
+ */
 public class CultivoDao implements DaoConBajaLogica<Cultivo>{
 
 
     private static final String SQL_INSERT = "INSERT INTO cultivo (nombre,precio_semilla,precio_venta," +
-                    "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo) " + "VALUES (?,?,?,?,?,?,?,?)";
+            "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo) " + "VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_BAJA = "UPDATE cultivo SET activo = FALSE " +
-                    "WHERE id_cultivo = ? AND activo = TRUE";
+            "WHERE id_cultivo = ? AND activo = TRUE";
     private static final String SQL_UPDATE = "UPDATE cultivo SET nombre = ?, precio_semilla = ?, precio_venta = ?, " +
-                    "tiempo_crecimiento_min = ?, experiencia_recompensa = ?, " + "id_item_semilla = ?, id_item_cosecha = ? " + "WHERE id_cultivo = ? AND activo = TRUE";
+            "tiempo_crecimiento_min = ?, experiencia_recompensa = ?, " + "id_item_semilla = ?, id_item_cosecha = ? " + "WHERE id_cultivo = ? AND activo = TRUE";
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
             "tiempo_crecimiento_min,experiencia_recompensa,id_item_semilla,id_item_cosecha,activo FROM cultivo WHERE activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT id_cultivo,nombre,precio_semilla,precio_venta," +
@@ -36,11 +40,14 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
             pd.setInt(5, elemento.getExperienciaRecompensa());
             pd.setObject(6, elemento.getIdItemSemilla(), Types.INTEGER);
             pd.setObject(7, elemento.getIdItemCosecha(), Types.INTEGER);
+
             // La base debe guardar el mismo estado activo que tiene el cultivo.
             pd.setBoolean(8, elemento.isActivo());
 
             int filasCambiadas = pd.executeUpdate();
 
+            // Se recupera el ID autogenerado para mantener actualizado
+            // también el objeto Cultivo que existe en memoria.
             if (filasCambiadas > 0) {
                 try (ResultSet rs = pd.getGeneratedKeys()) {
                     if (rs.next()) {
@@ -49,6 +56,7 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
                     }
                 }
             }
+
             return filasCambiadas > 0;
         }
     }
@@ -58,6 +66,7 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
 
         try(Connection con = ConexionBD.obtenerConexion();
             PreparedStatement pd = con.prepareStatement(SQL_BAJA)){
+
             pd.setInt(1,idBuscado);
 
             return pd.executeUpdate() > 0;
@@ -68,7 +77,7 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
     public boolean modificar(Cultivo elemento) throws SQLException {
 
         try (Connection con = ConexionBD.obtenerConexion();
-            PreparedStatement pd = con.prepareStatement(SQL_UPDATE)){
+             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)){
 
             pd.setString(1,elemento.getNombre());
             pd.setInt(2,elemento.getPrecioSemilla());
@@ -86,8 +95,9 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
 
     @Override
     public Cultivo consultarPorId(int idBuscado) throws SQLException {
+
         try (Connection con = ConexionBD.obtenerConexion();
-            PreparedStatement pd = con.prepareStatement(SQL_SELECT_ID)){
+             PreparedStatement pd = con.prepareStatement(SQL_SELECT_ID)){
 
             pd.setInt(1,idBuscado);
 
@@ -97,15 +107,17 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
                     return cultivo;
                 }
             }
+
             return null;
         }
     }
 
     @Override
     public List<Cultivo> listar() throws SQLException {
+
         try (Connection con = ConexionBD.obtenerConexion();
-            PreparedStatement pd = con.prepareStatement(SQL_SELECT_ACTIVOS);
-            ResultSet rs = pd.executeQuery()){
+             PreparedStatement pd = con.prepareStatement(SQL_SELECT_ACTIVOS);
+             ResultSet rs = pd.executeQuery()){
 
             List<Cultivo> lista = new ArrayList<>();
 
@@ -117,6 +129,10 @@ public class CultivoDao implements DaoConBajaLogica<Cultivo>{
         }
     }
 
+    /*
+     * Convierte una fila obtenida desde la base de datos
+     * en un objeto Cultivo.
+     */
     private Cultivo mapearCultivo(ResultSet rs) throws SQLException {
 
         return new Cultivo(

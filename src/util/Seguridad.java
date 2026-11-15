@@ -5,6 +5,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
+/**
+ * Se encarga de transformar contraseñas en un hash utilizando SHA-256,
+ * evitando trabajar con contraseñas almacenadas directamente en texto plano.
+ */
 public class Seguridad {
 
     public static String hashear(String pass){
@@ -16,15 +20,16 @@ public class Seguridad {
 
         try {
 
-            //se pide q calcule el algoritmo
             MessageDigest dig = MessageDigest.getInstance("SHA-256");
-            //el algoritmo trabaja con bytes, no con texto. Indicar UTF-8
-            //asegura que la misma contraseña dé siempre los mismos bytes, en cualquier computadora.
+
+            // SHA-256 trabaja con bytes, por eso la contraseña se convierte
+            // utilizando UTF-8 antes de calcular el hash.
             byte[] bytes = pass.getBytes(StandardCharsets.UTF_8);
-            //calcula el hash. Siempre devuelve 32 bytes, sin importar el largo del texto.
+
             byte[] hash = dig.digest(bytes);
-            //pasa esos bytes a un texto de 64 caracteres hexadecimales,
-            // que es lo que se guarda en la columna contrasenia_hash.
+
+            // Convierte el hash en texto hexadecimal para poder almacenarlo
+            // y compararlo fácilmente en la base de datos.
             return HexFormat.of().formatHex(hash);
 
         } catch (NoSuchAlgorithmException e) {

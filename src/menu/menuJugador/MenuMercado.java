@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Gestiona la interacción del jugador con el mercado.
+ * Permite visualizar los productos vendibles del inventario y realizar ventas.
+ */
 public class MenuMercado {
 
     private final MercadoServicio mercadoServicio;
@@ -45,6 +49,8 @@ public class MenuMercado {
 
             try {
 
+                // Se cargan únicamente los productos del inventario
+                // que pueden ser vendidos en el mercado.
                 productos =
                         mercadoServicio.productosVendibles(
                                 partida
@@ -89,6 +95,8 @@ public class MenuMercado {
                 return;
             }
 
+            // Se transforma el conjunto de productos del Map en una lista
+            // para poder seleccionarlos mediante una opción numérica.
             List<Item> items =
                     new ArrayList<>(
                             productos.keySet()
@@ -164,6 +172,8 @@ public class MenuMercado {
                             cantidad
                     );
 
+            // La venta y las validaciones correspondientes
+            // quedan delegadas al servicio.
             mercadoServicio.vender(
                     partida,
                     item,

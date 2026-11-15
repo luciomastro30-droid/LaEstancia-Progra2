@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gestiona la persistencia de los ítems en la base de datos.
+ * Permite realizar altas, modificaciones, consultas, listados y bajas lógicas.
+ */
 public class ItemDao implements DaoConBajaLogica<Item>{
 
 
@@ -28,10 +32,14 @@ public class ItemDao implements DaoConBajaLogica<Item>{
             pd.setString(3,elemento.getTipo().name()); //.name para pasarlo como string
             pd.setInt(4,elemento.getPrecioCompra());
             pd.setInt(5,elemento.getPrecioVenta());
+
             // Guardo el mismo estado activo que tiene el objeto Java.
             pd.setBoolean(6, elemento.isActivo());
 
             int filasCambiadas = pd.executeUpdate();
+
+            // Si el INSERT fue exitoso, se recupera el ID generado
+            // por la base de datos y se asigna al mismo objeto Item.
             if(filasCambiadas > 0){
                 try (ResultSet rs = pd.getGeneratedKeys()){
                     if(rs.next()){
@@ -40,6 +48,7 @@ public class ItemDao implements DaoConBajaLogica<Item>{
                     }
                 }
             }
+
             return filasCambiadas > 0;
         }
     }
@@ -85,6 +94,7 @@ public class ItemDao implements DaoConBajaLogica<Item>{
                     Item item = mapearItem(rs);
                     return item;
                 }
+
                 return null;
             }
         }
@@ -107,6 +117,10 @@ public class ItemDao implements DaoConBajaLogica<Item>{
         }
     }
 
+    /*
+     * Convierte una fila del ResultSet en un objeto Item.
+     * El tipo almacenado como texto se transforma nuevamente en TipoItem.
+     */
     private Item mapearItem(ResultSet rs) throws SQLException {
 
         return new Item(

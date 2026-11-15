@@ -7,6 +7,10 @@ import servicio.HerreroServicio;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Construye la representación visual del herrero en consola.
+ * Muestra el estado y los costos de las mejoras disponibles para la partida.
+ */
 public class DibujoHerrero {
 
     private static final int ANCHO = 58;

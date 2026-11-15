@@ -4,6 +4,10 @@ import modelo.enums.Rol;
 
 import java.time.LocalDateTime;
 
+/**
+ * Representa a un usuario con rol de administrador.
+ * Hereda los datos y comportamientos comunes definidos en Usuario.
+ */
 public class Administrador extends Usuario {
 
     public Administrador(int idUsuario, String nombreUsuario, String email,

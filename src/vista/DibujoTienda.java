@@ -5,6 +5,10 @@ import modelo.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Construye la representación visual de la tienda agrícola en consola,
+ * mostrando los productos disponibles junto con sus precios de compra.
+ */
 public class DibujoTienda {
 
     private static final int ANCHO = 42;
