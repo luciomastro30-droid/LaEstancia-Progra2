@@ -1,10 +1,24 @@
 package util;
 
 import java.util.Scanner;
+import java.io.IOException;
 
 public class Consola {
 
     private static final Scanner SCAN = new Scanner(System.in);
+    // lineas en blanco que se imprimen para "limpiar" la pantalla
+    private static final int LINEAS_LIMPIAR = 60;
+
+    /*
+     * "Limpia" la pantalla imprimiendo muchas lineas en blanco:
+     * lo anterior sube y queda fuera de la vista.
+     * Se hace asi porque la consola de IntelliJ no tiene
+     * un comando para borrar la pantalla.
+     */
+    public static void limpiarPantalla() {
+        System.out.print("\n".repeat(LINEAS_LIMPIAR));
+        System.out.flush();
+    }
 
     private Consola() {
     }

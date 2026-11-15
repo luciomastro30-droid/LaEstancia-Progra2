@@ -25,6 +25,7 @@ public class MenuCultivosAdmin {
         int opcion;
 
         do {
+            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE CULTIVOS ===
