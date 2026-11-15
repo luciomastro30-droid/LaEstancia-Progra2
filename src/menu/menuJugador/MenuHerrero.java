@@ -16,6 +16,7 @@ public class MenuHerrero {
 
     private final HerreroServicio herreroServicio;
     private final PantallaJugador pantallaJugador;
+    private final MenuEvento menuEvento;
 
     private String mensaje;
 
@@ -29,6 +30,11 @@ public class MenuHerrero {
 
         this.pantallaJugador =
                 pantallaJugador;
+
+        this.menuEvento =
+                new MenuEvento(
+                        pantallaJugador
+                );
     }
 
 
@@ -144,6 +150,10 @@ public class MenuHerrero {
                                 "Mejoraste la cania.";
                     };
 
+            menuEvento.intentarMostrar(
+                    partida
+            );
+
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException
                  | StockInsuficienteException
@@ -169,6 +179,10 @@ public class MenuHerrero {
             mensaje =
                     "Compraste una nueva parcela.";
 
+            menuEvento.intentarMostrar(
+                    partida
+            );
+
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException
                  | SQLException e) {
@@ -192,6 +206,10 @@ public class MenuHerrero {
 
             mensaje =
                     "Construiste el gallinero.";
+
+            menuEvento.intentarMostrar(
+                    partida
+            );
 
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException
@@ -217,6 +235,10 @@ public class MenuHerrero {
 
             mensaje =
                     "Construiste el establo.";
+
+            menuEvento.intentarMostrar(
+                    partida
+            );
 
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException
@@ -244,6 +266,10 @@ public class MenuHerrero {
                     "Mejoraste el terreno al nivel "
                             + partida.getNivelTerreno()
                             + ".";
+
+            menuEvento.intentarMostrar(
+                    partida
+            );
 
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException

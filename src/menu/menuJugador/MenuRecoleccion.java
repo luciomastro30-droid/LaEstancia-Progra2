@@ -17,6 +17,7 @@ public class MenuRecoleccion {
     private final RecoleccionServicio recoleccionServicio;
     private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
+    private final MenuEvento menuEvento;
     private final Random random;
 
     private String mensaje;
@@ -34,6 +35,11 @@ public class MenuRecoleccion {
 
         this.pantallaJugador =
                 pantallaJugador;
+
+        this.menuEvento =
+                new MenuEvento(
+                        pantallaJugador
+                );
 
         this.random =
                 new Random();
@@ -156,6 +162,14 @@ public class MenuRecoleccion {
                             resultado.cantidad()
                     );
                 }
+
+                /*
+                 * Despues de una accion valida puede aparecer
+                 * un evento aleatorio.
+                 */
+                menuEvento.intentarMostrar(
+                        partida
+                );
 
             } catch (SQLException e) {
 

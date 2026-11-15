@@ -20,6 +20,7 @@ public class MenuAnimales {
     private final AnimalServicio animalServicio;
     private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
+    private final MenuEvento menuEvento;
 
     private String mensaje;
 
@@ -36,6 +37,11 @@ public class MenuAnimales {
 
         this.pantallaJugador =
                 pantallaJugador;
+
+        this.menuEvento =
+                new MenuEvento(
+                        pantallaJugador
+                );
     }
 
 
@@ -231,6 +237,14 @@ public class MenuAnimales {
                             ? " animal."
                             : " animales.");
 
+            /*
+             * Alimentar avanza el tiempo, por eso
+             * puede aparecer un evento.
+             */
+            menuEvento.intentarMostrar(
+                    partida
+            );
+
         } catch (AccionNoPermitidaException
                  | SQLException e) {
 
@@ -286,6 +300,14 @@ public class MenuAnimales {
             registrarProgresoProductos(
                     partida,
                     productos
+            );
+
+            /*
+             * Recolectar productos avanza el tiempo,
+             * por eso puede aparecer un evento.
+             */
+            menuEvento.intentarMostrar(
+                    partida
             );
 
         } catch (AccionNoPermitidaException

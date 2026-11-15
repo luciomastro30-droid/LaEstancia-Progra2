@@ -38,6 +38,7 @@ public class MenuJugador {
     private final MenuPueblo menuPueblo;
     private final MenuRecoleccion menuRecoleccion;
     private final MenuMisiones menuMisiones;
+    private final MenuEvento menuEvento;
 
     // Resultado de la ultima accion; se muestra en la pantalla con "> ".
     private String mensaje;
@@ -76,6 +77,11 @@ public class MenuJugador {
 
         this.menuMisiones =
                 new MenuMisiones(
+                        pantallaJugador
+                );
+
+        this.menuEvento =
+                new MenuEvento(
                         pantallaJugador
                 );
     }
@@ -229,6 +235,14 @@ public class MenuJugador {
                     "Dormiste. Ahora es "
                             + reloj.getTexto()
                             + ".";
+
+            /*
+             * Dormir avanza el tiempo, por eso
+             * puede aparecer un evento.
+             */
+            menuEvento.intentarMostrar(
+                    partida
+            );
 
         } catch (SQLException e) {
 

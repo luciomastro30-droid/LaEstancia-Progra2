@@ -21,12 +21,14 @@ public class MenuCultivos {
     private final GranjaServicio granjaServicio;
     private final MisionServicio misionServicio;
     private final PantallaJugador pantallaJugador;
+    private final MenuEvento menuEvento;
 
 
     public MenuCultivos(PantallaJugador pantallaJugador) {
         this.granjaServicio = new GranjaServicio();
         this.misionServicio = new MisionServicio();
         this.pantallaJugador = pantallaJugador;
+        this.menuEvento = new MenuEvento(pantallaJugador);
     }
 
 
@@ -126,11 +128,22 @@ public class MenuCultivos {
                     parcela
             );
 
-            return "Plantaste "
-                    + elegido.getNombre()
-                    + " en la parcela "
-                    + parcela
-                    + ".";
+            String mensaje =
+                    "Plantaste "
+                            + elegido.getNombre()
+                            + " en la parcela "
+                            + parcela
+                            + ".";
+
+            /*
+             * Despues de plantar puede aparecer
+             * un evento aleatorio.
+             */
+            menuEvento.intentarMostrar(
+                    partida
+            );
+
+            return mensaje;
 
         } catch (AccionNoPermitidaException
                  | StockInsuficienteException
@@ -270,6 +283,14 @@ public class MenuCultivos {
                 mensaje +=
                         " No se pudo actualizar el progreso de las misiones.";
             }
+
+            /*
+             * Despues de cosechar puede aparecer
+             * un evento aleatorio.
+             */
+            menuEvento.intentarMostrar(
+                    partida
+            );
 
             return mensaje;
 
