@@ -1,5 +1,8 @@
 package menu.menuJugador;
 
+import modelo.eventos.Chupacabras;
+import modelo.eventos.Pomberito;
+import util.Sonido;
 import dao.PartidaDao;
 import modelo.Partida;
 import modelo.eventos.Evento;
@@ -15,6 +18,9 @@ import java.util.Random;
 
 public class MenuEvento {
 
+    // audio que suena al pelear con un bicho
+    private static final String AUDIO_PELEA =
+            "sonidos/JUIRA_BICHO.wav";
     private final EventoServicio eventoServicio;
     private final PantallaJugador pantallaJugador;
     private final PartidaDao partidaDao;
@@ -86,12 +92,17 @@ public class MenuEvento {
                         2
                 );
 
-        ResultadoEvento resultado =
-                evento.resolverOpcion(
-                        opcion,
-                        partida,
-                        random
-                );
+        // si se elige pelear, primero suena el audio
+        // y recien despues se sabe el resultado
+        if (esPelea(evento, opcion)) {
+            mostrarPelea(partida, evento);
+        }
+
+        ResultadoEvento resultado = evento.resolverOpcion(
+                opcion,
+                partida,
+                random
+        );
 
         try {
 
@@ -204,11 +215,42 @@ public class MenuEvento {
         return mensaje;
     }
 
+    /*
+     * Pelear = la opcion 1 del Pomberito o del Chupacabras
+     * ("Enfrentarlo ...").
+     */
+    private boolean esPelea(Evento evento, int opcion) {
+        boolean esBicho = evento instanceof Pomberito
+                || evento instanceof Chupacabras;
+        return esBicho && opcion == 1;
+    }
+
 
     /*
-     * Divide una opcion larga en varios renglones
-     * para que no se corte en la pantalla.
+     * Muestra la pelea y espera a que termine el audio.
+     * Mientras suena, todavia no se sabe si se gano.
      */
+    private void mostrarPelea(Partida partida, Evento evento) {
+
+        List<String> opciones = List.of(
+                "  PELEA",
+                "",
+                "  Enfrentas al",
+                "  " + evento.getNombre() + "...",
+                "",
+                "  (esperando...)"
+        );
+
+        pantallaJugador.mostrar(
+                opciones,
+                partida,
+                "JUIRA BICHO!!!",
+                DibujoEvento.dibujar(evento)
+        );
+
+        Sonido.reproducirYEsperar(AUDIO_PELEA);
+    }
+
     private void agregarOpcion(
             List<String> opciones,
             int numero,

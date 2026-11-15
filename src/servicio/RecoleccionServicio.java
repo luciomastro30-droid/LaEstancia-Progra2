@@ -4,10 +4,12 @@ import conexion.ConexionBD;
 import dao.InventarioDao;
 import dao.ItemDao;
 import dao.PartidaDao;
+import excepciones.AccionNoPermitidaException;
 import modelo.Inventario;
 import modelo.Item;
 import modelo.Partida;
 import modelo.enums.Rareza;
+import util.Reloj;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +18,7 @@ import java.util.Random;
 public class RecoleccionServicio {
 
     // Cada accion de recoleccion hace avanzar una hora el reloj del juego.
-    public static final int MINUTOS_RECOLECTAR = 60;
+    public static final int MINUTOS_RECOLECTAR = 120;
 
     // IDs fijos de los recursos cargados en la tabla item.
     private static final int ID_MADERA = 46;
@@ -34,9 +36,19 @@ public class RecoleccionServicio {
         this.partidaDao = new PartidaDao();
     }
 
+    //No se puede talar,picar ni pescar de 20:00 a 5:59.
+    private void validarHorario(Partida partida) throws AccionNoPermitidaException{
+        Reloj reloj = new Reloj(partida.getMinutoJuegoTotal());
+        if(reloj.esDeNoche()){
+            throw new AccionNoPermitidaException("Es de noche. Se puede recolectar de 06:00 a 20:00 (dormi para que sea de dia).");
+        }
+    }
 
-    public ResultadoRecoleccion talar(Partida partida) throws SQLException {
 
+    public ResultadoRecoleccion talar(Partida partida)
+            throws SQLException, AccionNoPermitidaException {
+
+        validarHorario(partida);
         // La rareza del hacha define cuantas unidades de madera obtiene.
         int cantidad = partida.getRarezaHacha().getUnidadesRecoleccion();
 
@@ -44,8 +56,10 @@ public class RecoleccionServicio {
     }
 
 
-    public ResultadoRecoleccion picar(Partida partida) throws SQLException {
+    public ResultadoRecoleccion picar(Partida partida)
+            throws SQLException, AccionNoPermitidaException {
 
+        validarHorario(partida);
         // La rareza del pico define cuantas unidades de piedra obtiene.
         int cantidad = partida.getRarezaPico().getUnidadesRecoleccion();
 
@@ -54,8 +68,9 @@ public class RecoleccionServicio {
 
 
     public ResultadoRecoleccion pescar(Partida partida, Random random)
-            throws SQLException {
+            throws SQLException, AccionNoPermitidaException {
 
+        validarHorario(partida);
         /*
          * Random se recibe por parametro para poder controlar
          * los resultados durante las pruebas.

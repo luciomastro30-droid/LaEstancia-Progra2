@@ -56,6 +56,7 @@ public class MenuPueblo {
                             "  1. Tienda agricola",
                             "  2. Herrero",
                             "  3. Mercado",
+                            MenuRadio.opcion(4),
                             "",
                             "  0. Volver"
                     );
@@ -72,10 +73,14 @@ public class MenuPueblo {
                     Consola.leerEntero(
                             "Opcion: ",
                             0,
-                            3
+                            4
                     );
 
             mensaje = null;
+            if (opcion == 4) {
+                mensaje = MenuRadio.alternar();
+                continue;
+            }
 
             if (opcion != 0) {
 

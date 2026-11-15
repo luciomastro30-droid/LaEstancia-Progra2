@@ -1,5 +1,6 @@
 package menu.menuJugador;
 
+import excepciones.AccionNoPermitidaException;
 import modelo.Partida;
 import modelo.enums.DefinicionMision;
 import modelo.enums.TipoObjetivo;
@@ -63,8 +64,8 @@ public class MenuRecoleccion {
                             "  3. Pescar",
                             "",
                             "  Cada accion tarda",
-                            "  60 minutos.",
-                            "",
+                            "  2 horas. Solo de",
+                            "  06:00 a 20:00.",
                             "  0. Volver"
                     );
 
@@ -171,7 +172,7 @@ public class MenuRecoleccion {
                         partida
                 );
 
-            } catch (SQLException e) {
+            }catch (AccionNoPermitidaException | SQLException e) {
 
                 mensaje =
                         "No se pudo recolectar: "

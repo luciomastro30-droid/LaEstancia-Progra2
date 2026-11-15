@@ -156,149 +156,129 @@ public class MenuCultivos {
 
 
     /*
-     * Permite cosechar una parcela que ya este lista.
+     * Pantalla de cosechar. Despues de cosechar se queda en esta pantalla
+     * con las parcelas que siguen listas, hasta que se elige 0 o no queda nada.
+     * Si hay mas de una parcela lista, se puede cosechar todo junto.
      */
     public String cosechar(Partida partida) {
 
-        Map<Integer, Cultivo> listas;
+        String mensaje = "Elegi que parcela cosechar.";
+        String ultimoResultado = null;
 
-        try {
+        while (true) {
 
-            listas =
-                    granjaServicio.parcelasListas(
-                            partida
-                    );
-
-        } catch (SQLException e) {
-
-            return "Error al buscar las parcelas: "
-                    + e.getMessage();
-        }
-
-        if (listas.isEmpty()) {
-
-            return "No hay cultivos listos para cosechar.";
-        }
-
-        /*
-         * Paso los numeros de parcela a una lista
-         * para elegirlos por numero de opcion.
-         */
-        List<Integer> parcelas =
-                new ArrayList<>(
-                        listas.keySet()
-                );
-
-        List<String> opciones =
-                new ArrayList<>();
-
-        opciones.add("  COSECHAR");
-        opciones.add("");
-
-        for (int i = 0;
-             i < parcelas.size();
-             i++) {
-
-            int numeroParcela =
-                    parcelas.get(i);
-
-            opciones.add(
-                    String.format(
-                            "  %d. Parcela %d: %s",
-                            i + 1,
-                            numeroParcela,
-                            listas.get(
-                                    numeroParcela
-                            ).getNombre()
-                    )
-            );
-        }
-
-        opciones.add("");
-        opciones.add("  0. Volver");
-
-        pantallaJugador.mostrar(
-                opciones,
-                partida,
-                "Elegi que parcela cosechar"
-        );
-
-        int eleccion =
-                Consola.leerEntero(
-                        "Opcion: ",
-                        0,
-                        parcelas.size()
-                );
-
-        if (eleccion == 0) {
-            return null;
-        }
-
-        int numeroParcela =
-                parcelas.get(
-                        eleccion - 1
-                );
-
-        try {
-
-            ResultadoCosecha resultado =
-                    granjaServicio.cosechar(
-                            partida,
-                            numeroParcela
-                    );
-
-            String mensaje =
-                    "Cosechaste "
-                            + resultado.cantidad()
-                            + " "
-                            + resultado.nombreCultivo()
-                            + " (+"
-                            + resultado.experiencia()
-                            + " XP).";
-
-            if (resultado.subioNivel()) {
-
-                mensaje +=
-                        " Subiste a nivel "
-                                + partida.getNivel()
-                                + "!";
-            }
-
+            Map<Integer, Cultivo> listas;
             try {
-
-                List<DefinicionMision> completadas =
-                        misionServicio.registrarProgreso(
-                                partida,
-                                TipoObjetivo.COSECHAR,
-                                1
-                        );
-
-                mensaje +=
-                        mensajeMisionesCompletadas(
-                                completadas
-                        );
-
+                listas = granjaServicio.parcelasListas(partida);
             } catch (SQLException e) {
-
-                mensaje +=
-                        " No se pudo actualizar el progreso de las misiones.";
+                return "Error al buscar las parcelas: " + e.getMessage();
             }
 
-            /*
-             * Despues de cosechar puede aparecer
-             * un evento aleatorio.
-             */
-            menuEvento.intentarMostrar(
-                    partida
-            );
+            if (listas.isEmpty()) {
+                if (ultimoResultado == null) {
+                    return "No hay cultivos listos para cosechar.";
+                }
+                return ultimoResultado + " No quedan mas cultivos listos.";
+            }
 
-            return mensaje;
+            // paso los numeros de parcela a una lista para elegirlos por numero de opcion
+            List<Integer> parcelas = new ArrayList<>(listas.keySet());
 
-        } catch (AccionNoPermitidaException
-                 | SQLException e) {
+            List<String> opciones = new ArrayList<>();
+            opciones.add("  COSECHAR");
+            opciones.add("");
+            for (int i = 0; i < parcelas.size(); i++) {
+                int numeroParcela = parcelas.get(i);
+                opciones.add(String.format("  %d. Parcela %d: %s", i + 1, numeroParcela,
+                        listas.get(numeroParcela).getNombre()));
+            }
 
-            return "No se pudo cosechar: "
-                    + e.getMessage();
+            // la opcion "cosechar todo" solo aparece si hay mas de una parcela lista
+            int opcionTodo = parcelas.size() + 1;
+            if (parcelas.size() > 1) {
+                opciones.add("  " + opcionTodo + ". Cosechar todo");
+            }
+            opciones.add("");
+            opciones.add("  0. Volver");
+
+            pantallaJugador.mostrar(opciones, partida, mensaje);
+
+            int maximo = (parcelas.size() > 1) ? opcionTodo : parcelas.size();
+            int eleccion = Consola.leerEntero("Opcion: ", 0, maximo);
+
+            if (eleccion == 0) {
+                return ultimoResultado;
+            }
+
+            if (eleccion == opcionTodo) {
+                mensaje = cosecharTodo(partida, parcelas);
+            } else {
+                mensaje = cosecharParcela(partida, parcelas.get(eleccion - 1));
+            }
+            ultimoResultado = mensaje;
+
+            // despues de cosechar puede aparecer un evento aleatorio
+            menuEvento.intentarMostrar(partida);
+        }
+    }
+
+    // cosecha una parcela y devuelve el mensaje con el resultado
+    private String cosecharParcela(Partida partida, int numeroParcela) {
+        try {
+            ResultadoCosecha resultado = granjaServicio.cosechar(partida, numeroParcela);
+
+            String mensaje = "Cosechaste " + resultado.cantidad() + " " + resultado.nombreCultivo()
+                    + " (+" + resultado.experiencia() + " XP).";
+            if (resultado.subioNivel()) {
+                mensaje += " Subiste a nivel " + partida.getNivel() + "!";
+            }
+            return mensaje + registrarMisiones(partida, 1);
+
+        } catch (AccionNoPermitidaException | SQLException e) {
+            return "No se pudo cosechar: " + e.getMessage();
+        }
+    }
+
+    // cosecha todas las parcelas listas, una por una, y arma un solo mensaje con el total.
+    private String cosecharTodo(Partida partida, List<Integer> parcelas) {
+        int cosechadas = 0;
+        int experiencia = 0;
+        boolean subioNivel = false;
+        String error = null;
+
+        for (int numeroParcela : parcelas) {
+            try {
+                ResultadoCosecha resultado = granjaServicio.cosechar(partida, numeroParcela);
+                cosechadas++;
+                experiencia += resultado.experiencia();
+                subioNivel = subioNivel || resultado.subioNivel();
+            } catch (AccionNoPermitidaException | SQLException e) {
+                error = e.getMessage();
+                break;
+            }
+        }
+
+        String mensaje = "Cosechaste " + cosechadas + " parcelas (+" + experiencia + " XP).";
+        if (subioNivel) {
+            mensaje += " Subiste a nivel " + partida.getNivel() + "!";
+        }
+        if (error != null) {
+            mensaje += " No se pudo seguir: " + error;
+        }
+        if (cosechadas > 0) {
+            mensaje += registrarMisiones(partida, cosechadas);
+        }
+        return mensaje;
+    }
+
+    // avisa a las misiones de cosecha y devuelve el texto de las que se completaron
+    private String registrarMisiones(Partida partida, int cantidad) {
+        try {
+            List<DefinicionMision> completadas =
+                    misionServicio.registrarProgreso(partida, TipoObjetivo.COSECHAR, cantidad);
+            return mensajeMisionesCompletadas(completadas);
+        } catch (SQLException e) {
+            return " No se pudo actualizar el progreso de las misiones.";
         }
     }
 
@@ -324,6 +304,5 @@ public class MenuCultivos {
             texto.append(".");
         }
 
-        return texto.toString();
-    }
+        return texto.toString();    }
 }
