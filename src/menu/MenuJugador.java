@@ -10,8 +10,10 @@ import modelo.Partida;
 import modelo.Plantacion;
 import servicio.GranjaServicio;
 import servicio.InventarioServicio;
+import servicio.RecoleccionServicio;
 import servicio.RegistroServicio;
 import servicio.ResultadoCosecha;
+import servicio.ResultadoRecoleccion;
 import util.Consola;
 import util.Reloj;
 import vista.DibujoGranja;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MenuJugador {
 
@@ -43,6 +46,8 @@ public class MenuJugador {
     private final RegistroServicio registroServicio;
     private final GranjaServicio granjaServicio;
     private final InventarioServicio inventarioServicio;
+    private final RecoleccionServicio recoleccionServicio;
+    private final Random random;
 
     // Resultado de la ultima accion; se muestra en la pantalla con "> ".
     private String mensaje;
@@ -53,6 +58,8 @@ public class MenuJugador {
         this.registroServicio = new RegistroServicio();
         this.granjaServicio = new GranjaServicio();
         this.inventarioServicio = new InventarioServicio();
+        this.recoleccionServicio = new RecoleccionServicio();
+        this.random = new Random();
     }
 
 
@@ -129,7 +136,7 @@ public class MenuJugador {
                         mensaje = "Pueblo: proximamente";
 
                 case 6 ->
-                        mensaje = "Recolectar: proximamente";
+                        recolectar(partida);
 
                 case 7 ->
                         dormir(partida);
@@ -144,7 +151,7 @@ public class MenuJugador {
 
     /*
      * Dibuja la pantalla principal de la granja.
-     * Ahora tambien carga el inventario real de la partida.
+     * Tambien carga el inventario real de la partida.
      */
     private void dibujarGranja(
             List<String> opciones,
@@ -218,6 +225,9 @@ public class MenuJugador {
     }
 
 
+    /*
+     * Muestra el inventario actual de la partida.
+     */
     private void verInventario(
             Partida partida
     ) {
@@ -247,6 +257,9 @@ public class MenuJugador {
     }
 
 
+    /*
+     * Permite plantar una semilla en una parcela disponible.
+     */
     private void plantar(
             Partida partida
     ) {
@@ -370,6 +383,9 @@ public class MenuJugador {
     }
 
 
+    /*
+     * Permite cosechar una parcela que ya este lista.
+     */
     private void cosechar(
             Partida partida
     ) {
@@ -498,6 +514,116 @@ public class MenuJugador {
     }
 
 
+    /*
+     * Permite recolectar recursos usando las herramientas
+     * de la partida.
+     */
+    private void recolectar(
+            Partida partida
+    ) {
+
+        int opcion;
+
+        do {
+
+            List<String> opciones =
+                    List.of(
+                            "  RECOLECTAR",
+                            "",
+                            "  1. Talar",
+                            "  2. Picar",
+                            "  3. Pescar",
+                            "",
+                            "  Cada accion tarda",
+                            "  60 minutos.",
+                            "",
+                            "  0. Volver"
+                    );
+
+            dibujarGranja(
+                    opciones,
+                    partida
+            );
+
+            opcion =
+                    Consola.leerEntero(
+                            "Opcion: ",
+                            0,
+                            3
+                    );
+
+            if (opcion == 0) {
+
+                mensaje = null;
+
+                return;
+            }
+
+            try {
+
+                ResultadoRecoleccion resultado;
+
+                switch (opcion) {
+
+                    case 1 ->
+                            resultado =
+                                    recoleccionServicio.talar(
+                                            partida
+                                    );
+
+                    case 2 ->
+                            resultado =
+                                    recoleccionServicio.picar(
+                                            partida
+                                    );
+
+                    case 3 ->
+                            resultado =
+                                    recoleccionServicio.pescar(
+                                            partida,
+                                            random
+                                    );
+
+                    default -> {
+                        return;
+                    }
+                }
+
+                /*
+                 * En la pesca puede no picar ningun pez.
+                 * Igual pasan los 60 minutos.
+                 */
+                if (resultado.cantidad() == 0) {
+
+                    mensaje =
+                            "No conseguiste nada. Pasaron "
+                                    + RecoleccionServicio.MINUTOS_RECOLECTAR
+                                    + " minutos.";
+
+                } else {
+
+                    mensaje =
+                            "Conseguiste "
+                                    + resultado.cantidad()
+                                    + " "
+                                    + resultado.nombreItem()
+                                    + ".";
+                }
+
+            } catch (SQLException e) {
+
+                mensaje =
+                        "No se pudo recolectar: "
+                                + e.getMessage();
+            }
+
+        } while (opcion != 0);
+    }
+
+
+    /*
+     * Duerme hasta el siguiente dia.
+     */
     private void dormir(
             Partida partida
     ) {
@@ -527,6 +653,9 @@ public class MenuJugador {
     }
 
 
+    /*
+     * Guarda el estado actual de la partida.
+     */
     private void guardar(
             Partida partida
     ) {
