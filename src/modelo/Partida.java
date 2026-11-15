@@ -232,9 +232,11 @@ public class Partida {
 
     public void setParcelasDesbloqueadas(int parcelasDesbloqueadas) {
 
-        if (parcelasDesbloqueadas < 1) {
+        // La granja siempre tiene entre 1 y MAX_PARCELAS disponibles.
+        if (parcelasDesbloqueadas < 1 || parcelasDesbloqueadas > MAX_PARCELAS) {
             throw new IllegalArgumentException(
-                    "La partida debe tener al menos una parcela desbloqueada."
+                    "La cantidad de parcelas desbloqueadas debe estar entre 1 y "
+                            + MAX_PARCELAS + "."
             );
         }
 

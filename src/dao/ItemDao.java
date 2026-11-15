@@ -11,12 +11,9 @@ import java.util.List;
 public class ItemDao implements DaoConBajaLogica<Item>{
 
 
-    private static final String SQL_INSERT = "INSERT INTO item(nombre,descripcion,tipo,precio_compra,precio_venta) VALUES (?,?,?,?,?)";
-    private static final String SQL_BAJA = "UPDATE item SET activo = FALSE " +
-                    "WHERE id_item = ? AND activo = TRUE";
-    private static final String SQL_UPDATE = "UPDATE item SET nombre = ?, descripcion = ?, tipo = ?, " +
-                    "precio_compra = ?, precio_venta = ? " +
-                    "WHERE id_item = ? AND activo = TRUE";
+    private static final String SQL_INSERT = "INSERT INTO item(nombre,descripcion,tipo,precio_compra,precio_venta,activo) " + "VALUES (?,?,?,?,?,?)";
+    private static final String SQL_BAJA = "UPDATE item SET activo = FALSE " + "WHERE id_item = ? AND activo = TRUE";
+    private static final String SQL_UPDATE = "UPDATE item SET nombre = ?, descripcion = ?, tipo = ?, " + "precio_compra = ?, precio_venta = ? " + "WHERE id_item = ? AND activo = TRUE";
     private static final String SQL_SELECT_ACTIVOS = "SELECT id_item,nombre,descripcion,tipo,precio_compra,precio_venta,activo FROM item WHERE activo = TRUE";
     private static final String SQL_SELECT_ID = "SELECT id_item,nombre,descripcion,tipo,precio_compra,precio_venta,activo FROM item WHERE id_item = ?";
 
@@ -31,6 +28,8 @@ public class ItemDao implements DaoConBajaLogica<Item>{
             pd.setString(3,elemento.getTipo().name()); //.name para pasarlo como string
             pd.setInt(4,elemento.getPrecioCompra());
             pd.setInt(5,elemento.getPrecioVenta());
+            // Guardo el mismo estado activo que tiene el objeto Java.
+            pd.setBoolean(6, elemento.isActivo());
 
             int filasCambiadas = pd.executeUpdate();
             if(filasCambiadas > 0){

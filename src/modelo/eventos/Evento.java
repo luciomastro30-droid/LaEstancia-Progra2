@@ -182,7 +182,6 @@ public abstract class Evento {
             int cambioMonedasDeseado,
             int cambioExperienciaDeseado
     ) {
-
         if (partida == null) {
             throw new IllegalArgumentException(
                     "La partida no puede ser null."
@@ -191,46 +190,48 @@ public abstract class Evento {
 
         int monedasAntes = partida.getMonedas();
         int experienciaAntes = partida.getExperiencia();
-
         /*
-         * Calculo primero cuanto puede aplicarse realmente.
-         *
-         * Por ejemplo:
-         *
-         * tiene 20 monedas
-         * el evento quiere quitar 50
-         *
-         * monedas finales = 0
-         *
-         * cambio real = -20
+         * Calculo cuanto cambio puede aplicarse realmente
+         * sin permitir valores negativos.
          */
         int monedasDespues = aplicarCambioSeguro(
                 monedasAntes,
-                cambioMonedasDeseado
-        );
+                cambioMonedasDeseado);
 
-        int experienciaDespues = aplicarCambioSeguro(
+        int experienciaCalculada = aplicarCambioSeguro(
                 experienciaAntes,
-                cambioExperienciaDeseado
-        );
+                cambioExperienciaDeseado);
 
-        /*
-         * Modifico solamente el objeto Partida recibido.
-         *
-         * No guardo nada en MySQL desde aca.
-         */
+        int cambioExperienciaReal = experienciaCalculada - experienciaAntes;
+
+        // Las monedas no tienen una logica extra asociada.
         partida.setMonedas(monedasDespues);
-        partida.setExperiencia(experienciaDespues);
 
         /*
-         * ResultadoEvento guarda el cambio REAL que se aplico.
+         * Si el evento entrega experiencia positiva usamos
+         * sumarExperiencia para permitir que suba de nivel.
+         *
+         * Si quita experiencia usamos setExperiencia, porque
+         * perder experiencia no debe hacer bajar de nivel.
+         */
+        if (cambioExperienciaReal > 0) {
+
+            partida.sumarExperiencia(cambioExperienciaReal);
+        } else {
+
+            partida.setExperiencia(experienciaCalculada);
+        }
+
+        /*
+         * ResultadoEvento guarda el cambio real producido
+         * por el evento, aunque sumar experiencia haga subir de nivel.
          */
         return new ResultadoEvento(
                 nombre,
                 exito,
                 mensaje,
                 monedasDespues - monedasAntes,
-                experienciaDespues - experienciaAntes
+                cambioExperienciaReal
         );
     }
 
