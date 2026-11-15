@@ -14,44 +14,73 @@ import java.util.List;
 
 public class ProgresoMisionDao implements Dao<ProgresoMision> {
 
-    private static final String COLUMNAS = "id_progreso_mision, id_partida, codigo_mision, progreso, estado";
-    private static final String SQL_INSERT = "INSERT INTO progreso_mision (id_partida, codigo_mision, progreso, estado) " +
+    private static final String COLUMNAS =
+            "id_progreso_mision, id_partida, codigo_mision, progreso, estado";
+
+    private static final String SQL_INSERT =
+            "INSERT INTO progreso_mision (id_partida, codigo_mision, progreso, estado) " +
                     "VALUES (?, ?, ?, ?)";
-    // Una vez creado el progreso de una mision no cambio la partida ni el codigo.
-    // Solamente actualizo cuanto avanzo el jugador y el estado de la mision.
-    private static final String SQL_UPDATE = "UPDATE progreso_mision SET progreso = ?, estado = ? " +
+
+    /*
+     * Una vez creado el progreso de una mision no cambio
+     * la partida ni el codigo. Solo progreso y estado.
+     */
+    private static final String SQL_UPDATE =
+            "UPDATE progreso_mision SET progreso = ?, estado = ? " +
                     "WHERE id_progreso_mision = ?";
-    private static final String SQL_SELECT_ID = "SELECT " + COLUMNAS +
+
+    private static final String SQL_SELECT_ID =
+            "SELECT " + COLUMNAS +
                     " FROM progreso_mision WHERE id_progreso_mision = ?";
-    private static final String SQL_SELECT = "SELECT " + COLUMNAS +
+
+    private static final String SQL_SELECT =
+            "SELECT " + COLUMNAS +
                     " FROM progreso_mision ORDER BY id_partida, codigo_mision";
-    private static final String SQL_SELECT_PARTIDA = "SELECT " + COLUMNAS +
+
+    private static final String SQL_SELECT_PARTIDA =
+            "SELECT " + COLUMNAS +
                     " FROM progreso_mision WHERE id_partida = ? ORDER BY codigo_mision";
-    private static final String SQL_SELECT_PARTIDA_CODIGO = "SELECT " + COLUMNAS +
+
+    private static final String SQL_SELECT_PARTIDA_CODIGO =
+            "SELECT " + COLUMNAS +
                     " FROM progreso_mision WHERE id_partida = ? AND codigo_mision = ?";
 
 
     @Override
     public boolean alta(ProgresoMision elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(
-                     SQL_INSERT,
-                     Statement.RETURN_GENERATED_KEYS)) {
+        /*
+         * Esta version abre su propia conexion.
+         * La logica SQL real queda en la sobrecarga con Connection.
+         */
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return alta(con, elemento);
+        }
+    }
+
+
+    public boolean alta(Connection con, ProgresoMision elemento)
+            throws SQLException {
+
+        /*
+         * Esta sobrecarga permite reutilizar una conexion ya abierta,
+         * por ejemplo dentro de una transaccion de MisionServicio.
+         */
+        try (PreparedStatement pd = con.prepareStatement(
+                SQL_INSERT,
+                Statement.RETURN_GENERATED_KEYS)) {
 
             pd.setInt(1, elemento.getIdPartida());
             pd.setString(2, elemento.getCodigoMision());
             pd.setInt(3, elemento.getProgreso());
 
-            // Guardo el enum como texto para que coincida con el ENUM de MySQL.
+            // Guardo el enum como texto para que coincida con MySQL.
             pd.setString(4, elemento.getEstado().name());
 
             int filasCambiadas = pd.executeUpdate();
 
             if (filasCambiadas > 0) {
-
                 try (ResultSet rs = pd.getGeneratedKeys()) {
-
                     if (rs.next()) {
                         elemento.setIdProgresoMision(rs.getInt(1));
                     }
@@ -63,19 +92,27 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
-    /**
-     * Modifico el progreso y el estado de una mision existente.
-     * No cambio la partida ni el codigo de mision porque esos datos identifican
-     * a que mision y a que partida pertenece este registro.
-     *
-     * Por ejemplo, la mision puede avanzar en progreso y pasar de ACTIVA
-     * a COMPLETADA y finalmente a RECLAMADA.
-     */
     @Override
     public boolean modificar(ProgresoMision elemento) throws SQLException {
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
+        /*
+         * Igual que en alta, esta version abre la conexion
+         * y delega en la sobrecarga que recibe Connection.
+         */
+        try (Connection con = ConexionBD.obtenerConexion()) {
+            return modificar(con, elemento);
+        }
+    }
+
+
+    public boolean modificar(Connection con, ProgresoMision elemento)
+            throws SQLException {
+
+        /*
+         * Esta version sirve para modificar una mision
+         * dentro de una transaccion compartida.
+         */
+        try (PreparedStatement pd = con.prepareStatement(SQL_UPDATE)) {
 
             pd.setInt(1, elemento.getProgreso());
             pd.setString(2, elemento.getEstado().name());
@@ -87,7 +124,8 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
 
 
     @Override
-    public ProgresoMision consultarPorId(int idBuscado) throws SQLException {
+    public ProgresoMision consultarPorId(int idBuscado)
+            throws SQLException {
 
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement pd = con.prepareStatement(SQL_SELECT_ID)) {
@@ -95,7 +133,6 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
             pd.setInt(1, idBuscado);
 
             try (ResultSet rs = pd.executeQuery()) {
-
                 if (rs.next()) {
                     return mapearProgresoMision(rs);
                 }
@@ -106,12 +143,6 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
-    /**
-     * Recupero todos los registros de progreso de misiones.
-     * Los ordeno por partida y codigo de mision para que sea mas facil
-     * visualizar a que jugador y mision corresponde cada registro.
-     * Si no hay ninguno, devuelvo una lista vacia.
-     */
     @Override
     public List<ProgresoMision> listar() throws SQLException {
 
@@ -152,14 +183,6 @@ public class ProgresoMisionDao implements Dao<ProgresoMision> {
     }
 
 
-    /**
-     * Busco una mision especifica dentro de una partida usando su codigo.
-     * La base tiene UNIQUE(id_partida, codigo_mision), por lo que como maximo
-     * puede existir un registro para esa combinacion.
-     *
-     * Este metodo me va a servir para comprobar si una mision ya fue iniciada,
-     * completada o reclamada antes de crear un nuevo progreso.
-     */
     public ProgresoMision consultarPorPartidaYCodigo(
             int idPartida,
             String codigoMision

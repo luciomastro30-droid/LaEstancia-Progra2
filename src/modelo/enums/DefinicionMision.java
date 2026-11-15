@@ -3,6 +3,7 @@ package modelo.enums;
 public enum DefinicionMision {
 
     PRIMERA_COSECHA(
+            TipoObjetivo.COSECHAR,
             "Agricultor",
             "Realiza tu primera cosecha.",
             1,
@@ -11,6 +12,7 @@ public enum DefinicionMision {
     ),
 
     AYUDANDO_CARPINTERO(
+            TipoObjetivo.TALAR,
             "Carpintero",
             "Recolecta madera para ayudar con sus trabajos.",
             10,
@@ -19,6 +21,7 @@ public enum DefinicionMision {
     ),
 
     PEDIDO_PESCADOR(
+            TipoObjetivo.PESCAR,
             "Pescador",
             "Consegui algunos peces para completar un pedido.",
             5,
@@ -27,6 +30,7 @@ public enum DefinicionMision {
     ),
 
     PIEDRA_PARA_EL_HERRERO(
+            TipoObjetivo.PICAR,
             "Herrero",
             "Recolecta piedra para el taller del herrero.",
             8,
@@ -35,6 +39,7 @@ public enum DefinicionMision {
     ),
 
     PRIMER_HUEVO(
+            TipoObjetivo.RECOLECTAR_HUEVO,
             "Granjero",
             "Recolecta el primer huevo de tus animales.",
             1,
@@ -43,6 +48,7 @@ public enum DefinicionMision {
     ),
 
     LECHE_FRESCA(
+            TipoObjetivo.ORDENIAR,
             "Granjero",
             "Consegui leche fresca de uno de tus animales.",
             1,
@@ -51,8 +57,11 @@ public enum DefinicionMision {
     );
 
 
-    // Estos datos son fijos para cada mision.
-    // El progreso de cada jugador se guarda aparte en ProgresoMision.
+    /*
+     * Indica que accion del jugador hace avanzar esta mision.
+     * Los demas datos siguen siendo fijos para cada definicion.
+     */
+    private final TipoObjetivo tipoObjetivo;
     private final String npc;
     private final String descripcion;
     private final int objetivo;
@@ -61,6 +70,7 @@ public enum DefinicionMision {
 
 
     DefinicionMision(
+            TipoObjetivo tipoObjetivo,
             String npc,
             String descripcion,
             int objetivo,
@@ -68,6 +78,7 @@ public enum DefinicionMision {
             int recompensaExperiencia
     ) {
 
+        this.tipoObjetivo = tipoObjetivo;
         this.npc = npc;
         this.descripcion = descripcion;
         this.objetivo = objetivo;
@@ -76,21 +87,30 @@ public enum DefinicionMision {
     }
 
 
+    public TipoObjetivo getTipoObjetivo() {
+        return tipoObjetivo;
+    }
+
+
     public String getNpc() {
         return npc;
     }
+
 
     public String getDescripcion() {
         return descripcion;
     }
 
+
     public int getObjetivo() {
         return objetivo;
     }
 
+
     public int getRecompensaMonedas() {
         return recompensaMonedas;
     }
+
 
     public int getRecompensaExperiencia() {
         return recompensaExperiencia;
