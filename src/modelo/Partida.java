@@ -249,10 +249,10 @@ public class Partida {
     }
 
     public void setNivelTerreno(int nivelTerreno) {
-
-        if (nivelTerreno < 1) {
+        // El terreno solo puede estar en nivel 1 o nivel 2.
+        if (nivelTerreno < 1 || nivelTerreno > 2) {
             throw new IllegalArgumentException(
-                    "El nivel del terreno debe ser al menos 1."
+                    "El nivel del terreno debe estar entre 1 y 2."
             );
         }
 
