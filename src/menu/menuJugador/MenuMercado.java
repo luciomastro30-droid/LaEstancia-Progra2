@@ -156,13 +156,13 @@ public class MenuMercado {
                         disponibles
                 );
 
-        int ganancia =
-                mercadoServicio.gananciaTotal(
-                        item,
-                        cantidad
-                );
-
         try {
+
+            int ganancia =
+                    mercadoServicio.gananciaTotal(
+                            item,
+                            cantidad
+                    );
 
             mercadoServicio.vender(
                     partida,
@@ -181,7 +181,8 @@ public class MenuMercado {
 
         } catch (AccionNoPermitidaException
                  | StockInsuficienteException
-                 | SQLException e) {
+                 | SQLException
+                 | IllegalArgumentException e) {
 
             mensaje =
                     "No se pudo vender: "

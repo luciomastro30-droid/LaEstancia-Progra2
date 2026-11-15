@@ -186,10 +186,15 @@ public class MenuJugador {
                                 partida
                         );
 
-                case 0 ->
-                        guardar(
-                                partida
-                        );
+                case 0 -> {
+
+                    if (!guardar(
+                            partida
+                    )) {
+
+                        opcion = -1;
+                    }
+                }
             }
 
         } while (opcion != 0);
@@ -256,19 +261,31 @@ public class MenuJugador {
     /*
      * Guarda el estado actual de la partida.
      */
-    private void guardar(
+    private boolean guardar(
             Partida partida
     ) {
 
         try {
 
-            new PartidaDao().modificar(
-                    partida
-            );
+            boolean guardado =
+                    new PartidaDao().modificar(
+                            partida
+                    );
+
+            if (!guardado) {
+
+                System.out.println(
+                        "No se pudo guardar la partida."
+                );
+
+                return false;
+            }
 
             System.out.println(
                     "Partida guardada."
             );
+
+            return true;
 
         } catch (SQLException e) {
 
@@ -276,6 +293,8 @@ public class MenuJugador {
                     "Error al guardar la partida: "
                             + e.getMessage()
             );
+
+            return false;
         }
     }
 }

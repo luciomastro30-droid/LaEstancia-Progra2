@@ -94,7 +94,7 @@ public class Reloj {
          * Se considera noche desde las 20:00 hasta las 05:59.
          *
          * Uso || porque este horario cruza la medianoche
-        */
+         */
         return hora >= 20 || hora < 6;
     }
 
@@ -124,6 +124,6 @@ public class Reloj {
 
 
         return minutoActual >= apertura
-                && minutoActual <= cierre;
+                && minutoActual < cierre;
     }
 }

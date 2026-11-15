@@ -182,19 +182,29 @@ public class MercadoServicio {
                         cantidadAnterior - cantidad
                 );
 
-                inventarioDao.modificar(
+                if (!inventarioDao.modificar(
                         con,
                         fila
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo actualizar el inventario."
+                    );
+                }
 
                 partida.setMonedas(
                         (int) monedasFinales
                 );
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar la venta."
+                    );
+                }
 
                 con.commit();
 

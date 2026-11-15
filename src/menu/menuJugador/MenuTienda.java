@@ -118,13 +118,13 @@ public class MenuTienda {
                         Integer.MAX_VALUE
                 );
 
-        int costo =
-                tiendaServicio.costoTotal(
-                        item,
-                        cantidad
-                );
-
         try {
+
+            int costo =
+                    tiendaServicio.costoTotal(
+                            item,
+                            cantidad
+                    );
 
             tiendaServicio.comprar(
                     partida,
@@ -143,7 +143,8 @@ public class MenuTienda {
 
         } catch (AccionNoPermitidaException
                  | MonedasInsuficientesException
-                 | SQLException e) {
+                 | SQLException
+                 | IllegalArgumentException e) {
 
             mensaje =
                     "No se pudo comprar: "

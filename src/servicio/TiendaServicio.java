@@ -156,14 +156,19 @@ public class TiendaServicio {
 
                 if (fila == null) {
 
-                    inventarioDao.alta(
+                    if (!inventarioDao.alta(
                             con,
                             new Inventario(
                                     partida.getIdPartida(),
                                     item.getIdItem(),
                                     cantidad
                             )
-                    );
+                    )) {
+
+                        throw new SQLException(
+                                "No se pudo guardar el producto comprado."
+                        );
+                    }
 
                 } else {
 
@@ -172,16 +177,26 @@ public class TiendaServicio {
                                     + cantidad
                     );
 
-                    inventarioDao.modificar(
+                    if (!inventarioDao.modificar(
                             con,
                             fila
-                    );
+                    )) {
+
+                        throw new SQLException(
+                                "No se pudo actualizar el inventario."
+                        );
+                    }
                 }
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar la compra."
+                    );
+                }
 
                 con.commit();
 

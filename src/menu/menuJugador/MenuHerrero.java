@@ -7,6 +7,7 @@ import modelo.Partida;
 import modelo.enums.TipoHerramienta;
 import servicio.HerreroServicio;
 import util.Consola;
+import util.Reloj;
 import vista.DibujoHerrero;
 
 import java.sql.SQLException;
@@ -45,6 +46,33 @@ public class MenuHerrero {
         int opcion;
 
         do {
+
+            Reloj reloj =
+                    new Reloj(
+                            partida.getMinutoJuegoTotal()
+                    );
+
+            if (!reloj.comerciosAbiertos()) {
+
+                pantallaJugador.mostrar(
+                        List.of(
+                                "  HERRERO",
+                                "",
+                                "  Comercio cerrado",
+                                "",
+                                "  Enter para volver"
+                        ),
+                        partida,
+                        "El herrero esta cerrado. Abre de 08:00 a 18:00.",
+                        DibujoHerrero.dibujar(
+                                partida
+                        )
+                );
+
+                Consola.pausar();
+
+                return;
+            }
 
             List<String> opciones =
                     List.of(

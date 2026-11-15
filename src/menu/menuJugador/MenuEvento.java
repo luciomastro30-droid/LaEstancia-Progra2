@@ -110,22 +110,58 @@ public class MenuEvento {
                         diaUltimoEventoAntes
                 );
 
-                return "No se pudo guardar el resultado del evento.";
+                String error =
+                        "No se pudo guardar el resultado del evento.";
+
+                pantallaJugador.mostrar(
+                        List.of(
+                                "  ERROR",
+                                "",
+                                "  Enter para continuar"
+                        ),
+                        partida,
+                        error,
+                        DibujoEvento.dibujar(
+                                evento
+                        )
+                );
+
+                Consola.pausar();
+
+                return error;
             }
 
         } catch (SQLException e) {
 
-            restaurarPartida(
-                    partida,
-                    monedasAntes,
-                    experienciaAntes,
-                    nivelAntes,
-                    diaUltimoEventoAntes
-            );
+        restaurarPartida(
+                partida,
+                monedasAntes,
+                experienciaAntes,
+                nivelAntes,
+                diaUltimoEventoAntes
+        );
 
-            return "No se pudo guardar el evento: "
-                    + e.getMessage();
-        }
+        String error =
+                "No se pudo guardar el evento: "
+                        + e.getMessage();
+
+        pantallaJugador.mostrar(
+                List.of(
+                        "  ERROR",
+                        "",
+                        "  Enter para continuar"
+                ),
+                partida,
+                error,
+                DibujoEvento.dibujar(
+                        evento
+                )
+        );
+
+        Consola.pausar();
+
+        return error;
+    }
 
         String mensaje =
                 resultado.getMensaje();

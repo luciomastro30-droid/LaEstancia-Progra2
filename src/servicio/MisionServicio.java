@@ -134,7 +134,12 @@ public class MisionServicio {
                 mision.name()
         );
 
-        progresoMisionDao.alta(nuevo);
+        if (!progresoMisionDao.alta(nuevo)) {
+
+            throw new SQLException(
+                    "No se pudo guardar la mision."
+            );
+        }
     }
 
 
@@ -196,7 +201,12 @@ public class MisionServicio {
                 completadas.add(definicion);
             }
 
-            progresoMisionDao.modificar(progreso);
+            if (!progresoMisionDao.modificar(progreso)) {
+
+                throw new SQLException(
+                        "No se pudo actualizar el progreso de la mision."
+                );
+            }
         }
 
         return completadas;
@@ -248,7 +258,13 @@ public class MisionServicio {
                  * transaccion: no puede quedar una sin la otra.
                  */
                 progreso.setEstado(EstadoMision.RECLAMADA);
-                progresoMisionDao.modificar(con, progreso);
+
+                if (!progresoMisionDao.modificar(con, progreso)) {
+
+                    throw new SQLException(
+                            "No se pudo actualizar la mision."
+                    );
+                }
 
                 partida.setMonedas(
                         partida.getMonedas()
@@ -259,7 +275,12 @@ public class MisionServicio {
                         definicion.getRecompensaExperiencia()
                 );
 
-                partidaDao.modificar(con, partida);
+                if (!partidaDao.modificar(con, partida)) {
+
+                    throw new SQLException(
+                            "No se pudo guardar la recompensa."
+                    );
+                }
 
                 con.commit();
 

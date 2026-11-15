@@ -2,6 +2,7 @@ package menu.menuJugador;
 
 import modelo.Partida;
 import util.Consola;
+import util.Reloj;
 import vista.DibujoPueblo;
 
 import java.util.List;
@@ -75,6 +76,22 @@ public class MenuPueblo {
                     );
 
             mensaje = null;
+
+            if (opcion != 0) {
+
+                Reloj reloj =
+                        new Reloj(
+                                partida.getMinutoJuegoTotal()
+                        );
+
+                if (!reloj.comerciosAbiertos()) {
+
+                    mensaje =
+                            "Los comercios estan cerrados. Abren de 08:00 a 18:00.";
+
+                    continue;
+                }
+            }
 
             switch (opcion) {
 

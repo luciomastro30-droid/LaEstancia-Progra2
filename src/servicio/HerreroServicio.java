@@ -432,10 +432,15 @@ public class HerreroServicio {
                         MINUTOS_HERRERO
                 );
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar la mejora."
+                    );
+                }
 
                 con.commit();
 
@@ -504,10 +509,15 @@ public class HerreroServicio {
                 fila.getCantidad() - cantidad
         );
 
-        inventarioDao.modificar(
+        if (!inventarioDao.modificar(
                 con,
                 fila
-        );
+        )) {
+
+            throw new SQLException(
+                    "No se pudo descontar el material."
+            );
+        }
     }
 
 

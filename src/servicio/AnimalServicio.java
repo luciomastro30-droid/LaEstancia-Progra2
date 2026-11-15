@@ -182,15 +182,25 @@ public class AnimalServicio {
                         monedasAnteriores - precio
                 );
 
-                animalDao.alta(
+                if (!animalDao.alta(
                         con,
                         nuevo
-                );
+                )) {
 
-                partidaDao.modificar(
+                    throw new SQLException(
+                            "No se pudo guardar el animal."
+                    );
+                }
+
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar la compra del animal."
+                    );
+                }
 
                 con.commit();
 
@@ -319,10 +329,26 @@ public class AnimalServicio {
                                 minutoActual
                         );
 
-                        animalDao.modificar(
+                        /*
+                         * Si el animal todavia no tenia iniciado
+                         * su ciclo de produccion, comienza ahora.
+                         */
+                        if (animal.getMinutoUltimaProduccion() == null) {
+
+                            animal.setMinutoUltimaProduccion(
+                                    minutoActual
+                            );
+                        }
+
+                        if (!animalDao.modificar(
                                 con,
                                 animal
-                        );
+                        )) {
+
+                            throw new SQLException(
+                                    "No se pudo actualizar el animal."
+                            );
+                        }
 
                         usados++;
                         alimentados++;
@@ -334,10 +360,15 @@ public class AnimalServicio {
                                 cantidadAnterior - usados
                         );
 
-                        inventarioDao.modificar(
+                        if (!inventarioDao.modificar(
                                 con,
                                 fila
-                        );
+                        )) {
+
+                            throw new SQLException(
+                                    "No se pudo descontar el alimento."
+                            );
+                        }
                     }
 
                     if (alimentados
@@ -351,10 +382,15 @@ public class AnimalServicio {
                         MINUTOS_ALIMENTAR
                 );
 
-                partidaDao.modificar(
+                if (!partidaDao.modificar(
                         con,
                         partida
-                );
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar el avance del tiempo."
+                    );
+                }
 
                 con.commit();
 
@@ -435,48 +471,107 @@ public class AnimalServicio {
         }
 
         if (productores.isEmpty()) {
-            throw new AccionNoPermitidaException("Todavia no hay productos para recolectar.");
+            throw new AccionNoPermitidaException(
+                    "Todavia no hay productos para recolectar."
+            );
         }
 
-        Map<Integer, Inventario> filasInventario = new LinkedHashMap<>();
+        Map<Integer, Inventario> filasInventario =
+                new LinkedHashMap<>();
 
-        Map<Integer, String> nombres = new LinkedHashMap<>();
+        Map<Integer, String> nombres =
+                new LinkedHashMap<>();
 
         for (int idItem : cantidadesPorItem.keySet()) {
 
-            Item item = itemDao.consultarPorId(idItem);
+            Item item =
+                    itemDao.consultarPorId(
+                            idItem
+                    );
 
             if (item == null) {
-                throw new SQLException("No existe el item producto con ID " + idItem + ".");
+
+                throw new SQLException(
+                        "No existe el item producto con ID "
+                                + idItem
+                                + "."
+                );
             }
 
-            nombres.put(idItem, item.getNombre());
+            nombres.put(
+                    idItem,
+                    item.getNombre()
+            );
 
-            filasInventario.put(idItem, inventarioDao.consultarPorPartidaEItem(partida.getIdPartida(), idItem));
+            filasInventario.put(
+                    idItem,
+                    inventarioDao.consultarPorPartidaEItem(
+                            partida.getIdPartida(),
+                            idItem
+                    )
+            );
         }
 
-        long minutoAnterior = partida.getMinutoJuegoTotal();
+        long minutoAnterior =
+                partida.getMinutoJuegoTotal();
 
-        try (Connection con = ConexionBD.obtenerConexion()) {
+        try (Connection con =
+                     ConexionBD.obtenerConexion()) {
+
             con.setAutoCommit(false);
 
             try {
+
                 /*
                  * Primero guardo todos los productos
                  * obtenidos dentro de la misma transaccion.
                  */
-                for (Map.Entry<Integer, Integer> entrada : cantidadesPorItem.entrySet()) {
-                    int idItem = entrada.getKey();
-                    int cantidad = entrada.getValue();
+                for (Map.Entry<Integer, Integer> entrada
+                        : cantidadesPorItem.entrySet()) {
 
-                    Inventario fila = filasInventario.get(idItem);
+                    int idItem =
+                            entrada.getKey();
+
+                    int cantidad =
+                            entrada.getValue();
+
+                    Inventario fila =
+                            filasInventario.get(
+                                    idItem
+                            );
 
                     if (fila == null) {
-                        inventarioDao.alta(con, new Inventario(partida.getIdPartida(), idItem, cantidad));
-                    } else {
-                        fila.setCantidad(fila.getCantidad() + cantidad);
 
-                        inventarioDao.modificar(con, fila);
+                        if (!inventarioDao.alta(
+                                con,
+                                new Inventario(
+                                        partida.getIdPartida(),
+                                        idItem,
+                                        cantidad
+                                )
+                        )) {
+
+                            throw new SQLException(
+                                    "No se pudo guardar el producto recolectado."
+                            );
+                        }
+
+                    } else {
+
+                        fila.setCantidad(
+                                fila.getCantidad()
+                                        + cantidad
+                        );
+
+                        if (!inventarioDao.modificar(
+                                con,
+                                fila
+                        )) {
+
+                            throw new SQLException(
+                                    "No se pudo actualizar el producto recolectado."
+                            );
+                        }
                     }
                 }
 
@@ -484,74 +579,140 @@ public class AnimalServicio {
                  * Al recolectar comienza un nuevo ciclo
                  * de produccion para esos animales.
                  */
-                for (Animal animal : productores) {
-                    animal.setMinutoUltimaProduccion(minutoActual);
+                for (Animal animal
+                        : productores) {
 
-                    animalDao.modificar(con, animal);
+                    animal.setMinutoUltimaProduccion(
+                            minutoActual
+                    );
+
+                    if (!animalDao.modificar(
+                            con,
+                            animal
+                    )) {
+
+                        throw new SQLException(
+                                "No se pudo actualizar el ciclo de produccion del animal."
+                        );
+                    }
                 }
 
-                partida.avanzarMinutos(MINUTOS_RECOLECTAR_PRODUCTOS);
+                partida.avanzarMinutos(
+                        MINUTOS_RECOLECTAR_PRODUCTOS
+                );
 
-                partidaDao.modificar(con, partida);
+                if (!partidaDao.modificar(
+                        con,
+                        partida
+                )) {
+
+                    throw new SQLException(
+                            "No se pudo guardar el avance del tiempo."
+                    );
+                }
 
                 con.commit();
 
-                Map<String, Integer> resultado = new LinkedHashMap<>();
+                Map<String, Integer> resultado =
+                        new LinkedHashMap<>();
 
-                for (Map.Entry<Integer, Integer> entrada : cantidadesPorItem.entrySet()) {
-                    resultado.put(nombres.get(entrada.getKey()), entrada.getValue());
+                for (Map.Entry<Integer, Integer> entrada
+                        : cantidadesPorItem.entrySet()) {
+
+                    resultado.put(
+                            nombres.get(
+                                    entrada.getKey()
+                            ),
+                            entrada.getValue()
+                    );
                 }
 
                 return resultado;
 
             } catch (SQLException e) {
+
                 con.rollback();
 
-                partida.setMinutoJuegoTotal(minutoAnterior);
+                partida.setMinutoJuegoTotal(
+                        minutoAnterior
+                );
+
                 throw e;
             }
         }
     }
 
 
-    private void validarAlojamientoConstruido(Partida partida, Alojamiento alojamiento) throws AccionNoPermitidaException {
-        if (alojamiento == Alojamiento.GALLINERO && !partida.isTieneGallinero()) {
+    private void validarAlojamientoConstruido(
+            Partida partida,
+            Alojamiento alojamiento
+    ) throws AccionNoPermitidaException {
+
+        if (alojamiento == Alojamiento.GALLINERO
+                && !partida.isTieneGallinero()) {
+
             throw new AccionNoPermitidaException(
-                    "Primero construi el gallinero.");
+                    "Primero construi el gallinero."
+            );
         }
 
-        if (alojamiento == Alojamiento.ESTABLO && !partida.isTieneEstablo()) {
+        if (alojamiento == Alojamiento.ESTABLO
+                && !partida.isTieneEstablo()) {
+
             throw new AccionNoPermitidaException(
-                    "Primero construi el establo.");
+                    "Primero construi el establo."
+            );
         }
     }
 
 
-    private boolean estaAlimentado(Animal animal, long minutoActual) {
-        Long ultimaAlimentacion = animal.getMinutoUltimaAlimentacion();
+    private boolean estaAlimentado(
+            Animal animal,
+            long minutoActual
+    ) {
 
-        return ultimaAlimentacion != null && minutoActual - ultimaAlimentacion < MINUTOS_POR_DIA;
+        Long ultimaAlimentacion =
+                animal.getMinutoUltimaAlimentacion();
+
+        return ultimaAlimentacion != null
+                && minutoActual - ultimaAlimentacion
+                < MINUTOS_POR_DIA;
     }
 
 
-    private Map<Integer, TipoAnimal> tiposDe(List<Animal> animales) throws SQLException {
+    private Map<Integer, TipoAnimal> tiposDe(
+            List<Animal> animales
+    ) throws SQLException {
 
-        Map<Integer, TipoAnimal> tipos = new HashMap<>();
+        Map<Integer, TipoAnimal> tipos =
+                new HashMap<>();
 
         for (Animal animal : animales) {
-            int idTipo = animal.getIdTipoAnimal();
 
-            if (!tipos.containsKey(idTipo)) {
-                TipoAnimal tipo = tipoAnimalDao.consultarPorId(idTipo);
+            int idTipo =
+                    animal.getIdTipoAnimal();
+
+            if (!tipos.containsKey(
+                    idTipo
+            )) {
+
+                TipoAnimal tipo =
+                        tipoAnimalDao.consultarPorId(
+                                idTipo
+                        );
 
                 if (tipo == null) {
+
                     throw new SQLException(
                             "No existe el tipo de animal con ID "
                                     + idTipo
                                     + "."
                     );
                 }
-                tipos.put(idTipo, tipo
+
+                tipos.put(
+                        idTipo,
+                        tipo
                 );
             }
         }

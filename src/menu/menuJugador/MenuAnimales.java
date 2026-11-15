@@ -208,14 +208,15 @@ public class MenuAnimales {
                             + nombre
                             + ".";
 
-        } catch (AccionNoPermitidaException
-                 | MonedasInsuficientesException
-                 | SQLException e) {
+        }  catch (AccionNoPermitidaException
+         | MonedasInsuficientesException
+         | SQLException
+         | IllegalArgumentException e) {
 
-            mensaje =
-                    "No se pudo comprar el animal: "
-                            + e.getMessage();
-        }
+        mensaje =
+                "No se pudo comprar el animal: "
+                        + e.getMessage();
+    }
     }
 
 
