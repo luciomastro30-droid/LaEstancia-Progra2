@@ -34,6 +34,7 @@ public class MenuJugador {
     private final MenuCultivos menuCultivos;
     private final MenuInventario menuInventario;
     private final MenuAnimales menuAnimales;
+    private final MenuPueblo menuPueblo;
     private final MenuRecoleccion menuRecoleccion;
 
     // Resultado de la ultima accion; se muestra en la pantalla con "> ".
@@ -58,6 +59,11 @@ public class MenuJugador {
 
         this.menuAnimales =
                 new MenuAnimales(
+                        pantallaJugador
+                );
+
+        this.menuPueblo =
+                new MenuPueblo(
                         pantallaJugador
                 );
 
@@ -148,8 +154,9 @@ public class MenuJugador {
                         );
 
                 case 5 ->
-                        mensaje =
-                                "Pueblo: proximamente";
+                        menuPueblo.mostrar(
+                                partida
+                        );
 
                 case 6 ->
                         menuRecoleccion.mostrar(

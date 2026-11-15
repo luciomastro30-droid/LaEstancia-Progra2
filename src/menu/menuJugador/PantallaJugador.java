@@ -37,6 +37,26 @@ public class PantallaJugador {
             String mensaje
     ) {
 
+        return mostrar(
+                opciones,
+                partida,
+                mensaje,
+                null
+        );
+    }
+
+
+    /*
+     * Permite usar una escena distinta a la granja,
+     * por ejemplo el dibujo del pueblo.
+     */
+    public String mostrar(
+            List<String> opciones,
+            Partida partida,
+            String mensaje,
+            List<String> escenaPersonalizada
+    ) {
+
         Map<Integer, Plantacion> plantaciones =
                 new HashMap<>();
 
@@ -113,6 +133,25 @@ public class PantallaJugador {
                             + e.getMessage();
         }
 
+        List<String> escena;
+
+        if (escenaPersonalizada == null) {
+
+            escena =
+                    DibujoGranja.dibujarEscena(
+                            partida,
+                            plantaciones,
+                            cultivos,
+                            gallinero,
+                            establo
+                    );
+
+        } else {
+
+            escena =
+                    escenaPersonalizada;
+        }
+
         System.out.println(
                 Pantalla.armar(
                         opciones,
@@ -121,13 +160,7 @@ public class PantallaJugador {
                                 mensaje
                         ),
                         inventario,
-                        DibujoGranja.dibujarEscena(
-                                partida,
-                                plantaciones,
-                                cultivos,
-                                gallinero,
-                                establo
-                        )
+                        escena
                 )
         );
 
