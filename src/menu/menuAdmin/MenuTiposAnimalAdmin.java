@@ -37,6 +37,7 @@ public class MenuTiposAnimalAdmin {
         int opcion;
 
         do {
+            Consola.limpiarPantalla();
             System.out.println("""
 
                     === GESTION DE TIPOS DE ANIMALES ===

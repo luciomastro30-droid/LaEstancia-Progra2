@@ -51,6 +51,8 @@ public class MenuPrincipal {
 
     private void iniciarSesion() {
 
+        Consola.limpiarPantalla();
+
         System.out.println("==========================================");
         System.out.println("              INICIAR SESION              ");
         System.out.println("==========================================");
@@ -98,6 +100,8 @@ public class MenuPrincipal {
     }
 
     private void registrarse() {
+
+        Consola.limpiarPantalla();
 
         System.out.println("==========================================");
         System.out.println("                 REGISTRO                 ");
@@ -148,6 +152,8 @@ public class MenuPrincipal {
 
     // Encabezado principal del juego.
     private void mostrarEncabezado() {
+
+        Consola.limpiarPantalla();
 
         System.out.println();
         System.out.println("==========================================");
