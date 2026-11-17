@@ -1,3 +1,8 @@
+-- Crea la base de datos si no existe y la selecciona
+CREATE DATABASE IF NOT EXISTS la_estancia
+  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE la_estancia;
+
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: la_estancia
