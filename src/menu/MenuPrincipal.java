@@ -89,6 +89,7 @@ public class MenuPrincipal {
 
             System.out.println();
             System.out.println("[ERROR] No se pudo conectar con la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
             System.out.println();
 
         } catch (LoginInvalidoException e) {
@@ -146,6 +147,7 @@ public class MenuPrincipal {
 
             System.out.println();
             System.out.println("[ERROR] No se pudo conectar con la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
             System.out.println();
         }
     }
