@@ -4,15 +4,10 @@ Simulador de gestión rural ambientado en el campo argentino, con eventos inspir
 
 Trabajo Práctico Final de **Programación II** — Tecnicatura Universitaria en Programación, UTN Facultad Regional Mar del Plata (2026).
 
-<!--
-  CAPTURAS: agregar 2 o 3 imágenes de la consola (pantalla de la granja, mercado, un evento).
-  Guardarlas en docs/capturas/ y descomentar este bloque:
-
 ## Capturas
 
-![Pantalla de la granja](docs/capturas/granja.png)
-![Mercado](docs/capturas/mercado.png)
--->
+![Evento de tormenta y pueblo](docs/capturas/eventosYMercado1.png)
+![Eventos del Pomberito y el Chupacabras](docs/capturas/eventosYMercado2.png)
 
 ## Qué se puede hacer
 
@@ -114,5 +109,5 @@ La radio reproduce los archivos `.wav` de la carpeta `musica/`, en orden alfabé
 
 ## Equipo
 
-- **Lucio** — [@luciomastro30-droid](https://github.com/luciomastro30-droid)
+- **Lucio Mastromarino** — [@luciomastro30-droid](https://github.com/luciomastro30-droid)
 - **Máximo García** — [@MaxGarcia222](https://github.com/MaxGarcia222)
